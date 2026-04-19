@@ -96,7 +96,11 @@ still ship in many systems. What usually does not survive as well is:
 
 ## What is proven right now
 
-![Plan Enforcer benchmark summary](docs/assets/benchmark-summary.svg)
+[![Plan Enforcer benchmark summary](docs/assets/benchmark-summary.svg)](docs/proof/benchmark-summary.md)
+
+[![Plan Enforcer carryover ladder](docs/assets/carryover-ladder.svg)](docs/proof/carryover-proof.md)
+
+[![Plan Enforcer public proof lanes](docs/assets/proof-lanes.svg)](docs/proof/public-proof.md)
 
 - Native execution is credible.
 - The authorship chain is a real product surface.
@@ -112,6 +116,7 @@ Proof pack:
 - [Composability proof](docs/proof/composability-proof.md)
 - [Dogfood proof](docs/proof/dogfood-proof.md)
 - [Roadmap regression proof lane](docs/proof/roadmap-regression.md)
+- [Public proof frames](docs/proof/public-proof.md)
 
 ## What we do not claim
 
