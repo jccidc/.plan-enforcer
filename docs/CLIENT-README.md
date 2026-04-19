@@ -9,8 +9,8 @@
 Keep your planner. Keep your IDE. Plan Enforcer sits underneath the tool-call surface, where "done" means a ledger row with evidence, not a confident sentence from the model.
 
 ```bash
-git clone https://github.com/jccidc/.planenforcer.git
-cd .planenforcer && ./install.sh
+git clone https://github.com/jccidc/.plan-enforcer.git
+cd .plan-enforcer && ./install.sh
 ```
 
 **Requires [Claude Code](https://claude.ai/code) and Node.js ≥ 18.**
@@ -193,8 +193,8 @@ The correct claim is **narrow and strong**:
 **Prerequisites:** [Claude Code](https://claude.ai/code), Node.js ≥ 18.
 
 ```bash
-git clone https://github.com/jccidc/.planenforcer.git
-cd .planenforcer
+git clone https://github.com/jccidc/.plan-enforcer.git
+cd .plan-enforcer
 ./install.sh
 ```
 
