@@ -1,6 +1,6 @@
 <svg width="1200" height="540" viewBox="0 0 1200 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Plan Enforcer stack</title>
-  <desc id="desc">Three product layers: authorship preserves meaning, execution runs bounded phases, truth leaves durable proof.</desc>
+  <desc id="desc">Three product layers: authorship preserves meaning, execution runs bounded phases, truth leaves durable proof including ask-fidelity, carryover, and final closure evidence.</desc>
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="540" gradientUnits="userSpaceOnUse">
@@ -54,7 +54,7 @@
   <!-- Header -->
   <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Product stack</text>
   <text x="60" y="88" class="sans title">Three layers, one product.</text>
-  <text x="60" y="114" class="sans subtitle">Authorship, execution, and truth. The moat only exists because all three are aligned.</text>
+  <text x="60" y="114" class="sans subtitle">Authorship, execution, and truth. Ask-fidelity and carryover live in the truth layer, but the moat only exists because all three are aligned.</text>
 
   <!-- 3 layer columns. x: 70, 450, 830. w=300, h=310, y=170. -->
 
@@ -94,7 +94,7 @@
     <text x="24" y="144" class="sans layer-sub">&#8226; ledger / archive</text>
     <text x="24" y="172" class="sans layer-sub">&#8226; phase verdict + report</text>
     <text x="24" y="200" class="sans layer-sub">&#8226; lineage / supersession / dossier</text>
-    <text x="24" y="228" class="sans layer-sub">&#8226; final attestation / final truth</text>
+    <text x="24" y="228" class="sans layer-sub">&#8226; ask-fidelity / carryover / final truth</text>
   </g>
 
   <!-- Footer -->

@@ -1,6 +1,6 @@
 <svg width="1200" height="580" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Plan Enforcer workflow</title>
-  <desc id="desc">End-to-end workflow from original ask through discuss, draft, review, execute, verify, and archive. Authorship, execution, and truth layers color-coded.</desc>
+  <desc id="desc">End-to-end workflow from original ask through discuss, draft, review, execute, verify, and archive. Authorship, execution, and truth layers color-coded, with ask-fidelity and closure truth living in the verification/archive lane.</desc>
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="580" gradientUnits="userSpaceOnUse">
@@ -70,7 +70,7 @@
   <!-- Header -->
   <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Working workflow</text>
   <text x="60" y="88" class="sans title">From ask to final truth.</text>
-  <text x="60" y="114" class="sans subtitle">Authorship chain, phase-first runtime, and a durable verification surface.</text>
+  <text x="60" y="114" class="sans subtitle">Authorship chain, phase-first runtime, and a durable verification surface where ask-fidelity and closure truth get checked.</text>
 
   <!-- 7 flow cards. x:40,200,380,540,700,860,1020; y=170; h=150 -->
 
@@ -153,7 +153,7 @@
     <text x="24" y="34" class="sans callout-title">Why this workflow matters</text>
     <text x="24" y="72" class="sans callout-body">&#8226; stops silent narrowing before the plan even exists</text>
     <text x="24" y="100" class="sans callout-body">&#8226; keeps execution in bounded phases instead of one giant brittle session</text>
-    <text x="24" y="128" class="sans callout-body">&#8226; moves heavy proof to verifier + archive, where cold reviewers can reconstruct what is actually true</text>
+    <text x="24" y="128" class="sans callout-body">&#8226; moves heavy proof to verifier + archive, where ask-fidelity, carryover, and closure truth can be judged from disk</text>
   </g>
 
   <!-- Footer -->
