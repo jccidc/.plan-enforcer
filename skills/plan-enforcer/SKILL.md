@@ -19,7 +19,8 @@ When a plan file is detected or user runs `/plan-enforcer <plan-path> --tier <ti
 
 Default tier: **structural** (override in `.plan-enforcer/config.md`).
 
-If the user does not have a plan yet, use `plan-enforcer-draft` first to draft one into `docs/plans/`, then continue with normal enforcement against that file.
+If the user does not have a plan yet and the request is ambiguous, use `plan-enforcer-discuss` first to lock the intent packet. Then use `plan-enforcer-draft` to draft into `docs/plans/`, then continue with normal enforcement against that file.
+If the user does not have a plan yet and the request is already concrete, use `plan-enforcer-draft` directly.
 If plan quality is uncertain, use `plan-enforcer-review` before execution so weak plans do not flow into enforcement unchanged.
 
 ## Execution Loop

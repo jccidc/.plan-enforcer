@@ -39,6 +39,30 @@ When drafting the plan:
 9. Before drafting, run `plan-enforcer-awareness capture-latest --if-empty` so a concrete request always seeds at least one intent row.
 10. If awareness is active, annotate each task title with the same `A:I<n>` / `A:R<n>` refs it is meant to satisfy. These inline refs are for ledger seeding, not prose decoration.
 
+## Ambiguity gate
+
+Before drafting, decide whether the request is already concrete enough
+to plan directly.
+
+Stop and route to `plan-enforcer-discuss` first when any of:
+
+- the request mixes multiple outcomes that could each be their own plan
+- there are 2+ plausible interpretations that would lead to different
+  task sets
+- success criteria are implicit or aspirational rather than concrete
+- the ask is framed in solution language without making the real
+  problem explicit
+- drafting now would force you to guess what is non-negotiable
+
+When this happens:
+
+1. say the request needs `discuss` first
+2. point at `plan-enforcer discuss "<ask>"`
+3. do not draft tasks yet
+
+Only draft immediately when the request is already concrete enough that
+different reasonable readers would produce materially the same plan.
+
 ## Recommended Output Shape
 
 Prefer this structure:
@@ -74,11 +98,11 @@ After writing the plan:
 - explain that they can now execute that plan with Plan Enforcer
 - if they asked for an end-to-end flow, proceed into execution against that exact file
 
-## Consume the combobulate packet
+## Consume the discuss packet
 
-Before drafting, check for `.plan-enforcer/combobulate.md`. If it
-exists and is recent (mtime < 24h) and the current request overlaps
-with its scope:
+Before drafting, check for `.plan-enforcer/discuss.md` first, then
+fallback `.plan-enforcer/combobulate.md`. If either exists and is
+recent (mtime < 24h) and the current request overlaps with its scope:
 
 - Read it first. Treat it as an intent packet, not a loose summary.
 - Mirror packet intent into the plan header:
@@ -96,7 +120,7 @@ with its scope:
 - Do not silently change scope decisions the packet made. If the
   request needs to change scope, surface it and ask.
 - If the packet does not exist or is stale, proceed without it; do
-  not block on combobulate when the request is already concrete.
+  not block on discuss when the request is already concrete.
 
 ## Anti-rationalization table
 

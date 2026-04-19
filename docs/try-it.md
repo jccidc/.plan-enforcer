@@ -33,6 +33,9 @@ Draft a plan from a goal:
 Use the `plan-enforcer-draft` skill to create a plan for "<goal>" in docs/plans/
 ```
 
+If the goal is still ambiguous, the drafter should stop and send you
+through `plan-enforcer discuss` first instead of silently guessing.
+
 Review the draft before execution:
 
 ```text

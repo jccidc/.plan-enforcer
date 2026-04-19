@@ -175,3 +175,37 @@ describe('plan-enforcer-combobulate skill sanity', () => {
     assert.match(content, /skip|bailout/i);
   });
 });
+
+describe('plan-enforcer-discuss skill sanity', () => {
+  const skillPath = path.join(__dirname, '..', 'skills', 'plan-enforcer-discuss', 'SKILL.md');
+  const content = fs.readFileSync(skillPath, 'utf8');
+
+  it('has YAML frontmatter with name + description', () => {
+    assert.match(content, /^---\s*\n/);
+    assert.match(content, /^name:\s*plan-enforcer-discuss/m);
+    assert.match(content, /^description:\s*"?\S/m);
+  });
+
+  it('points at the public discuss packet path', () => {
+    assert.match(content, /\.plan-enforcer\/discuss\.md/);
+  });
+
+  it('keeps the compatibility combobulate packet path too', () => {
+    assert.match(content, /\.plan-enforcer\/combobulate\.md/);
+  });
+});
+
+describe('plan-enforcer-draft discuss routing docs', () => {
+  const skillPath = path.join(__dirname, '..', 'skills', 'plan-enforcer-draft', 'SKILL.md');
+  const content = fs.readFileSync(skillPath, 'utf8');
+
+  it('routes ambiguous asks to discuss before drafting', () => {
+    assert.match(content, /plan-enforcer-discuss/i);
+    assert.match(content, /needs `discuss` first/i);
+  });
+
+  it('prefers discuss packet and falls back to combobulate packet', () => {
+    assert.match(content, /\.plan-enforcer\/discuss\.md/);
+    assert.match(content, /\.plan-enforcer\/combobulate\.md/);
+  });
+});

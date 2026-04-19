@@ -1,23 +1,17 @@
 ---
-name: plan-enforcer-combobulate
-description: "Legacy alias for `plan-enforcer-discuss` --- preserves older naming while the public authorship chain standardizes on discuss."
+name: plan-enforcer-discuss
+description: "Use before `plan-enforcer-draft` when the user's request is ambiguous, underspecified, or mixing multiple outcomes --- captures intent into a structured packet so later plan writing preserves what the user actually meant."
 ---
 
-# Plan Enforcer Combobulate
-
-This is the legacy/internal alias for the public `plan-enforcer-discuss`
-stage. Use the same workflow and packet shape, but prefer calling it
-"discuss" in user-facing docs and commands.
+# Plan Enforcer Discuss
 
 An intent-capture gate. The job is to turn a fuzzy request ("clean up
 the auth flow", "make the onboarding better") into a concrete written
 intent packet before anyone drafts tasks against it. Mis-scoped plans
 fail downstream no matter how rigorous the drafting is.
 
-This skill is the "brainstorming HARD-GATE equivalent" discussed in
-moat-todo, but mechanism-distinct: the output is a file, not a
-conversational acknowledgment. `plan-enforcer-draft` reads the packet
-on its next invocation.
+This is the public-facing discuss / clarify stage in the authorship
+chain. `plan-enforcer-draft` reads the packet on its next invocation.
 
 ## When to use
 
@@ -34,17 +28,16 @@ Use this when any of:
   the request and the wrong interpretation would waste a phase
 
 Skip this skill when the request is already concrete ("add a /healthz
-endpoint returning 200 OK"), the user says "skip combobulate" or
-similar, or a packet at `.plan-enforcer/combobulate.md` already exists
-and is recent (mtime < 24h) and the new request overlaps with its
-scope.
+endpoint returning 200 OK"), the user says "skip discuss" or similar,
+or a packet at `.plan-enforcer/discuss.md` already exists and is
+recent (mtime < 24h) and the new request overlaps with its scope.
 
 ## Rules
 
-1. Produce the public packet at `.plan-enforcer/discuss.md`. One per
+1. Produce a single file at `.plan-enforcer/discuss.md`. One per
    project; overwrite the prior one unless the user asks otherwise.
-2. Also write `.plan-enforcer/combobulate.md` as the compatibility
-   alias while older review/draft flows still read that name.
+2. Also write `.plan-enforcer/combobulate.md` as a compatibility copy
+   while older flows still expect the legacy packet name.
 3. Do NOT start drafting tasks in this skill. Its output is an intent
    packet, not a plan.
 4. Ask only questions whose answers change the plan shape. If the
@@ -53,8 +46,8 @@ scope.
    truly adds no value for the current ask.
 6. If a question has two plausible answers that would lead to very
    different plans, ask the user. Do NOT pick one silently.
-7. When done, tell the user the packet path and that `plan-enforcer-
-   draft` will consume it automatically on its next run.
+7. When done, tell the user the packet path and that
+   `plan-enforcer-draft` will consume it automatically on its next run.
 8. Before writing the packet, ensure awareness has at least one
    verbatim intent row:
    - run `plan-enforcer-awareness capture-latest --if-empty`
