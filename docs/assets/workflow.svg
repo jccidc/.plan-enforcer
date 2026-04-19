@@ -1,37 +1,13 @@
-<svg width="1200" height="580" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Plan Enforcer workflow</title>
-  <desc id="desc">End-to-end workflow from original ask through discuss, draft, review, execute, verify, and archive. Authorship, execution, and truth layers color-coded, with ask-fidelity and closure truth living in the verification/archive lane.</desc>
+<svg width="1200" height="560" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Plan Enforcer developer workflow</title>
+  <desc id="desc">Developer workflow loop from fuzzy request through Discuss brief, plan draft and review, day-to-day execution with ledger and hooks, crash-proof resumption, and shipping with audit. Tier dial on the right shows the advisory, structural, and enforced intensity levels the user controls.</desc>
 
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="580" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="560" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#0d1117"/>
       <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
-    <linearGradient id="card-blue-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1a2840"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="card-amber-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2a2010"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="card-green-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#112a18"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#58a6ff" flood-opacity="0.2"/>
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-amber" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#d29922" flood-opacity="0.2"/>
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#3fb950" flood-opacity="0.2"/>
       <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
     </filter>
     <style>
@@ -40,122 +16,162 @@
       .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
       .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
       .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .step-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
-      .step-title { font-size: 15px; font-weight: 700; fill: #e6edf3; }
+      .step-num { font-size: 11px; font-weight: 700; fill: #8957e5; letter-spacing: 0.1em; }
+      .step-title { font-size: 14px; font-weight: 700; fill: #e6edf3; }
       .step-sub { font-size: 11px; font-weight: 500; fill: #8b949e; }
-      .callout-title { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; fill: #d29922; }
-      .callout-body { font-size: 13px; font-weight: 500; fill: #c9d1d9; }
-      .card-author { fill: url(#card-blue-fill); stroke: #58a6ff; stroke-width: 1.5; }
-      .card-exec { fill: url(#card-amber-fill); stroke: #d29922; stroke-width: 1.5; }
-      .card-truth { fill: url(#card-green-fill); stroke: #3fb950; stroke-width: 1.5; }
-      .card-callout { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
+      .loop-label { font-size: 11px; font-weight: 600; fill: #d29922; letter-spacing: 0.05em; }
+      .tier-title { font-size: 12px; font-weight: 700; fill: #e6edf3; letter-spacing: 0.08em; text-transform: uppercase; }
+      .tier-name { font-size: 13px; font-weight: 700; }
+      .tier-desc { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #30363d; stroke-width: 2; }
+      .arrow-loop { fill: none; stroke: #d29922; stroke-width: 1.6; stroke-dasharray: 4 4; }
+      .arrowhead { fill: #30363d; }
+      .arrowhead-loop { fill: #d29922; }
       .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
     </style>
-    <marker id="arrow-blue-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff" opacity="0.7"/>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/>
     </marker>
-    <marker id="arrow-amber-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d29922" opacity="0.7"/>
-    </marker>
-    <marker id="arrow-green-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb950" opacity="0.7"/>
-    </marker>
-    <marker id="arrow-mixed-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b949e" opacity="0.7"/>
+    <marker id="arrow-loop-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead-loop"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="580" fill="url(#bg)"/>
+  <rect width="1200" height="560" fill="url(#bg)"/>
 
   <!-- Header -->
-  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Working workflow</text>
-  <text x="60" y="88" class="sans title">From ask to final truth.</text>
-  <text x="60" y="114" class="sans subtitle">Authorship chain, phase-first runtime, and a durable verification surface where ask-fidelity and closure truth get checked.</text>
+  <text x="60" y="54" class="sans eyebrow">Developer workflow</text>
+  <text x="60" y="84" class="sans title">One day with Plan Enforcer.</text>
+  <text x="60" y="108" class="sans subtitle">Fuzzy request in, traceable ship out — intensity is yours to set.</text>
 
-  <!-- 7 flow cards. x:40,200,380,540,700,860,1020; y=170; h=150 -->
+  <!-- Flow cards: 4 main + optional crash/resume branch.
+       Layout: 4 cards in a row across the top, 1 branch card below step 3.
+       Cards: w=200 h=150. Positions x: 60, 290, 520, 750. y: 150. Gap 30. -->
 
-  <!-- 01 Ask -->
-  <g transform="translate(40, 170)">
-    <rect width="130" height="150" rx="10" class="card-author" filter="url(#glow-blue)"/>
-    <text x="18" y="30" class="sans step-num" fill="#58a6ff">01</text>
-    <text x="18" y="60" class="sans step-title">Ask</text>
-    <line x1="18" y1="72" x2="112" y2="72" stroke="#58a6ff" stroke-width="1" opacity="0.3"/>
-    <text x="18" y="94" class="sans step-sub">Original request.</text>
-    <text x="18" y="110" class="sans step-sub">Fuzzy welcome.</text>
+  <!-- Step 1: Describe -->
+  <g transform="translate(60, 150)">
+    <rect width="200" height="150" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="30" class="sans step-num">STEP 01</text>
+    <text x="20" y="54" class="sans step-title">Describe the work</text>
+    <text x="20" y="76" class="sans step-sub">Say what you want in</text>
+    <text x="20" y="92" class="sans step-sub">your own words. Fuzzy</text>
+    <text x="20" y="108" class="sans step-sub">requests welcome.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="138" class="mono step-cmd">"clean up auth flow"</text>
   </g>
 
-  <!-- 02 Discuss -->
-  <g transform="translate(200, 170)">
-    <rect width="150" height="150" rx="10" class="card-author" filter="url(#glow-blue)"/>
-    <text x="18" y="30" class="sans step-num" fill="#58a6ff">02</text>
-    <text x="18" y="60" class="sans step-title">Discuss</text>
-    <line x1="18" y1="72" x2="132" y2="72" stroke="#58a6ff" stroke-width="1" opacity="0.3"/>
-    <text x="18" y="94" class="sans step-sub">Intent packet.</text>
-    <text x="18" y="110" class="sans step-sub">Meaning defense.</text>
+  <!-- Step 2: Discuss -->
+  <g transform="translate(290, 150)">
+    <rect width="200" height="150" rx="10" class="card-active" filter="url(#shadow)"/>
+    <text x="20" y="30" class="sans step-num">STEP 02</text>
+    <text x="20" y="54" class="sans step-title">Discuss</text>
+    <text x="20" y="76" class="sans step-sub">Turns your words into</text>
+    <text x="20" y="92" class="sans step-sub">a brief: problem, in</text>
+    <text x="20" y="108" class="sans step-sub">scope, out of scope.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="138" class="mono step-cmd">:discuss</text>
   </g>
 
-  <!-- 03 Draft -->
-  <g transform="translate(380, 170)">
-    <rect width="130" height="150" rx="10" class="card-author" filter="url(#glow-blue)"/>
-    <text x="18" y="30" class="sans step-num" fill="#58a6ff">03</text>
-    <text x="18" y="60" class="sans step-title">Draft</text>
-    <line x1="18" y1="72" x2="112" y2="72" stroke="#58a6ff" stroke-width="1" opacity="0.3"/>
-    <text x="18" y="94" class="sans step-sub">Phased plan.</text>
+  <!-- Step 3: Plan + Review -->
+  <g transform="translate(520, 150)">
+    <rect width="200" height="150" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="30" class="sans step-num">STEP 03</text>
+    <text x="20" y="54" class="sans step-title">Draft + review</text>
+    <text x="20" y="76" class="sans step-sub">Concrete plan under</text>
+    <text x="20" y="92" class="sans step-sub">docs/plans/; placeholder</text>
+    <text x="20" y="108" class="sans step-sub">scanner rejects vague.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="138" class="mono step-cmd">-draft, -review</text>
   </g>
 
-  <!-- 04 Review -->
-  <g transform="translate(540, 170)">
-    <rect width="130" height="150" rx="10" class="card-exec" filter="url(#glow-amber)"/>
-    <text x="18" y="30" class="sans step-num" fill="#d29922">04</text>
-    <text x="18" y="60" class="sans step-title">Review</text>
-    <line x1="18" y1="72" x2="112" y2="72" stroke="#d29922" stroke-width="1" opacity="0.3"/>
-    <text x="18" y="94" class="sans step-sub">Drift + proof.</text>
+  <!-- Step 4: Execute -->
+  <g transform="translate(750, 150)">
+    <rect width="200" height="150" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="30" class="sans step-num">STEP 04</text>
+    <text x="20" y="54" class="sans step-title">Work the plan</text>
+    <text x="20" y="76" class="sans step-sub">Ledger tracks status +</text>
+    <text x="20" y="92" class="sans step-sub">evidence; hooks fire on</text>
+    <text x="20" y="108" class="sans step-sub">every edit per tier.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="138" class="mono step-cmd">ledger.md + hooks</text>
   </g>
 
-  <!-- 05 Execute -->
-  <g transform="translate(700, 170)">
-    <rect width="130" height="150" rx="10" class="card-exec" filter="url(#glow-amber)"/>
-    <text x="18" y="30" class="sans step-num" fill="#d29922">05</text>
-    <text x="18" y="60" class="sans step-title">Execute</text>
-    <line x1="18" y1="72" x2="112" y2="72" stroke="#d29922" stroke-width="1" opacity="0.3"/>
-    <text x="18" y="94" class="sans step-sub">Phase-first.</text>
+  <!-- Step 5: Ship (below step 4, same column extended or beside) -->
+  <g transform="translate(750, 340)">
+    <rect width="200" height="150" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="30" class="sans step-num">STEP 05</text>
+    <text x="20" y="54" class="sans step-title">Ship + audit</text>
+    <text x="20" y="76" class="sans step-sub">Every change traces to</text>
+    <text x="20" y="92" class="sans step-sub">a plan step or a typed</text>
+    <text x="20" y="108" class="sans step-sub">decision. Queryable.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="138" class="mono step-cmd">chain / why / audit</text>
   </g>
 
-  <!-- 06 Verify -->
-  <g transform="translate(860, 170)">
-    <rect width="130" height="150" rx="10" class="card-truth" filter="url(#glow-green)"/>
-    <text x="18" y="30" class="sans step-num" fill="#3fb950">06</text>
-    <text x="18" y="60" class="sans step-title">Verify</text>
-    <line x1="18" y1="72" x2="112" y2="72" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
-    <text x="18" y="94" class="sans step-sub">Disk truth.</text>
+  <!-- Crash + Resume branch -->
+  <g transform="translate(290, 340)">
+    <rect width="430" height="150" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="30" class="sans step-num">CRASH-PROOF · AUTOMATIC</text>
+    <text x="20" y="54" class="sans step-title">Session dies? Ledger survives.</text>
+    <text x="20" y="80" class="sans step-sub">The next session reads the ledger, sees which tasks are verified</text>
+    <text x="20" y="96" class="sans step-sub">and which are pending, and resumes at the right row. No</text>
+    <text x="20" y="112" class="sans step-sub">re-planning, no re-doing finished work, no "starting fresh."</text>
+    <line x1="20" y1="125" x2="410" y2="125" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="142" class="mono step-cmd">SessionStart hook · .plan-enforcer/ledger.md</text>
   </g>
 
-  <!-- 07 Archive -->
-  <g transform="translate(1020, 170)">
-    <rect width="140" height="150" rx="10" class="card-truth" filter="url(#glow-green)"/>
-    <text x="18" y="30" class="sans step-num" fill="#3fb950">07</text>
-    <text x="18" y="60" class="sans step-title">Archive</text>
-    <line x1="18" y1="72" x2="122" y2="72" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
-    <text x="18" y="94" class="sans step-sub">Final truth.</text>
-  </g>
+  <!-- Arrows: step 1 → 2 → 3 → 4, and 4 → 5 (down) -->
+  <path d="M 262 225 L 288 225" class="arrow" marker-end="url(#arrow-end)"/>
+  <path d="M 492 225 L 518 225" class="arrow" marker-end="url(#arrow-end)"/>
+  <path d="M 722 225 L 748 225" class="arrow" marker-end="url(#arrow-end)"/>
+  <path d="M 850 302 L 850 338" class="arrow" marker-end="url(#arrow-end)"/>
 
-  <!-- Arrows at y=245 — colored per layer -->
-  <path d="M 172 245 L 198 245" fill="none" stroke="#58a6ff" stroke-width="2" opacity="0.6" marker-end="url(#arrow-blue-end)"/>
-  <path d="M 352 245 L 378 245" fill="none" stroke="#58a6ff" stroke-width="2" opacity="0.6" marker-end="url(#arrow-blue-end)"/>
-  <path d="M 512 245 L 538 245" fill="none" stroke="#8b949e" stroke-width="2" opacity="0.5" marker-end="url(#arrow-mixed-end)"/>
-  <path d="M 672 245 L 698 245" fill="none" stroke="#d29922" stroke-width="2" opacity="0.6" marker-end="url(#arrow-amber-end)"/>
-  <path d="M 832 245 L 858 245" fill="none" stroke="#8b949e" stroke-width="2" opacity="0.5" marker-end="url(#arrow-mixed-end)"/>
-  <path d="M 992 245 L 1018 245" fill="none" stroke="#3fb950" stroke-width="2" opacity="0.6" marker-end="url(#arrow-green-end)"/>
+  <!-- Loop arrow from Ship back to Describe (dashed amber "iterate"), rectilinear below crash card -->
+  <path d="M 850 490 L 850 515 L 160 515 L 160 302" class="arrow-loop" marker-end="url(#arrow-loop-end)"/>
+  <text x="400" y="508" class="sans loop-label">ITERATE · NEXT FEATURE</text>
 
-  <!-- Callout -->
-  <g transform="translate(40, 360)">
-    <rect width="1120" height="170" rx="10" class="card-callout" filter="url(#shadow)"/>
-    <text x="24" y="34" class="sans callout-title">Why this workflow matters</text>
-    <text x="24" y="72" class="sans callout-body">&#8226; stops silent narrowing before the plan even exists</text>
-    <text x="24" y="100" class="sans callout-body">&#8226; keeps execution in bounded phases instead of one giant brittle session</text>
-    <text x="24" y="128" class="sans callout-body">&#8226; moves heavy proof to verifier + archive, where ask-fidelity, carryover, and closure truth can be judged from disk</text>
+  <!-- Crash branch arrow: from step 4 down/left into crash card -->
+  <path d="M 750 270 C 620 270, 520 310, 505 338" class="arrow" marker-end="url(#arrow-end)"/>
+
+  <!-- Tier dial panel on right side -->
+  <g transform="translate(980, 150)">
+    <rect width="170" height="340" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="32" class="sans tier-title">Tier Dial</text>
+    <text x="20" y="54" class="sans step-sub">Intensity is your call.</text>
+
+    <!-- Advisory -->
+    <g transform="translate(20, 80)">
+      <circle cx="6" cy="6" r="5" fill="#3fb950"/>
+      <text x="22" y="10" class="sans tier-name" fill="#3fb950">advisory</text>
+      <text x="22" y="28" class="sans tier-desc">Audit-only. Logs</text>
+      <text x="22" y="43" class="sans tier-desc">everything, blocks</text>
+      <text x="22" y="58" class="sans tier-desc">nothing. Learning.</text>
+    </g>
+
+    <!-- Structural (default) -->
+    <g transform="translate(20, 160)">
+      <circle cx="6" cy="6" r="5" fill="#d29922"/>
+      <text x="22" y="10" class="sans tier-name" fill="#d29922">structural</text>
+      <text x="22" y="28" class="sans tier-desc">Warns on drift,</text>
+      <text x="22" y="43" class="sans tier-desc">blocks hard breaks.</text>
+      <text x="22" y="58" class="sans tier-desc">Default.</text>
+    </g>
+
+    <!-- Enforced -->
+    <g transform="translate(20, 240)">
+      <circle cx="6" cy="6" r="5" fill="#f85149"/>
+      <text x="22" y="10" class="sans tier-name" fill="#f85149">enforced</text>
+      <text x="22" y="28" class="sans tier-desc">Blocks every</text>
+      <text x="22" y="43" class="sans tier-desc">unplanned edit</text>
+      <text x="22" y="58" class="sans tier-desc">until logged. CI.</text>
+    </g>
+
+    <text x="20" y="320" class="mono step-cmd">plan-enforcer-config</text>
   </g>
 
   <!-- Footer -->
-  <text x="60" y="562" class="sans footer">Blue = authorship &#183; amber = execution &#183; green = truth. Three layers, one chain.</text>
+  <text x="60" y="542" class="sans footer">Same surface, three volume levels. Start advisory, graduate to structural, flip to enforced when it matters.</text>
 </svg>
