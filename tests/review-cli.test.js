@@ -72,7 +72,7 @@ describe('review-cli', () => {
     assert.match(fs.readFileSync(repairedPath, 'utf8'), /\*\*Assumptions:\*\*/);
   });
 
-  it('auto-loads combobulate packet and reports packet drift', () => {
+  it('auto-loads discuss packet and reports packet drift', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-review-cli-packet-'));
     const planDir = path.join(tempDir, 'docs', 'plans');
     const packetDir = path.join(tempDir, '.plan-enforcer');
@@ -80,7 +80,7 @@ describe('review-cli', () => {
     fs.mkdirSync(packetDir, { recursive: true });
 
     const planPath = path.join(planDir, 'export-plan.md');
-    const packetPath = path.join(packetDir, 'combobulate.md');
+    const packetPath = path.join(packetDir, 'discuss.md');
 
     fs.writeFileSync(packetPath, [
       '# Intent packet',
@@ -112,7 +112,7 @@ describe('review-cli', () => {
     });
 
     assert.notEqual(result.status, 0);
-    assert.match(result.stdout, /Combobulate packet:/);
+    assert.match(result.stdout, /Intent packet:/);
     assert.match(result.stdout, /non-negotiable/i);
     assert.match(result.stdout, /proof requirement/i);
   });

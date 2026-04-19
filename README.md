@@ -29,7 +29,7 @@ It is strongest when the real requirement is:
 The working loop is a chained path, not one prompt pretending to be a
 system:
 
-1. clarify intent
+1. discuss intent
 2. draft the executable plan
 3. review the plan against the ask
 4. execute in bounded phases
@@ -67,7 +67,7 @@ That alignment is where the value comes from.
 You can start with:
 
 - the full authored path:
-  - `combobulate -> draft -> review -> execute -> verify`
+  - `discuss -> draft -> review -> execute -> verify`
 - or **bring your own plan**:
   - hand-written markdown
   - imported checklist

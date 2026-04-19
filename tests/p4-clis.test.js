@@ -272,7 +272,7 @@ describe('plan-enforcer (dispatcher)', () => {
     const dir = mkProject(CLEAN_LEDGER);
     const r = run(BINS.dispatcher, ['--help'], dir);
     assert.equal(r.code, 0);
-    for (const name of ['awareness', 'status', 'chain', 'why', 'audit', 'export', 'lint', 'verify', 'config']) {
+    for (const name of ['awareness', 'discuss', 'status', 'chain', 'why', 'audit', 'export', 'lint', 'verify', 'config']) {
       assert.match(r.stdout, new RegExp(`\\b${name}\\b`), `--help missing ${name}`);
     }
   });

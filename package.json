@@ -12,6 +12,7 @@
   "author": "jccidc",
   "license": "MIT",
   "bin": {
+    "plan-enforcer-discuss": "src/discuss-cli.js",
     "plan-enforcer": "src/plan-enforcer-cli.js",
     "plan-enforcer-awareness": "src/awareness-cli.js",
     "plan-enforcer-audit": "src/audit-cli.js",

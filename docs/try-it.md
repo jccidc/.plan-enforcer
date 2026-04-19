@@ -21,6 +21,12 @@ Use the optional built-in planner or one of the included benchmarks to test driv
 
 ### Planner flow
 
+Discuss the ask first when it is fuzzy, mixed, or likely to drift:
+
+```bash
+plan-enforcer discuss "Keep roadmap edits narrow and do not snap back to stale archived text"
+```
+
 Draft a plan from a goal:
 
 ```text

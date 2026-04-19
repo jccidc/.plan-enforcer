@@ -34,8 +34,34 @@ plan-enforcer --help
 plan-enforcer --version
 ```
 
-Routes to each sub-CLI's `main()`. `--help` lists all 13 subcommands;
+Routes to each sub-CLI's `main()`. `--help` lists all subcommands;
 per-subcommand help is `plan-enforcer <sub> --help`.
+
+---
+
+## plan-enforcer-discuss
+
+```
+plan-enforcer-discuss [--title <title>] [--packet <path>] [--from-file <path>] [--interactive|--non-interactive] [--json] [ask text...]
+plan-enforcer discuss [args...]
+```
+
+First-class discuss/clarify entrypoint for the authorship chain.
+Writes `.plan-enforcer/discuss.md` and a backward-compatible
+`.plan-enforcer/combobulate.md`.
+
+Behavior:
+
+- seeds awareness with the exact source ask when not already present
+- interactive mode asks only plan-shaping questions
+- non-interactive mode scaffolds the packet from the exact ask and lets
+  later draft/review consume it
+
+Use this before drafting when:
+
+- the ask mixes multiple outcomes
+- two plausible interpretations would lead to very different plans
+- you need to lock non-negotiables before task writing starts
 
 ---
 

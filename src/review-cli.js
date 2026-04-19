@@ -47,9 +47,13 @@ function defaultPatchedPath(resolvedPath) {
 
 function findCombobulatePacket(resolvedPlanPath) {
   const candidates = [
+    path.join(path.dirname(resolvedPlanPath), '.plan-enforcer', 'discuss.md'),
     path.join(path.dirname(resolvedPlanPath), '.plan-enforcer', 'combobulate.md'),
+    path.join(path.dirname(path.dirname(resolvedPlanPath)), '.plan-enforcer', 'discuss.md'),
     path.join(path.dirname(path.dirname(resolvedPlanPath)), '.plan-enforcer', 'combobulate.md'),
+    path.join(path.dirname(path.dirname(path.dirname(resolvedPlanPath))), '.plan-enforcer', 'discuss.md'),
     path.join(path.dirname(path.dirname(path.dirname(resolvedPlanPath))), '.plan-enforcer', 'combobulate.md'),
+    path.join(process.cwd(), '.plan-enforcer', 'discuss.md'),
     path.join(process.cwd(), '.plan-enforcer', 'combobulate.md')
   ];
 
@@ -88,7 +92,7 @@ function main(argv = process.argv.slice(2)) {
   const review = reviewPlanContent(content, { adversarial, packetContent });
   let out = `${formatReviewReport(content, review)}\n`;
   if (packetPath) {
-    out += `\nCombobulate packet: ${packetPath}\n`;
+    out += `\nIntent packet: ${packetPath}\n`;
   }
   if (writeOutput && review.summary !== 'pass') {
     const outputPath = writePatchedDraft(resolvedPath, writeOutput, content, review);

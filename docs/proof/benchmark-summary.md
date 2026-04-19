@@ -13,7 +13,7 @@ execution simply imploded.
 
 ### 2. The authorship chain is real
 
-`combobulate -> draft -> review` is not just a doc pattern. It is a
+`discuss -> draft -> review` is not just a doc pattern. It is a
 shipped product surface with enforcement and review semantics.
 
 ### 3. Carryover is the clearest moat
