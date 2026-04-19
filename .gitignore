@@ -1,0 +1,13 @@
+# Plan Enforcer runtime artifacts - ephemeral state, not project memory.
+# (We do NOT blanket-ignore .plan-enforcer/ so durable files like
+# awareness.md and archive/ stay tracked. Add new ephemera here.)
+.plan-enforcer/.*
+.plan-enforcer/ledger.md
+.plan-enforcer/config.md
+.plan-enforcer/combobulate.md
+.plan-enforcer/research.md
+node_modules/
+*.log
+.claude/
+benchmarks/results/
+benchmarks/framework-comparison/results/

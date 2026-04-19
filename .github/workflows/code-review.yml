@@ -1,0 +1,114 @@
+name: Code Review
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Get changed files
+        id: changed
+        run: |
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          git diff --name-only origin/main...HEAD -- '*.js' '*.md' '*.sh' | head -50 >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Lint shell scripts
+        if: contains(steps.changed.outputs.files, '.sh')
+        run: |
+          sudo apt-get install -y shellcheck
+          git diff --name-only origin/main...HEAD -- '*.sh' | xargs shellcheck --severity=warning || true
+
+      - name: Check for common issues
+        run: |
+          echo "## Code Review Checks" > review-report.md
+          echo "" >> review-report.md
+
+          # Check for console.log left in src/
+          if git diff origin/main...HEAD -- 'src/*.js' | grep -n '^\+.*console\.log'; then
+            echo "- **Warning:** console.log statements found in src/ — remove before merge" >> review-report.md
+          fi
+
+          # Check for TODO/FIXME/HACK
+          if git diff origin/main...HEAD | grep -n '^\+.*\(TODO\|FIXME\|HACK\)'; then
+            echo "- **Note:** TODO/FIXME/HACK comments found — ensure these are intentional" >> review-report.md
+          fi
+
+          # Check test coverage — every new src/*.js should have a test file
+          for f in $(git diff --name-only origin/main...HEAD -- 'src/*.js'); do
+            base=$(basename "$f" .js)
+            if [ ! -f "tests/${base}.test.js" ]; then
+              echo "- **Warning:** \`$f\` has no corresponding test file \`tests/${base}.test.js\`" >> review-report.md
+            fi
+          done
+
+          # Check for large files
+          for f in $(git diff --name-only origin/main...HEAD); do
+            size=$(wc -c < "$f" 2>/dev/null || echo 0)
+            if [ "$size" -gt 50000 ]; then
+              echo "- **Warning:** \`$f\` is $(($size / 1024))KB — consider splitting" >> review-report.md
+            fi
+          done
+
+          # Check no dependencies added
+          if git diff origin/main...HEAD -- package.json | grep -q '"dependencies"'; then
+            echo "- **Alert:** dependencies changed in package.json — this project targets zero runtime deps" >> review-report.md
+          fi
+
+          # Summary
+          issues=$(grep -c '^\- ' review-report.md || true)
+          if [ "$issues" -eq 0 ]; then
+            echo "All checks passed. No issues found." >> review-report.md
+          else
+            echo "" >> review-report.md
+            echo "$issues issue(s) found. Please review before merging." >> review-report.md
+          fi
+
+          cat review-report.md
+
+      - name: Post review comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { readFileSync } = await import('fs');
+            const report = readFileSync('review-report.md', 'utf8');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Code Review Checks')
+            );
+            const body = `<!-- plan-enforcer-review -->\n${report}`;
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
