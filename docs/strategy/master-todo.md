@@ -19,50 +19,45 @@ Use this instead of scattered notes when deciding what matters next.
 
 ---
 
-## P0 — Must finish
+## Must finish
 
-### 1. Executed verification: move from Partial to Yes
+### 1. Executed verification -> full, not partial
 
 **Why**
 
-This is the biggest remaining moat gap. Evidence quality is much better
-than before, but the product still does not prove every referenced
-verification command ran and passed across the full surface.
+This is still the biggest remaining moat gap.
+
+Evidence quality is much better than before, but the product still does
+not prove every referenced verification command ran and passed across
+the full surface.
 
 **Done when**
 
 - verification-command detection is broad enough to feel routine, not
   best-effort
 - `verified` rows can reliably prove the referenced check actually ran
+  and passed
 - red / stale / missing checks are surfaced clearly in operator-facing
   output
 - capability matrix row 11 can be honestly upgraded from `Partial` to
   `Yes`
 
-### 2. First-class product surfaces
+### 2. More real dogfood
 
 **Why**
 
-We are ahead only if the product feels like a real system, not a bag of
-skills and hidden CLIs.
+One good dogfood proof is not enough.
 
-**Must feel first-class**
-
-- `discuss`
-- `draft`
-- `review`
-- `verify`
-- `audit`
-- `report`
-- bring-your-own-plan
-- crash / resume continuity
+We need repeated real use on code-changing work, not synthetic-only
+confidence.
 
 **Done when**
 
-- each surface has clear public docs and examples
-- entrypoints feel intentional, not internal
-- ambiguous asks route through `discuss` cleanly
-- legacy `combobulate` wording is no longer the public story
+- multiple real repo work packages are completed under PE
+- status / verify / audit / archive stay useful over time
+- bugs found through dogfood are fixed through the same loop
+- operator loop still feels good after repetition, not just one clean
+  demo
 
 ### 3. Operator polish
 
@@ -74,28 +69,44 @@ operator can install it, understand it, and recover from mistakes fast.
 **Done when**
 
 - install / setup / uninstall are boring and predictable
-- status / report / audit output tells the user what to do next
 - first-run flow is obvious
+- status / report / audit output tells the user what to do next
 - error states are actionable, not just correct
+- operator-facing docs match actual runtime behavior
 
----
-
-## P1 — Next after P0
-
-### 4. Dogfood depth
+### 4. Discuss flow polish
 
 **Why**
 
-One good dogfood proof is not enough. We need repeated real use on
-code-changing work, not just synthetic confidence.
+`discuss` is first-class now, but it still needs cleaner routing and
+less legacy leakage.
 
 **Done when**
 
-- multiple real repo work packages are completed under PE
-- status / verify / audit / archive stay useful over time
-- bugs found through dogfood are fixed through the same loop
+- ambiguous asks route through `discuss` cleanly and predictably
+- `draft` is less allowed to guess through ambiguity
+- public docs standardize on `discuss`
+- legacy `combobulate` wording stays under the hood as compatibility,
+  not public story
 
-### 5. Product-visible truth surfaces
+---
+
+## Should do
+
+### 5. Runtime tax trim
+
+**Why**
+
+We do not need to be the fastest. We do need to stay respectable and
+remove ceremony that does not buy truth.
+
+**Done when**
+
+- known low-value ceremony is reduced
+- operator friction goes down
+- moat behavior stays intact
+
+### 6. More product-visible truth surfaces
 
 **Why**
 
@@ -110,24 +121,7 @@ should feel like product features, not internal leftovers.
   examples
 - public story can point at them without extra translation
 
-### 6. Runtime / protocol tax trim
-
-**Why**
-
-We do not need to be the fastest. We do need to stay respectable and
-remove ceremony that does not buy truth.
-
-**Done when**
-
-- known low-value ceremony is reduced
-- operator friction goes down
-- moat behavior stays intact
-
----
-
-## P2 — Important, but after the above
-
-### 7. Public examples library
+### 7. Public examples
 
 Build clearer examples for:
 
@@ -137,49 +131,97 @@ Build clearer examples for:
 - resume / crash continuity
 - verify / audit / report flow
 
-### 8. Imported-plan story
+---
 
-Capability exists in practice but is still too fuzzy publicly.
+## Nice to have
 
-**Done when**
+### 8. Provider-agnostic benchmark lane later
 
-- import path is documented clearly
-- or a dedicated first-class import surface exists
+Not urgent for launch.
 
-### 9. Broader hybrid proof
+Useful later if we want OpenAI / Claude split shown cleanly without
+mixing series.
 
-Scenario H proved composability. More hybrid depth is useful, but it is
-not a first-proof blocker anymore.
-
-### 10. Legacy naming cleanup
+### 9. Retire old naming fully
 
 Keep compatibility under the hood, but continue reducing public
-`combobulate` leakage.
+`combobulate` leakage over time.
 
 ---
 
-## Not first-order right now
+## First-class surfaces still needed
+
+These must feel like real product surfaces, not hidden skill internals:
+
+- `discuss`
+- `draft`
+- `review`
+- `verify`
+- `audit`
+- `report`
+- bring-your-own-plan
+- resume / crash continuity
+
+**Done when**
+
+- each surface has clear public docs and examples
+- entrypoints feel intentional, not internal
+- the public chain reads cleanly:
+  - `discuss -> draft -> review -> execute -> verify`
+
+---
+
+## Deepen moat
+
+These are the highest-value trust surfaces to keep sharpening:
+
+- executed verification
+- carryover / closure truth
+- lineage / dossier
+
+---
+
+## Polish experience
+
+Keep improving:
+
+- install
+- onboarding
+- runtime tax
+
+---
+
+## What not to waste time on
 
 Do not let these displace the main list:
 
 - giant new benchmark spree
-- more planning-only trap obsession
+- more cleanup detours
+- claiming blanket superiority
 - roadmap-regression as moat headline
-- blanket-superiority positioning
-- broad refactors for aesthetic reasons
-- more cleanup detours unless they block actual work
+- planning-only trap obsession
 
 ---
 
 ## If we want to be ahead
 
-The shortest honest answer is:
+Not more benchmarks.
+
+The real answer is:
 
 1. full executed verification
-2. first-class product surfaces
-3. better operator experience
-4. deeper dogfood proof
-5. clearer truth surfaces
-6. lower runtime / protocol tax
+2. best carryover / chain of custody
+3. better real operator experience
+4. clean `discuss -> draft -> review` front end
+5. dogfood that proves we live in it
 
-That is the real launch-stage list.
+---
+
+## Blunt ranking
+
+1. executed verification
+2. operator polish
+3. dogfood depth
+4. runtime trim
+5. examples / packaging
+6. legacy naming cleanup
