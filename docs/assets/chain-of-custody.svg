@@ -1,0 +1,113 @@
+<svg width="1200" height="560" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Plan Enforcer chain of custody</title>
+  <desc id="desc">Five-stage chain of custody: ledger, decision log, verifier, archive, final truth. Plus what this prevents.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="card-green-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#112a18"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#3fb950" flood-opacity="0.22"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <style>
+      .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
+      .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
+      .stage-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; fill: #3fb950; }
+      .stage-title { font-size: 17px; font-weight: 700; fill: #e6edf3; }
+      .stage-sub { font-size: 12px; font-weight: 500; fill: #8b949e; }
+      .callout-title { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; fill: #f85149; }
+      .callout-body { font-size: 13px; font-weight: 500; fill: #c9d1d9; }
+      .card-stage { fill: url(#card-green-fill); stroke: #3fb950; stroke-width: 1.5; }
+      .card-callout { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+    </style>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb950" opacity="0.7"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="560" fill="url(#bg)"/>
+
+  <!-- Header -->
+  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Chain of custody</text>
+  <text x="60" y="88" class="sans title">Why the truth layer matters.</text>
+  <text x="60" y="114" class="sans subtitle">A cold reviewer can reconstruct what changed, why it changed, and whether closure is actually true.</text>
+
+  <!-- 5 stage cards -->
+
+  <g transform="translate(60, 170)">
+    <rect width="190" height="170" rx="10" class="card-stage" filter="url(#glow-green)"/>
+    <text x="20" y="34" class="sans stage-num">01 / Ledger</text>
+    <text x="20" y="64" class="sans stage-title">Planned</text>
+    <text x="20" y="86" class="sans stage-title">rows</text>
+    <line x1="20" y1="102" x2="170" y2="102" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="20" y="126" class="sans stage-sub">T-rows + status</text>
+    <text x="20" y="146" class="sans stage-sub">tracked on disk</text>
+  </g>
+
+  <g transform="translate(290, 170)">
+    <rect width="190" height="170" rx="10" class="card-stage" filter="url(#glow-green)"/>
+    <text x="20" y="34" class="sans stage-num">02 / Decision log</text>
+    <text x="20" y="64" class="sans stage-title">Typed</text>
+    <text x="20" y="86" class="sans stage-title">deviations</text>
+    <line x1="20" y1="102" x2="170" y2="102" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="20" y="126" class="sans stage-sub">D-rows record</text>
+    <text x="20" y="146" class="sans stage-sub">every scope change</text>
+  </g>
+
+  <g transform="translate(520, 170)">
+    <rect width="190" height="170" rx="10" class="card-stage" filter="url(#glow-green)"/>
+    <text x="20" y="34" class="sans stage-num">03 / Verifier</text>
+    <text x="20" y="64" class="sans stage-title">Phase</text>
+    <text x="20" y="86" class="sans stage-title">verdict</text>
+    <line x1="20" y1="102" x2="170" y2="102" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="20" y="126" class="sans stage-sub">pass / fail report</text>
+    <text x="20" y="146" class="sans stage-sub">against the plan</text>
+  </g>
+
+  <g transform="translate(750, 170)">
+    <rect width="190" height="170" rx="10" class="card-stage" filter="url(#glow-green)"/>
+    <text x="20" y="34" class="sans stage-num">04 / Archive</text>
+    <text x="20" y="64" class="sans stage-title">Lineage +</text>
+    <text x="20" y="86" class="sans stage-title">dossier</text>
+    <line x1="20" y1="102" x2="170" y2="102" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="20" y="126" class="sans stage-sub">supersession chain</text>
+    <text x="20" y="146" class="sans stage-sub">per phase</text>
+  </g>
+
+  <g transform="translate(980, 170)">
+    <rect width="170" height="170" rx="10" class="card-stage" filter="url(#glow-green)"/>
+    <text x="20" y="34" class="sans stage-num">05 / Final truth</text>
+    <text x="20" y="64" class="sans stage-title">Attested</text>
+    <text x="20" y="86" class="sans stage-title">closure</text>
+    <line x1="20" y1="102" x2="150" y2="102" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="20" y="126" class="sans stage-sub">cross-phase</text>
+    <text x="20" y="146" class="sans stage-sub">sign-off</text>
+  </g>
+
+  <!-- Arrows -->
+  <path d="M 252 255 L 288 255" fill="none" stroke="#3fb950" stroke-width="2" opacity="0.6" marker-end="url(#arrow-end)"/>
+  <path d="M 482 255 L 518 255" fill="none" stroke="#3fb950" stroke-width="2" opacity="0.6" marker-end="url(#arrow-end)"/>
+  <path d="M 712 255 L 748 255" fill="none" stroke="#3fb950" stroke-width="2" opacity="0.6" marker-end="url(#arrow-end)"/>
+  <path d="M 942 255 L 978 255" fill="none" stroke="#3fb950" stroke-width="2" opacity="0.6" marker-end="url(#arrow-end)"/>
+
+  <!-- What this prevents -->
+  <g transform="translate(60, 380)">
+    <rect width="1090" height="140" rx="10" class="card-callout" filter="url(#shadow)"/>
+    <text x="24" y="36" class="sans callout-title">What this prevents</text>
+    <text x="24" y="68" class="sans callout-body">&#8226; silent narrowing that never gets recorded</text>
+    <text x="24" y="94" class="sans callout-body">&#8226; fake completion where the feature looks done but the repaired contract was lost</text>
+    <text x="24" y="120" class="sans callout-body">&#8226; resumed sessions that cannot explain what changed before and after interruption</text>
+  </g>
+</svg>

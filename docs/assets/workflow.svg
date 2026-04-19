@@ -1,0 +1,161 @@
+<svg width="1200" height="580" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Plan Enforcer workflow</title>
+  <desc id="desc">End-to-end workflow from original ask through discuss, draft, review, execute, verify, and archive. Authorship, execution, and truth layers color-coded.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="580" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="card-blue-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2840"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="card-amber-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2010"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="card-green-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#112a18"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#58a6ff" flood-opacity="0.2"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-amber" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#d29922" flood-opacity="0.2"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#3fb950" flood-opacity="0.2"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <style>
+      .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
+      .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
+      .step-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
+      .step-title { font-size: 15px; font-weight: 700; fill: #e6edf3; }
+      .step-sub { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .callout-title { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; fill: #d29922; }
+      .callout-body { font-size: 13px; font-weight: 500; fill: #c9d1d9; }
+      .card-author { fill: url(#card-blue-fill); stroke: #58a6ff; stroke-width: 1.5; }
+      .card-exec { fill: url(#card-amber-fill); stroke: #d29922; stroke-width: 1.5; }
+      .card-truth { fill: url(#card-green-fill); stroke: #3fb950; stroke-width: 1.5; }
+      .card-callout { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
+    </style>
+    <marker id="arrow-blue-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff" opacity="0.7"/>
+    </marker>
+    <marker id="arrow-amber-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d29922" opacity="0.7"/>
+    </marker>
+    <marker id="arrow-green-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb950" opacity="0.7"/>
+    </marker>
+    <marker id="arrow-mixed-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b949e" opacity="0.7"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="580" fill="url(#bg)"/>
+
+  <!-- Header -->
+  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Working workflow</text>
+  <text x="60" y="88" class="sans title">From ask to final truth.</text>
+  <text x="60" y="114" class="sans subtitle">Authorship chain, phase-first runtime, and a durable verification surface.</text>
+
+  <!-- 7 flow cards. x:40,200,380,540,700,860,1020; y=170; h=150 -->
+
+  <!-- 01 Ask -->
+  <g transform="translate(40, 170)">
+    <rect width="130" height="150" rx="10" class="card-author" filter="url(#glow-blue)"/>
+    <text x="18" y="30" class="sans step-num" fill="#58a6ff">01</text>
+    <text x="18" y="60" class="sans step-title">Ask</text>
+    <line x1="18" y1="72" x2="112" y2="72" stroke="#58a6ff" stroke-width="1" opacity="0.3"/>
+    <text x="18" y="94" class="sans step-sub">Original request.</text>
+    <text x="18" y="110" class="sans step-sub">Fuzzy welcome.</text>
+  </g>
+
+  <!-- 02 Discuss -->
+  <g transform="translate(200, 170)">
+    <rect width="150" height="150" rx="10" class="card-author" filter="url(#glow-blue)"/>
+    <text x="18" y="30" class="sans step-num" fill="#58a6ff">02</text>
+    <text x="18" y="60" class="sans step-title">Discuss</text>
+    <line x1="18" y1="72" x2="132" y2="72" stroke="#58a6ff" stroke-width="1" opacity="0.3"/>
+    <text x="18" y="94" class="sans step-sub">Intent packet.</text>
+    <text x="18" y="110" class="sans step-sub">Meaning defense.</text>
+  </g>
+
+  <!-- 03 Draft -->
+  <g transform="translate(380, 170)">
+    <rect width="130" height="150" rx="10" class="card-author" filter="url(#glow-blue)"/>
+    <text x="18" y="30" class="sans step-num" fill="#58a6ff">03</text>
+    <text x="18" y="60" class="sans step-title">Draft</text>
+    <line x1="18" y1="72" x2="112" y2="72" stroke="#58a6ff" stroke-width="1" opacity="0.3"/>
+    <text x="18" y="94" class="sans step-sub">Phased plan.</text>
+  </g>
+
+  <!-- 04 Review -->
+  <g transform="translate(540, 170)">
+    <rect width="130" height="150" rx="10" class="card-exec" filter="url(#glow-amber)"/>
+    <text x="18" y="30" class="sans step-num" fill="#d29922">04</text>
+    <text x="18" y="60" class="sans step-title">Review</text>
+    <line x1="18" y1="72" x2="112" y2="72" stroke="#d29922" stroke-width="1" opacity="0.3"/>
+    <text x="18" y="94" class="sans step-sub">Drift + proof.</text>
+  </g>
+
+  <!-- 05 Execute -->
+  <g transform="translate(700, 170)">
+    <rect width="130" height="150" rx="10" class="card-exec" filter="url(#glow-amber)"/>
+    <text x="18" y="30" class="sans step-num" fill="#d29922">05</text>
+    <text x="18" y="60" class="sans step-title">Execute</text>
+    <line x1="18" y1="72" x2="112" y2="72" stroke="#d29922" stroke-width="1" opacity="0.3"/>
+    <text x="18" y="94" class="sans step-sub">Phase-first.</text>
+  </g>
+
+  <!-- 06 Verify -->
+  <g transform="translate(860, 170)">
+    <rect width="130" height="150" rx="10" class="card-truth" filter="url(#glow-green)"/>
+    <text x="18" y="30" class="sans step-num" fill="#3fb950">06</text>
+    <text x="18" y="60" class="sans step-title">Verify</text>
+    <line x1="18" y1="72" x2="112" y2="72" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="18" y="94" class="sans step-sub">Disk truth.</text>
+  </g>
+
+  <!-- 07 Archive -->
+  <g transform="translate(1020, 170)">
+    <rect width="140" height="150" rx="10" class="card-truth" filter="url(#glow-green)"/>
+    <text x="18" y="30" class="sans step-num" fill="#3fb950">07</text>
+    <text x="18" y="60" class="sans step-title">Archive</text>
+    <line x1="18" y1="72" x2="122" y2="72" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="18" y="94" class="sans step-sub">Final truth.</text>
+  </g>
+
+  <!-- Arrows at y=245 — colored per layer -->
+  <path d="M 172 245 L 198 245" fill="none" stroke="#58a6ff" stroke-width="2" opacity="0.6" marker-end="url(#arrow-blue-end)"/>
+  <path d="M 352 245 L 378 245" fill="none" stroke="#58a6ff" stroke-width="2" opacity="0.6" marker-end="url(#arrow-blue-end)"/>
+  <path d="M 512 245 L 538 245" fill="none" stroke="#8b949e" stroke-width="2" opacity="0.5" marker-end="url(#arrow-mixed-end)"/>
+  <path d="M 672 245 L 698 245" fill="none" stroke="#d29922" stroke-width="2" opacity="0.6" marker-end="url(#arrow-amber-end)"/>
+  <path d="M 832 245 L 858 245" fill="none" stroke="#8b949e" stroke-width="2" opacity="0.5" marker-end="url(#arrow-mixed-end)"/>
+  <path d="M 992 245 L 1018 245" fill="none" stroke="#3fb950" stroke-width="2" opacity="0.6" marker-end="url(#arrow-green-end)"/>
+
+  <!-- Callout -->
+  <g transform="translate(40, 360)">
+    <rect width="1120" height="170" rx="10" class="card-callout" filter="url(#shadow)"/>
+    <text x="24" y="34" class="sans callout-title">Why this workflow matters</text>
+    <text x="24" y="72" class="sans callout-body">&#8226; stops silent narrowing before the plan even exists</text>
+    <text x="24" y="100" class="sans callout-body">&#8226; keeps execution in bounded phases instead of one giant brittle session</text>
+    <text x="24" y="128" class="sans callout-body">&#8226; moves heavy proof to verifier + archive, where cold reviewers can reconstruct what is actually true</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="60" y="562" class="sans footer">Blue = authorship &#183; amber = execution &#183; green = truth. Three layers, one chain.</text>
+</svg>

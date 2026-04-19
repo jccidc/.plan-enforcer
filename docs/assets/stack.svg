@@ -1,0 +1,102 @@
+<svg width="1200" height="540" viewBox="0 0 1200 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Plan Enforcer stack</title>
+  <desc id="desc">Three product layers: authorship preserves meaning, execution runs bounded phases, truth leaves durable proof.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="card-blue-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2840"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="card-amber-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2010"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="card-green-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#112a18"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#58a6ff" flood-opacity="0.2"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-amber" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#d29922" flood-opacity="0.2"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#3fb950" flood-opacity="0.2"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <style>
+      .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
+      .layer-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+      .layer-title { font-size: 22px; font-weight: 700; fill: #e6edf3; }
+      .layer-sub { font-size: 13px; font-weight: 500; fill: #8b949e; }
+      .card-blue { fill: url(#card-blue-fill); stroke: #58a6ff; stroke-width: 1.5; }
+      .card-amber { fill: url(#card-amber-fill); stroke: #d29922; stroke-width: 1.5; }
+      .card-green { fill: url(#card-green-fill); stroke: #3fb950; stroke-width: 1.5; }
+      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="540" fill="url(#bg)"/>
+
+  <!-- Header -->
+  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Product stack</text>
+  <text x="60" y="88" class="sans title">Three layers, one product.</text>
+  <text x="60" y="114" class="sans subtitle">Authorship, execution, and truth. The moat only exists because all three are aligned.</text>
+
+  <!-- 3 layer columns. x: 70, 450, 830. w=300, h=310, y=170. -->
+
+  <!-- Authorship -->
+  <g transform="translate(70, 170)">
+    <rect width="300" height="310" rx="10" class="card-blue" filter="url(#glow-blue)"/>
+    <text x="24" y="36" class="sans layer-eyebrow" fill="#58a6ff">Authorship layer</text>
+    <text x="24" y="70" class="sans layer-title">Meaning stays</text>
+    <text x="24" y="96" class="sans layer-title">defended</text>
+    <line x1="24" y1="114" x2="276" y2="114" stroke="#58a6ff" stroke-width="1" opacity="0.3"/>
+    <text x="24" y="144" class="sans layer-sub">&#8226; discuss intent packet</text>
+    <text x="24" y="172" class="sans layer-sub">&#8226; draft phased plan</text>
+    <text x="24" y="200" class="sans layer-sub">&#8226; review packet-to-plan drift</text>
+    <text x="24" y="228" class="sans layer-sub">&#8226; repo-aware planning input</text>
+  </g>
+
+  <!-- Execution -->
+  <g transform="translate(450, 170)">
+    <rect width="300" height="310" rx="10" class="card-amber" filter="url(#glow-amber)"/>
+    <text x="24" y="36" class="sans layer-eyebrow" fill="#d29922">Execution layer</text>
+    <text x="24" y="70" class="sans layer-title">Lean phase-first</text>
+    <text x="24" y="96" class="sans layer-title">runtime</text>
+    <line x1="24" y1="114" x2="276" y2="114" stroke="#d29922" stroke-width="1" opacity="0.3"/>
+    <text x="24" y="144" class="sans layer-sub">&#8226; bounded phases</text>
+    <text x="24" y="172" class="sans layer-sub">&#8226; durable phase artifacts</text>
+    <text x="24" y="200" class="sans layer-sub">&#8226; resume-safe handoff</text>
+    <text x="24" y="228" class="sans layer-sub">&#8226; cheap live guards</text>
+  </g>
+
+  <!-- Truth -->
+  <g transform="translate(830, 170)">
+    <rect width="300" height="310" rx="10" class="card-green" filter="url(#glow-green)"/>
+    <text x="24" y="36" class="sans layer-eyebrow" fill="#3fb950">Truth layer</text>
+    <text x="24" y="70" class="sans layer-title">Cold-reviewable</text>
+    <text x="24" y="96" class="sans layer-title">proof</text>
+    <line x1="24" y1="114" x2="276" y2="114" stroke="#3fb950" stroke-width="1" opacity="0.3"/>
+    <text x="24" y="144" class="sans layer-sub">&#8226; ledger / archive</text>
+    <text x="24" y="172" class="sans layer-sub">&#8226; phase verdict + report</text>
+    <text x="24" y="200" class="sans layer-sub">&#8226; lineage / supersession / dossier</text>
+    <text x="24" y="228" class="sans layer-sub">&#8226; final attestation / final truth</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="60" y="518" class="sans footer">Cross-layer alignment is the moat. Any one layer alone is a feature, not a product.</text>
+</svg>
