@@ -1,6 +1,6 @@
 <svg width="1200" height="620" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Plan Enforcer problem and solution</title>
-  <desc id="desc">Two-card SVG showing the problem with prompt-layer agent work and the Plan Enforcer solution at the tool-call and truth layers.</desc>
+  <desc id="desc">Two-card SVG showing AI drift and weak accountability on one side, and the Plan Enforcer ledger plus chain of custody on the other.</desc>
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="620" gradientUnits="userSpaceOnUse">
@@ -29,14 +29,14 @@
   <rect width="1200" height="620" fill="url(#bg)"/>
 
   <text x="60" y="54" class="sans eyebrow">Problem &#8594; solution</text>
-  <text x="60" y="84" class="sans title">The problem is not bad vibes. The problem is no wall.</text>
-  <text x="60" y="108" class="sans subtitle">Prompt-layer systems can be reminded. They cannot be blocked.</text>
+  <text x="60" y="84" class="sans title">AI drifts. Most agent workflows cannot hold it accountable.</text>
+  <text x="60" y="108" class="sans subtitle">Without a ledger and chain of custody, "done" is just another model claim.</text>
 
   <g transform="translate(40, 160)">
     <rect width="540" height="380" rx="10" class="card" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">The problem</text>
-    <text x="22" y="62" class="sans card-title">Agent work keeps failing in</text>
-    <text x="22" y="82" class="sans card-title">the same ways.</text>
+    <text x="22" y="62" class="sans card-title">Drift is common.</text>
+    <text x="22" y="82" class="sans card-title">Accountability is weak.</text>
     <line x1="22" y1="96" x2="518" y2="96" stroke="#30363d" stroke-width="1"/>
 
     <text x="22" y="126" class="sans body">&#8226; Silent narrowing: the ask shrinks and nobody sees where.</text>
@@ -45,7 +45,7 @@
     <text x="22" y="204" class="sans body">&#160;&#160;final code.</text>
     <text x="22" y="234" class="sans body">&#8226; Bad resume: the next session reads stale context and rebuilds</text>
     <text x="22" y="252" class="sans body">&#160;&#160;the wrong thing.</text>
-    <text x="22" y="282" class="sans body">&#8226; Cold-review failure: months later nobody can explain why a</text>
+    <text x="22" y="282" class="sans body">&#8226; No chain of custody: months later nobody can explain why a</text>
     <text x="22" y="300" class="sans body">&#160;&#160;file changed.</text>
 
     <rect x="22" y="322" width="496" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
@@ -55,21 +55,21 @@
   <g transform="translate(620, 160)">
     <rect width="540" height="380" rx="10" class="card-active" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">The solution</text>
-    <text x="22" y="62" class="sans card-title">Move the controls to where</text>
-    <text x="22" y="82" class="sans card-title">work actually happens.</text>
+    <text x="22" y="62" class="sans card-title">Add the ledger, the wall,</text>
+    <text x="22" y="82" class="sans card-title">and the chain of custody.</text>
     <line x1="22" y1="96" x2="518" y2="96" stroke="#8957e5" stroke-width="1" opacity="0.35"/>
 
     <text x="22" y="126" class="sans body">&#8226; Authorship: <tspan class="mono step-cmd">discuss &#8594; draft &#8594; review</tspan> freezes intent</text>
     <text x="22" y="144" class="sans body">&#160;&#160;before execution.</text>
     <text x="22" y="174" class="sans body">&#8226; Execution: phase-first runtime and a single on-disk ledger</text>
     <text x="22" y="192" class="sans body">&#160;&#160;survive session death.</text>
-    <text x="22" y="222" class="sans body">&#8226; Truth: verify, audit, report, ask-fidelity, carryover, and</text>
-    <text x="22" y="240" class="sans body">&#160;&#160;closure all land on disk.</text>
+    <text x="22" y="222" class="sans body">&#8226; Truth: verify, report, ask-fidelity, carryover, and closure</text>
+    <text x="22" y="240" class="sans body">&#160;&#160;all land on disk.</text>
     <text x="22" y="270" class="sans body">&#8226; Hook wall: unplanned edits and untyped deviations get blocked,</text>
     <text x="22" y="288" class="sans body">&#160;&#160;not politely discouraged.</text>
 
     <rect x="22" y="322" width="496" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
-    <text x="38" y="347" class="sans body">Keep your planner if you want. "Done" now has proof.</text>
+    <text x="38" y="347" class="sans body">Keep your planner if you want. What changes is accountability.</text>
   </g>
 
   <text x="60" y="598" class="sans footer">Prompts are advice. Hooks are walls.</text>
