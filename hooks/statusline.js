@@ -35,7 +35,7 @@ function readBaseCommand() {
 function looksLikePlanEnforcerWrapper(filePath) {
   try {
     const content = fs.readFileSync(filePath, 'utf8');
-    return /inferStatuslineState|ENFORCER:/i.test(content);
+    return /inferStatuslineState|PLAN_ENFORCER_STATUSLINE_CHAINED|statusline-state/i.test(content);
   } catch (_error) {
     return false;
   }
