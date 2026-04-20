@@ -458,7 +458,7 @@ if (!planFile) {
   if (hasDiscussPacket({ cwd: path.dirname(resolvedEnforcerDir) })) {
     writeNamedStatuslineStage('discuss', {
       cwd: path.dirname(resolvedEnforcerDir),
-      label: 'DISCUSS',
+      label: '1-DISCUSS',
       source: 'session-start'
     });
   } else {

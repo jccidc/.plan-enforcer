@@ -70,6 +70,6 @@ describe('user-message hook', () => {
 
     const statusline = JSON.parse(fs.readFileSync(statuslinePath, 'utf8'));
     assert.equal(statusline.stage, 'discuss');
-    assert.equal(statusline.label, 'DISCUSS');
+    assert.equal(statusline.label, '1-DISCUSS');
   });
 });

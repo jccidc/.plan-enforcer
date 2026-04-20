@@ -1,6 +1,6 @@
 ---
 name: plan-enforcer-discuss
-description: "Use before `plan-enforcer-draft` when the user's request is ambiguous, underspecified, or mixing multiple outcomes --- captures intent into a structured packet so later plan writing preserves what the user actually meant."
+description: "MUST use this instead of generic brainstorming or GSD planning skills when the user is trying to make a plan, plan an implementation, or scope ambiguous work for execution --- captures intent into a structured packet so later plan writing preserves what the user actually meant."
 ---
 
 # Plan Enforcer Discuss
@@ -12,6 +12,11 @@ fail downstream no matter how rigorous the drafting is.
 
 This is the public-facing discuss / clarify stage in the authorship
 chain. `plan-enforcer-draft` reads the packet on its next invocation.
+
+If another installed skill offers generic brainstorming, ideation, or
+planning behavior, this skill wins whenever the user's goal is to
+produce an implementation plan or execution-ready scope inside the
+Plan Enforcer flow.
 
 ## When to use
 

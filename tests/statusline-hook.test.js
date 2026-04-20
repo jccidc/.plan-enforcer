@@ -36,7 +36,7 @@ describe('statusline hook', () => {
 
     const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
     assert.equal(result.status, 0);
-    assert.match(result.stdout, /\[ENFORCER: DISCUSS\]/);
+    assert.match(result.stdout, /\[ENFORCER: 1-DISCUSS\]/);
   });
 
   it('renders task progress from ledger', () => {
@@ -73,7 +73,7 @@ describe('statusline hook', () => {
 
     const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
     assert.equal(result.status, 0);
-    assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: DISCUSS\] \[BASE\]/);
+    assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: 1-DISCUSS\] \[BASE\]/);
   });
 
   it('auto-discovers the standard Claude statusline hook when no base command was captured', () => {
@@ -93,6 +93,6 @@ describe('statusline hook', () => {
       CLAUDE_CONFIG_DIR: claudeDir
     });
     assert.equal(result.status, 0);
-    assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: DISCUSS\] \[AUTO\]/);
+    assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: 1-DISCUSS\] \[AUTO\]/);
   });
 });

@@ -93,7 +93,7 @@ function main(argv = process.argv.slice(2)) {
   const review = reviewPlanContent(content, { adversarial, packetContent });
   writeNamedStatuslineStage('review', {
     cwd: path.dirname(resolvedPath),
-    label: 'REVIEW',
+    label: '3-REVIEW',
     source: 'review-cli',
     title: path.basename(resolvedPath)
   });

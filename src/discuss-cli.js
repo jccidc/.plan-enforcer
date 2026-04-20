@@ -290,7 +290,7 @@ function writeDiscussPacket(packet, opts = {}) {
   });
   writeNamedStatuslineStage('discuss', {
     cwd: paths.projectRoot,
-    label: 'DISCUSS',
+    label: '1-DISCUSS',
     source: opts.source || 'discuss-cli',
     title: packet.title || slugTitle(packet.sourceAsk)
   });

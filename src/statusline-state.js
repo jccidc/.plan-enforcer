@@ -129,7 +129,7 @@ function inferStatuslineState(opts = {}) {
   const explicit = readStatuslineState(paths);
   if (explicit && explicit.stage && explicit.label) return explicit;
   if (hasDiscussPacket(paths)) {
-    return { stage: 'discuss', label: 'DISCUSS' };
+    return { stage: 'discuss', label: '1-DISCUSS' };
   }
   return null;
 }

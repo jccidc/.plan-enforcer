@@ -25,6 +25,6 @@ describe('discuss-cli', () => {
 
     const state = JSON.parse(fs.readFileSync(path.join(dir, '.plan-enforcer', 'statusline-state.json'), 'utf8'));
     assert.equal(state.stage, 'discuss');
-    assert.equal(state.label, 'DISCUSS');
+    assert.equal(state.label, '1-DISCUSS');
   });
 });
