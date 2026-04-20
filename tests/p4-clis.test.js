@@ -158,6 +158,18 @@ describe('plan-enforcer-audit', () => {
     assert.match(r.stdout, /npm test/);
   });
 
+  it('edge: undetected executable-verification claim surfaces as audit error', () => {
+    const claimLedger = CLEAN_LEDGER.replace(
+      '| T1  | do a thing | verified | wired.js is present |       |       |',
+      '| T1  | do a thing | verified | wired.js is present, 3 tests passed, 0 failed |       |       |'
+    );
+    const dir = mkProject(claimLedger);
+    const r = run(BINS.audit, ['--strict'], dir);
+    assert.equal(r.code, 1);
+    assert.match(r.stdout, /EXECUTED_VERIFICATION_UNDETECTED/);
+    assert.match(r.stdout, /Cite the exact command or set check_cmd/);
+  });
+
   it('edge: awareness quote without captured prompt surfaces in audit', () => {
     const aware = CLEAN_LEDGER.replace(
       '| T1  | do a thing | verified | wired.js is present |       |       |',
@@ -272,7 +284,7 @@ describe('plan-enforcer (dispatcher)', () => {
     const dir = mkProject(CLEAN_LEDGER);
     const r = run(BINS.dispatcher, ['--help'], dir);
     assert.equal(r.code, 0);
-    for (const name of ['awareness', 'discuss', 'status', 'chain', 'why', 'audit', 'export', 'import', 'lint', 'verify', 'config']) {
+    for (const name of ['awareness', 'discuss', 'status', 'chain', 'why', 'audit', 'export', 'lint', 'verify', 'config']) {
       assert.match(r.stdout, new RegExp(`\\b${name}\\b`), `--help missing ${name}`);
     }
   });

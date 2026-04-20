@@ -11,7 +11,8 @@ const { formatStatusReport, parseMetadata, parseTaskRows } = require('./ledger-p
 function buildNoActiveSessionMessage() {
   return [
     'No active Plan Enforcer session.',
-    'Start with `/plan-enforcer <plan-file>` or import an existing plan with `plan-enforcer import <plan-file>`.',
+    'Start with `plan-enforcer discuss "<ask>"` for a fuzzy request, or import an existing plan with `plan-enforcer import <plan-file>`.',
+    'Install uncertain? Run `plan-enforcer doctor`.',
     'Then inspect live progress with `plan-enforcer status` or `plan-enforcer report --active`.'
   ].join('\n');
 }

@@ -51,4 +51,25 @@ describe('user-message hook', () => {
     });
     assert.equal(fs.existsSync(path.join(dir, '.plan-enforcer', '.user-messages.jsonl')), false);
   });
+
+  it('bootstraps discuss packet and statusline state for a plan ask', () => {
+    const dir = mkProject();
+    runHook(dir, {
+      hook_event_name: 'UserPromptSubmit',
+      prompt: "let's make a plan for launch-safe install fixes"
+    });
+
+    const packetPath = path.join(dir, '.plan-enforcer', 'discuss.md');
+    const legacyPath = path.join(dir, '.plan-enforcer', 'combobulate.md');
+    const statuslinePath = path.join(dir, '.plan-enforcer', 'statusline-state.json');
+
+    assert.equal(fs.existsSync(packetPath), true);
+    assert.equal(fs.existsSync(legacyPath), true);
+    assert.equal(fs.existsSync(statuslinePath), true);
+    assert.match(fs.readFileSync(packetPath, 'utf8'), /launch-safe install fixes/i);
+
+    const statusline = JSON.parse(fs.readFileSync(statuslinePath, 'utf8'));
+    assert.equal(statusline.stage, 'discuss');
+    assert.equal(statusline.label, 'DISCUSS');
+  });
 });

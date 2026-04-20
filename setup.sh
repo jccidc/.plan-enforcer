@@ -72,7 +72,7 @@ install_skills_and_runtime() {
   mkdir -p "$SKILLS_DIR"
 
   log "Installing skills..."
-  for skill in plan-enforcer plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
+  for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
     local src="$src_root/skills/$skill"
     local dest="$SKILLS_DIR/$skill"
     if [[ ! -d "$src" ]]; then
@@ -87,7 +87,7 @@ install_skills_and_runtime() {
   local hooks_dest="$SKILLS_DIR/plan-enforcer/hooks"
   mkdir -p "$hooks_dest"
   log "Installing hooks..."
-  for hook in evidence-gate.js post-tool.js session-start.js session-end.js user-message.js chain-guard.js delete-guard.js ledger-schema-guard.js; do
+  for hook in evidence-gate.js post-tool.js session-start.js session-end.js statusline.js user-message.js chain-guard.js delete-guard.js ledger-schema-guard.js; do
     local src="$src_root/hooks/$hook"
     if [[ ! -f "$src" ]]; then
       log "Warning: $src not found, skipping"
@@ -100,7 +100,7 @@ install_skills_and_runtime() {
   local src_dest="$SKILLS_DIR/plan-enforcer/src"
   mkdir -p "$src_dest"
   log "Installing shared runtime modules..."
-  for module in archive.js audit.js audit-cli.js awareness-cli.js awareness-parser.js awareness.js chain.js chain-cli.js config-cli.js config.js evidence.js executed-verification.js export-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js phase-verify-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js report-cli.js review-cli.js schema-migrate.js status-cli.js tier.js verify-cli.js why.js why-cli.js; do
+  for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
     local src="$src_root/src/$module"
     if [[ ! -f "$src" ]]; then
       log "Warning: $src not found, skipping"
@@ -114,19 +114,45 @@ install_skills_and_runtime() {
 patch_settings_with_node() {
   local settings_file="$1"
   local hooks_dir="$2"
-  node - "$settings_file" "$hooks_dir" <<'NODEEOF'
+  local tier="$3"
+  node - "$settings_file" "$hooks_dir" "$tier" <<'NODEEOF'
 const fs = require('fs');
 const path = require('path');
 
 const settingsPath = process.argv[2];
 const hooksDir = process.argv[3];
+const tier = process.argv[4];
+const statuslineCmd = `node "${hooksDir}/statusline.js"`;
+const baseCommandPath = path.join(hooksDir, '.statusline-base-command');
 
 let settings = {};
 if (fs.existsSync(settingsPath)) {
   settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
 }
 
-settings.hooks = settings.hooks || {};
+const existingStatusline = (settings.statusLine && settings.statusLine.command) || '';
+if (existingStatusline && existingStatusline !== statuslineCmd && !/plan-enforcer[\\/].*hooks[\\/]statusline\.js/i.test(existingStatusline)) {
+  fs.mkdirSync(path.dirname(baseCommandPath), { recursive: true });
+  fs.writeFileSync(baseCommandPath, `${existingStatusline}\n`, 'utf8');
+}
+
+settings.statusLine = settings.statusLine || {};
+settings.statusLine.type = 'command';
+settings.statusLine.command = statuslineCmd;
+
+function addHook(event, command, extra) {
+  settings.hooks = settings.hooks || {};
+  settings.hooks[event] = settings.hooks[event] || [];
+  const existing = new Set();
+  for (const entry of settings.hooks[event]) {
+    for (const hook of entry.hooks || []) existing.add(hook.command || '');
+  }
+  if (!existing.has(command)) {
+    settings.hooks[event].push({
+      hooks: [Object.assign({ type: 'command', command }, extra || {})]
+    });
+  }
+}
 
 const sessionCmd = `node "${hooksDir}/session-start.js"`;
 const evidenceCmd = `node "${hooksDir}/evidence-gate.js"`;
@@ -137,153 +163,35 @@ const chainGuardCmd = `node "${hooksDir}/chain-guard.js"`;
 const deleteGuardCmd = `node "${hooksDir}/delete-guard.js"`;
 const ledgerSchemaGuardCmd = `node "${hooksDir}/ledger-schema-guard.js"`;
 
-settings.hooks.SessionStart = settings.hooks.SessionStart || [];
-const existingSessionCmds = new Set();
-for (const entry of settings.hooks.SessionStart) {
-  for (const hook of entry.hooks || []) existingSessionCmds.add(hook.command || '');
+if (tier === 'structural' || tier === 'enforced') {
+  addHook('SessionStart', sessionCmd, { statusMessage: 'Plan Enforcer: checking for active plan...' });
+  addHook('UserPromptSubmit', userPromptCmd);
 }
-if (!existingSessionCmds.has(sessionCmd)) {
-  settings.hooks.SessionStart.push({
-    hooks: [{
-      type: 'command',
-      command: sessionCmd,
-      statusMessage: 'Plan Enforcer: checking for active plan...'
-    }]
-  });
+if (tier === 'enforced') {
+  addHook('PostToolUse', evidenceCmd);
+  addHook('PostToolUse', postCmd);
+  addHook('SessionEnd', endCmd);
+  addHook('PreToolUse', chainGuardCmd);
+  addHook('PreToolUse', deleteGuardCmd);
+  addHook('PreToolUse', ledgerSchemaGuardCmd);
 }
-
-settings.hooks.PostToolUse = settings.hooks.PostToolUse || [];
-const existingPostCmds = new Set();
-for (const entry of settings.hooks.PostToolUse) {
-  for (const hook of entry.hooks || []) existingPostCmds.add(hook.command || '');
-}
-if (!existingPostCmds.has(evidenceCmd)) {
-  settings.hooks.PostToolUse.push({
-    hooks: [{
-      type: 'command',
-      command: evidenceCmd
-    }]
-  });
-}
-
-settings.hooks.UserPromptSubmit = settings.hooks.UserPromptSubmit || [];
-const existingPromptCmds = new Set();
-for (const entry of settings.hooks.UserPromptSubmit) {
-  for (const hook of entry.hooks || []) existingPromptCmds.add(hook.command || '');
-}
-if (!existingPromptCmds.has(userPromptCmd)) {
-  settings.hooks.UserPromptSubmit.push({
-    hooks: [{
-      type: 'command',
-      command: userPromptCmd
-    }]
-  });
-}
-if (!existingPostCmds.has(postCmd)) {
-  settings.hooks.PostToolUse.push({
-    hooks: [{
-      type: 'command',
-      command: postCmd
-    }]
-  });
-}
-
-function addPreTool(command) {
-  settings.hooks.PreToolUse = settings.hooks.PreToolUse || [];
-  const existing = new Set();
-  for (const entry of settings.hooks.PreToolUse) {
-    for (const hook of entry.hooks || []) existing.add(hook.command || '');
-  }
-  if (!existing.has(command)) {
-    settings.hooks.PreToolUse.push({
-      hooks: [{
-        type: 'command',
-        command
-      }]
-    });
-  }
-}
-
-settings.hooks.SessionEnd = settings.hooks.SessionEnd || [];
-const existingEndCmds = new Set();
-for (const entry of settings.hooks.SessionEnd) {
-  for (const hook of entry.hooks || []) existingEndCmds.add(hook.command || '');
-}
-if (!existingEndCmds.has(endCmd)) {
-  settings.hooks.SessionEnd.push({
-    hooks: [{
-      type: 'command',
-      command: endCmd
-    }]
-  });
-}
-
-addPreTool(chainGuardCmd);
-addPreTool(deleteGuardCmd);
-addPreTool(ledgerSchemaGuardCmd);
 
 fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-console.log(`  SessionStart: ${sessionCmd}`);
-console.log(`  UserPromptSubmit: ${userPromptCmd}`);
-console.log(`  PostToolUse:  ${evidenceCmd}`);
-console.log(`  PostToolUse:  ${postCmd}`);
-console.log(`  SessionEnd:   ${endCmd}`);
-console.log(`  PreToolUse:   ${chainGuardCmd}`);
-console.log(`  PreToolUse:   ${deleteGuardCmd}`);
-console.log(`  PreToolUse:   ${ledgerSchemaGuardCmd}`);
-NODEEOF
+console.log(`  statusLine: ${statuslineCmd}`);
+if (tier === 'structural') {
+  console.log(`  SessionStart: ${sessionCmd}`);
+  console.log(`  UserPromptSubmit: ${userPromptCmd}`);
+} else if (tier === 'enforced') {
+  console.log(`  SessionStart: ${sessionCmd}`);
+  console.log(`  UserPromptSubmit: ${userPromptCmd}`);
+  console.log(`  PostToolUse:  ${evidenceCmd}`);
+  console.log(`  PostToolUse:  ${postCmd}`);
+  console.log(`  SessionEnd:   ${endCmd}`);
+  console.log(`  PreToolUse:   ${chainGuardCmd}`);
+  console.log(`  PreToolUse:   ${deleteGuardCmd}`);
+  console.log(`  PreToolUse:   ${ledgerSchemaGuardCmd}`);
 }
-
-patch_statusline_with_node() {
-  local statusline_path="$1"
-  node - "$statusline_path" <<'NODEEOF'
-const fs = require('fs');
-
-const statuslinePath = process.argv[2];
-if (!fs.existsSync(statuslinePath)) {
-  console.log('  No GSD statusline found, skipping badge patch');
-  process.exit(0);
-}
-
-let content = fs.readFileSync(statuslinePath, 'utf8');
-if (content.includes('Plan Enforcer badge')) {
-  console.log('  Statusline already has [ENFORCER] badge');
-  process.exit(0);
-}
-
-const badgeCode = `
-    // Plan Enforcer badge - active when .plan-enforcer/ledger.md exists in cwd
-    let enforcerBadge = '';
-    const ledgerPath = path.join(dir, '.plan-enforcer', 'ledger.md');
-    if (fs.existsSync(ledgerPath)) {
-      try {
-        const ledger = fs.readFileSync(ledgerPath, 'utf8');
-        const allTasks = (ledger.match(/^\\|\\s*T\\d+/gm) || []).length;
-        const pending = (ledger.match(/\\|\\s*pending\\s*\\|/gm) || []).length;
-        const inProg = (ledger.match(/\\|\\s*in-progress\\s*\\|/gm) || []).length;
-        const remaining = pending + inProg;
-        const done = allTasks - remaining;
-        if (remaining === 0 && allTasks > 0) {
-          enforcerBadge = \`\\x1b[1;32m[ENFORCER \${done}/\${allTasks} OK]\\x1b[0m | \`;
-        } else {
-          enforcerBadge = \`\\x1b[1;36m[ENFORCER \${done}/\${allTasks}]\\x1b[0m | \`;
-        }
-      } catch (error) {
-        enforcerBadge = '\\x1b[1;36m[ENFORCER]\\x1b[0m | ';
-      }
-    }
-`;
-
-if (!content.includes('// Output')) {
-  console.log('  WARNING: Could not find "// Output" marker in statusline, manual patch needed');
-  process.exit(0);
-}
-
-content = content.replace('// Output', `${badgeCode}\n    // Output`);
-content = content.replace('${cavemanBadge}${gsdUpdate}', '${cavemanBadge}${enforcerBadge}${gsdUpdate}');
-fs.writeFileSync(statuslinePath, content);
-console.log('  Statusline patched with [ENFORCER] badge');
 NODEEOF
 }
 
@@ -310,14 +218,20 @@ install_skills_and_runtime "$SRC_ROOT"
 log "Configuring hooks..."
 if command -v node >/dev/null 2>&1; then
   HOOKS_DIR="$SKILLS_DIR/plan-enforcer/hooks"
-  patch_settings_with_node "$SETTINGS_PATH" "$HOOKS_DIR"
-  patch_statusline_with_node "$HOME/.claude/hooks/gsd-statusline.js"
+  patch_settings_with_node "$SETTINGS_PATH" "$HOOKS_DIR" "$TIER"
 else
   log "WARNING: node not found, cannot patch settings.json automatically."
-  log "Add hooks manually under $SETTINGS_PATH"
+  log "Add statusLine + hook settings manually under $SETTINGS_PATH"
 fi
 
 write_config
+
+HOOKS_SUMMARY="statusLine"
+if [[ "$TIER" == "structural" ]]; then
+  HOOKS_SUMMARY="statusLine + SessionStart + UserPromptSubmit"
+elif [[ "$TIER" == "enforced" ]]; then
+  HOOKS_SUMMARY="statusLine + SessionStart + UserPromptSubmit + PreToolUse + PostToolUse + SessionEnd"
+fi
 
 echo ""
 echo "============================================"
@@ -325,12 +239,14 @@ echo " Plan Enforcer installed!"
 echo "============================================"
 echo ""
 echo "  Skills:     $SKILLS_DIR/plan-enforcer*/"
-echo "  Hooks:      SessionStart + PreToolUse + PostToolUse + SessionEnd"
+echo "  Hooks:      $HOOKS_SUMMARY"
 echo "  Settings:   $SETTINGS_PATH"
 echo "  Tier:       $TIER"
 echo "  Config:     .plan-enforcer/config.md"
 echo ""
 echo "  Commands:"
+echo "    plan-enforcer doctor"
+echo "    plan-enforcer discuss \"your ask\""
 echo "    plan-enforcer-review <plan-file>"
 echo "    plan-enforcer-status [ledger-file]"
 echo "    plan-enforcer-logs [ledger-file]"

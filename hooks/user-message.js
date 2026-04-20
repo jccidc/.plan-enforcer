@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { createEmptyPacket, slugTitle, writeDiscussPacket } = require('../src/discuss-cli');
 
 function readContext() {
   try {
@@ -64,6 +65,30 @@ function resolveProjectRoot(cwd) {
   return findUpEnforcerDir(cwd) || findDownEnforcerDir(cwd, 3);
 }
 
+function hasActiveLedger(projectRoot) {
+  return fs.existsSync(path.join(projectRoot, '.plan-enforcer', 'ledger.md'));
+}
+
+function shouldBootstrapDiscuss(prompt) {
+  const normalized = String(prompt || '').trim().toLowerCase();
+  if (!normalized) return false;
+  return [
+    /\blet'?s\s+(make|create|draft|start)\s+(a\s+)?plan\b/,
+    /\b(make|create|draft|start)\s+(a\s+)?plan\b/,
+    /\b(help me|can you)\s+(make|create|draft)\s+(a\s+)?plan\b/,
+    /\bplan this\b/,
+    /\bfigure out a plan\b/
+  ].some((pattern) => pattern.test(normalized));
+}
+
+function bootstrapDiscuss(projectRoot, prompt) {
+  if (!shouldBootstrapDiscuss(prompt) || hasActiveLedger(projectRoot)) return;
+  writeDiscussPacket(createEmptyPacket(prompt, slugTitle(prompt)), {
+    cwd: projectRoot,
+    source: 'user-message'
+  });
+}
+
 function countExistingMessages(filePath) {
   if (!fs.existsSync(filePath)) return 0;
   try {
@@ -102,6 +127,10 @@ function main() {
 
   try {
     fs.appendFileSync(logPath, `${JSON.stringify(record)}\n`);
+  } catch (_e) {}
+
+  try {
+    bootstrapDiscuss(projectRoot, prompt);
   } catch (_e) {}
 }
 

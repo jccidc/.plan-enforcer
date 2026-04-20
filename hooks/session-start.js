@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const { parseLedger, parseMetadata, parseTaskRows } = require('../src/ledger-parser');
 const { extractTasks, findPlanFile, generateLedger } = require('../src/plan-detector');
 const { readConfig } = require('../src/config');
+const { clearStatuslineState, hasDiscussPacket, writeNamedStatuslineStage, writeTaskStatuslineState } = require('../src/statusline-state');
 
 function ledgerHash(content) {
   return crypto.createHash('sha256').update(content || '').digest('hex').slice(0, 8);
@@ -437,9 +438,14 @@ try {
 } catch (e) { /* non-fatal */ }
 
 if (fs.existsSync(resolvedLedgerPath)) {
+  const activeLedger = fs.readFileSync(resolvedLedgerPath, 'utf8');
   const config = readConfig(resolvedConfigPath);
+  writeTaskStatuslineState(activeLedger, {
+    cwd: path.dirname(resolvedEnforcerDir),
+    source: 'session-start'
+  });
   process.stdout.write(buildActiveOutput(
-    fs.readFileSync(resolvedLedgerPath, 'utf8'),
+    activeLedger,
     tier,
     resolvedLedgerPath,
     config.completion_gate || 'soft'
@@ -449,6 +455,15 @@ if (fs.existsSync(resolvedLedgerPath)) {
 
 const planFile = findPlanFile(cwd);
 if (!planFile) {
+  if (hasDiscussPacket({ cwd: path.dirname(resolvedEnforcerDir) })) {
+    writeNamedStatuslineStage('discuss', {
+      cwd: path.dirname(resolvedEnforcerDir),
+      label: 'DISCUSS',
+      source: 'session-start'
+    });
+  } else {
+    clearStatuslineState({ cwd });
+  }
   process.exit(0);
 }
 
@@ -460,6 +475,7 @@ if (fs.existsSync(archiveDir)) {
     for (const af of archives) {
       const ac = fs.readFileSync(path.join(archiveDir, af), 'utf8');
       if (archiveMatchesPlan(ac, planFile)) {
+        clearStatuslineState({ cwd });
         process.exit(0); // Already completed — don't re-activate
       }
     }
@@ -476,6 +492,10 @@ if (tasks.length === 0) {
 fs.mkdirSync(resolvedEnforcerDir, { recursive: true });
 const freshLedger = generateLedger(planFile, tasks, tier);
 fs.writeFileSync(path.join(resolvedEnforcerDir, 'ledger.md'), freshLedger);
+writeTaskStatuslineState(freshLedger, {
+  cwd: path.dirname(resolvedEnforcerDir),
+  source: 'session-start'
+});
 
 if (!fs.existsSync(resolvedConfigPath)) {
   fs.writeFileSync(resolvedConfigPath, `---\ntier: ${tier}\nreconcile_interval: 25\nstale_threshold: 10\ncompletion_gate: soft\nledger_path: .plan-enforcer/ledger.md\n---\n`);

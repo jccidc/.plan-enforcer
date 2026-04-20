@@ -107,7 +107,7 @@ function archiveLedger(enforcerDir, ledgerContent, stats, tier, now) {
  * @param {string} enforcerDir - Absolute path to .plan-enforcer/
  */
 function cleanupWorkingFiles(enforcerDir) {
-  const files = ['ledger.md', '.tool-count', '.stale-count', '.ledger-mtime', '.activated'];
+  const files = ['ledger.md', '.tool-count', '.stale-count', '.ledger-mtime', '.activated', 'statusline-state.json'];
   for (const fileName of files) {
     try {
       fs.unlinkSync(path.join(enforcerDir, fileName));
@@ -149,6 +149,13 @@ function parseArchiveFile(archivePath) {
       phaseVerdict = JSON.parse(fs.readFileSync(verdictJsonPath, 'utf8'));
     } catch (_e) {}
   }
+  const expectedTruthManifestPath = `${archivePath}.final-truth.json`;
+  let truthManifest = null;
+  if (fs.existsSync(expectedTruthManifestPath)) {
+    try {
+      truthManifest = JSON.parse(fs.readFileSync(expectedTruthManifestPath, 'utf8'));
+    } catch (_e) {}
+  }
 
   return {
     path: archivePath,
@@ -163,6 +170,9 @@ function parseArchiveFile(archivePath) {
     result: metadata.result || 'unknown',
     completed: metadata.completed || 'unknown',
     phaseVerdict,
+    truthManifest,
+    expectedTruthManifestPath,
+    truthManifestPath: fs.existsSync(expectedTruthManifestPath) ? expectedTruthManifestPath : null,
     verdictJsonPath: fs.existsSync(verdictJsonPath) ? verdictJsonPath : null,
     verdictReportPath: fs.existsSync(verdictReportPath) ? verdictReportPath : null
   };
@@ -206,24 +216,86 @@ function resolveEnforcerDirFromArchiveTarget(targetPath) {
   return path.basename(parent) === '.plan-enforcer' ? parent : null;
 }
 
+function toProjectRelativeRef(targetPath, enforcerDir) {
+  if (!targetPath || !enforcerDir) return null;
+  const projectRoot = path.dirname(enforcerDir);
+  return path.relative(projectRoot, targetPath).replace(/\\/g, '/');
+}
+
+function buildArchiveTruthManifest(archivePath) {
+  const report = parseArchiveFile(archivePath);
+  const enforcerDir = resolveEnforcerDirFromArchiveTarget(archivePath);
+  const checksRoot = enforcerDir ? path.join(enforcerDir, 'checks') : null;
+  const awarenessPath = enforcerDir ? path.join(enforcerDir, 'awareness.md') : null;
+
+  return {
+    schema: 'v1',
+    archived_at: report.completed,
+    source_plan: report.source,
+    tier: report.tier,
+    result: report.result,
+    counts: {
+      total_tasks: report.ledger.total,
+      verified: report.ledger.counts.verified,
+      done_unverified: report.ledger.counts.done,
+      remaining: report.ledger.remaining,
+      drift: report.ledger.drift,
+      decisions: report.decisions.length,
+      reconciliations: report.reconciliations.length
+    },
+    truth_surfaces: {
+      archive_markdown: enforcerDir ? toProjectRelativeRef(report.path, enforcerDir) : report.name,
+      phase_verdict_json: report.verdictJsonPath ? (enforcerDir ? toProjectRelativeRef(report.verdictJsonPath, enforcerDir) : path.basename(report.verdictJsonPath)) : null,
+      phase_verdict_report: report.verdictReportPath ? (enforcerDir ? toProjectRelativeRef(report.verdictReportPath, enforcerDir) : path.basename(report.verdictReportPath)) : null,
+      checks_root: checksRoot ? toProjectRelativeRef(checksRoot, enforcerDir) : null
+    },
+    lineage_roots: {
+      source_plan: report.source,
+      awareness: awarenessPath ? toProjectRelativeRef(awarenessPath, enforcerDir) : null
+    }
+  };
+}
+
+function writeArchiveTruthManifest(archivePath) {
+  const manifestPath = `${archivePath}.final-truth.json`;
+  const manifest = buildArchiveTruthManifest(archivePath);
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+  return { manifestPath, manifest };
+}
+
+function formatStoredRef(ref) {
+  return String(ref || '').replace(/\\/g, '/');
+}
+
 function buildArchiveTruthSections(targetPath, focusReport) {
   if (!focusReport) return [];
 
   const lines = ['', 'Final truth:'];
   lines.push(`  archive: ${formatDisplayPath(focusReport.path)}`);
+  const truthManifestPath = focusReport.truthManifestPath || focusReport.expectedTruthManifestPath;
+  lines.push(`  final truth manifest: ${formatDisplayPath(truthManifestPath)}${focusReport.truthManifestPath ? '' : ' (not written yet)'}`);
   lines.push(`  phase verify report: ${focusReport.verdictReportPath ? formatDisplayPath(focusReport.verdictReportPath) : 'none yet'}`);
 
   const enforcerDir = resolveEnforcerDirFromArchiveTarget(targetPath);
+  const checksRoot = focusReport.truthManifest && focusReport.truthManifest.truth_surfaces
+    ? focusReport.truthManifest.truth_surfaces.checks_root
+    : null;
   if (enforcerDir) {
     const checksDir = path.join(enforcerDir, 'checks');
-    lines.push(`  checks root: ${formatDisplayPath(checksDir)}${fs.existsSync(checksDir) ? '' : ' (none yet)'}`);
+    lines.push(`  checks root: ${checksRoot ? formatStoredRef(checksRoot) : `${formatDisplayPath(checksDir)}${fs.existsSync(checksDir) ? '' : ' (none yet)'}`}`);
   }
 
   lines.push('', 'Lineage roots:');
-  lines.push(`  source plan: ${focusReport.source}`);
+  const sourcePlan = focusReport.truthManifest && focusReport.truthManifest.lineage_roots
+    ? focusReport.truthManifest.lineage_roots.source_plan
+    : focusReport.source;
+  lines.push(`  source plan: ${sourcePlan}`);
+  const awarenessRef = focusReport.truthManifest && focusReport.truthManifest.lineage_roots
+    ? focusReport.truthManifest.lineage_roots.awareness
+    : null;
   if (enforcerDir) {
     const awarenessPath = path.join(enforcerDir, 'awareness.md');
-    lines.push(`  awareness: ${formatDisplayPath(awarenessPath)}${fs.existsSync(awarenessPath) ? '' : ' (missing)'}`);
+    lines.push(`  awareness: ${awarenessRef ? formatStoredRef(awarenessRef) : `${formatDisplayPath(awarenessPath)}${fs.existsSync(awarenessPath) ? '' : ' (missing)'}`}`);
   }
   return lines;
 }
@@ -319,6 +391,7 @@ function formatArchiveReport(targetPath) {
 }
 
 module.exports = {
+  buildArchiveTruthManifest,
   buildArchiveFilename,
   buildFrontmatter,
   archiveLedger,
@@ -327,6 +400,7 @@ module.exports = {
   listArchiveReports,
   parseArchiveFile,
   parseArchiveFrontmatter,
+  writeArchiveTruthManifest,
   summarizeArchiveReports,
   pickFocusReport
 };

@@ -5,28 +5,25 @@ set -euo pipefail
 # Cross-platform: Linux, macOS, Git Bash (Windows)
 
 SKILLS_DIR="$HOME/.claude/skills"
-
-echo "Removing skills..."
-for skill in plan-enforcer plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
-  target="$SKILLS_DIR/$skill"
-  if [[ -d "$target" ]]; then
-    rm -rf "$target"
-    echo "  Removed $target"
-  fi
-done
+STATUSLINE_BASE="$SKILLS_DIR/plan-enforcer/hooks/.statusline-base-command"
+SKILLS_REMOVED=0
+HOOK_SETTINGS_CLEANED=0
 
 remove_hooks_node() {
   local settings_file="$1"
+  local base_command_file="$2"
   if [[ ! -f "$settings_file" ]]; then
     return
   fi
 
-  echo "Cleaning hooks from $settings_file..."
-  node - "$settings_file" <<'NODEEOF'
+  local result
+  result="$(node - "$settings_file" "$base_command_file" <<'NODEEOF'
 const fs = require('fs');
 
 const settingsPath = process.argv[2];
+const baseCommandPath = process.argv[3];
 const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+const baseCommand = fs.existsSync(baseCommandPath) ? fs.readFileSync(baseCommandPath, 'utf8').trim() : '';
 
 let changed = false;
 if (settings.hooks && typeof settings.hooks === 'object') {
@@ -52,13 +49,27 @@ if (settings.hooks && typeof settings.hooks === 'object') {
   }
 }
 
+if (settings.statusLine && /plan-enforcer[\\/].*hooks[\\/]statusline\.js/i.test(settings.statusLine.command || '')) {
+  if (baseCommand) {
+    settings.statusLine.type = 'command';
+    settings.statusLine.command = baseCommand;
+  } else {
+    delete settings.statusLine;
+  }
+  changed = true;
+}
+
 if (changed) {
   fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-  console.log(`  Removed plan-enforcer hooks from ${settingsPath}`);
+  process.stdout.write('changed');
 } else {
-  console.log(`  No plan-enforcer hooks found in ${settingsPath}`);
+  process.stdout.write('unchanged');
 }
 NODEEOF
+)"
+  if [[ "$result" == "changed" ]]; then
+    HOOK_SETTINGS_CLEANED=$((HOOK_SETTINGS_CLEANED + 1))
+  fi
 }
 
 GLOBAL_SETTINGS="$HOME/.claude/settings.json"
@@ -66,11 +77,20 @@ PROJECT_SETTINGS="$(pwd)/.claude/settings.json"
 
 for settings_file in "$GLOBAL_SETTINGS" "$PROJECT_SETTINGS"; do
   if [[ -f "$settings_file" ]]; then
-    remove_hooks_node "$settings_file"
+    remove_hooks_node "$settings_file" "$STATUSLINE_BASE"
+  fi
+done
+
+for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
+  target="$SKILLS_DIR/$skill"
+  if [[ -d "$target" ]]; then
+    rm -rf "$target"
+    SKILLS_REMOVED=$((SKILLS_REMOVED + 1))
   fi
 done
 
 echo ""
 echo "Plan Enforcer uninstalled."
-echo ".plan-enforcer/ directory preserved (contains ledger history)."
-echo "Remove manually if desired."
+echo "  skills removed: ${SKILLS_REMOVED}"
+echo "  settings cleaned: ${HOOK_SETTINGS_CLEANED}"
+echo "  preserved: .plan-enforcer/ history"

@@ -9,6 +9,13 @@ SKILLS_DIR="$HOME/.claude/skills"
 TIER="structural"
 SCOPE="project"
 SETTINGS_PATH=""
+STATUSLINE_FALLBACK="$HOME/.claude/settings.json"
+SKILLS_INSTALLED=0
+SKILLS_SKIPPED=0
+HOOKS_COPIED=0
+HOOKS_SKIPPED=0
+MODULES_COPIED=0
+MODULES_SKIPPED=0
 
 usage() {
   cat <<'USAGE'
@@ -60,43 +67,43 @@ fi
 
 mkdir -p "$SKILLS_DIR"
 
-echo "Installing skills..."
-for skill in plan-enforcer plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
+for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
   src="$SCRIPT_DIR/skills/$skill"
   dest="$SKILLS_DIR/$skill"
   if [[ ! -d "$src" ]]; then
     echo "Warning: $src not found, skipping"
+    SKILLS_SKIPPED=$((SKILLS_SKIPPED + 1))
     continue
   fi
   rm -rf "$dest"
   cp -r "$src" "$dest"
-  echo "  $dest"
+  SKILLS_INSTALLED=$((SKILLS_INSTALLED + 1))
 done
 
 HOOKS_DEST="$SKILLS_DIR/plan-enforcer/hooks"
 mkdir -p "$HOOKS_DEST"
-echo "Installing hooks..."
-for hook in evidence-gate.js post-tool.js session-start.js session-end.js user-message.js chain-guard.js delete-guard.js ledger-schema-guard.js; do
+for hook in evidence-gate.js post-tool.js session-start.js session-end.js statusline.js user-message.js chain-guard.js delete-guard.js ledger-schema-guard.js; do
   src="$SCRIPT_DIR/hooks/$hook"
   if [[ ! -f "$src" ]]; then
     echo "Warning: $src not found, skipping"
+    HOOKS_SKIPPED=$((HOOKS_SKIPPED + 1))
     continue
   fi
   cp "$src" "$HOOKS_DEST/$hook"
-  echo "  $HOOKS_DEST/$hook"
+  HOOKS_COPIED=$((HOOKS_COPIED + 1))
 done
 
 SRC_DEST="$SKILLS_DIR/plan-enforcer/src"
 mkdir -p "$SRC_DEST"
-echo "Installing shared runtime modules..."
-for module in archive.js audit.js audit-cli.js awareness-cli.js awareness-parser.js awareness.js chain.js chain-cli.js config-cli.js config.js evidence.js executed-verification.js export-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js phase-verify-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js report-cli.js review-cli.js schema-migrate.js status-cli.js tier.js verify-cli.js why.js why-cli.js; do
+for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
   src="$SCRIPT_DIR/src/$module"
   if [[ ! -f "$src" ]]; then
     echo "Warning: $src not found, skipping"
+    MODULES_SKIPPED=$((MODULES_SKIPPED + 1))
     continue
   fi
   cp "$src" "$SRC_DEST/$module"
-  echo "  $SRC_DEST/$module"
+  MODULES_COPIED=$((MODULES_COPIED + 1))
 done
 
 # Hook staleness marker: record the commit SHA of the repo copy we just
@@ -109,23 +116,95 @@ if command -v git &>/dev/null && [[ -d "$SCRIPT_DIR/.git" ]]; then
 fi
 if [[ -n "$REPO_SHA" ]]; then
   echo "$REPO_SHA" > "$SKILLS_DIR/plan-enforcer/.installed-from"
-  echo "Installed from repo commit: $REPO_SHA"
 fi
 
-merge_with_node_session_only() {
+configure_statusline_only() {
   local settings_file="$1"
   local hooks_dir="$2"
-  node - "$settings_file" "$hooks_dir" <<'NODEEOF'
+  local fallback_settings="$3"
+  node - "$settings_file" "$hooks_dir" "$fallback_settings" <<'NODEEOF'
 const fs = require('fs');
+const path = require('path');
 
 const settingsPath = process.argv[2];
 const hooksDir = process.argv[3];
+const fallbackSettingsPath = process.argv[4];
+const statuslineCmd = `node "${hooksDir}/statusline.js"`;
+const baseCommandPath = path.join(hooksDir, '.statusline-base-command');
+
+function loadSettings(filePath) {
+  if (!filePath || filePath === settingsPath || !fs.existsSync(filePath)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch (_error) {
+    return {};
+  }
+}
 
 let settings = {};
 if (fs.existsSync(settingsPath)) {
   settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
 }
+const fallbackSettings = loadSettings(fallbackSettingsPath);
+const existingStatusline = (settings.statusLine && settings.statusLine.command)
+  || (fallbackSettings.statusLine && fallbackSettings.statusLine.command)
+  || '';
 
+if (existingStatusline && existingStatusline !== statuslineCmd && !/plan-enforcer[\\/].*hooks[\\/]statusline\.js/i.test(existingStatusline)) {
+  fs.mkdirSync(path.dirname(baseCommandPath), { recursive: true });
+  fs.writeFileSync(baseCommandPath, `${existingStatusline}\n`, 'utf8');
+}
+
+settings.statusLine = settings.statusLine || {};
+settings.statusLine.type = 'command';
+settings.statusLine.command = statuslineCmd;
+
+fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
+fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+console.log(`  statusLine: ${statuslineCmd}`);
+NODEEOF
+}
+
+merge_with_node_session_only() {
+  local settings_file="$1"
+  local hooks_dir="$2"
+  local fallback_settings="$3"
+  node - "$settings_file" "$hooks_dir" "$fallback_settings" <<'NODEEOF'
+const fs = require('fs');
+const path = require('path');
+
+const settingsPath = process.argv[2];
+const hooksDir = process.argv[3];
+const fallbackSettingsPath = process.argv[4];
+const statuslineCmd = `node "${hooksDir}/statusline.js"`;
+const baseCommandPath = path.join(hooksDir, '.statusline-base-command');
+
+function loadSettings(filePath) {
+  if (!filePath || filePath === settingsPath || !fs.existsSync(filePath)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch (_error) {
+    return {};
+  }
+}
+
+let settings = {};
+if (fs.existsSync(settingsPath)) {
+  settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+}
+const fallbackSettings = loadSettings(fallbackSettingsPath);
+const existingStatusline = (settings.statusLine && settings.statusLine.command)
+  || (fallbackSettings.statusLine && fallbackSettings.statusLine.command)
+  || '';
+
+if (existingStatusline && existingStatusline !== statuslineCmd && !/plan-enforcer[\\/].*hooks[\\/]statusline\.js/i.test(existingStatusline)) {
+  fs.mkdirSync(path.dirname(baseCommandPath), { recursive: true });
+  fs.writeFileSync(baseCommandPath, `${existingStatusline}\n`, 'utf8');
+}
+
+settings.statusLine = settings.statusLine || {};
+settings.statusLine.type = 'command';
+settings.statusLine.command = statuslineCmd;
 settings.hooks = settings.hooks || {};
 
 const sessionCmd = `node "${hooksDir}/session-start.js"`;
@@ -160,28 +239,54 @@ if (!existingPromptCmds.has(userPromptCmd)) {
   });
 }
 
-fs.mkdirSync(require('path').dirname(settingsPath), { recursive: true });
+fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-console.log(`  SessionStart: ${sessionCmd}`);
-console.log(`  UserPromptSubmit: ${userPromptCmd}`);
-console.log(`  (PostToolUse skipped - structural tier)`);
+console.log(`  statusLine: ${statuslineCmd}`);
+console.log(`  updated hooks in ${settingsPath}`);
+console.log('  enabled: SessionStart, UserPromptSubmit');
 NODEEOF
 }
 
 merge_with_node() {
   local settings_file="$1"
   local hooks_dir="$2"
-  node - "$settings_file" "$hooks_dir" <<'NODEEOF'
+  local fallback_settings="$3"
+  node - "$settings_file" "$hooks_dir" "$fallback_settings" <<'NODEEOF'
 const fs = require('fs');
+const path = require('path');
 
 const settingsPath = process.argv[2];
 const hooksDir = process.argv[3];
+const fallbackSettingsPath = process.argv[4];
+const statuslineCmd = `node "${hooksDir}/statusline.js"`;
+const baseCommandPath = path.join(hooksDir, '.statusline-base-command');
+
+function loadSettings(filePath) {
+  if (!filePath || filePath === settingsPath || !fs.existsSync(filePath)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch (_error) {
+    return {};
+  }
+}
 
 let settings = {};
 if (fs.existsSync(settingsPath)) {
   settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
 }
+const fallbackSettings = loadSettings(fallbackSettingsPath);
+const existingStatusline = (settings.statusLine && settings.statusLine.command)
+  || (fallbackSettings.statusLine && fallbackSettings.statusLine.command)
+  || '';
 
+if (existingStatusline && existingStatusline !== statuslineCmd && !/plan-enforcer[\\/].*hooks[\\/]statusline\.js/i.test(existingStatusline)) {
+  fs.mkdirSync(path.dirname(baseCommandPath), { recursive: true });
+  fs.writeFileSync(baseCommandPath, `${existingStatusline}\n`, 'utf8');
+}
+
+settings.statusLine = settings.statusLine || {};
+settings.statusLine.type = 'command';
+settings.statusLine.command = statuslineCmd;
 settings.hooks = settings.hooks || {};
 
 const sessionCmd = `node "${hooksDir}/session-start.js"`;
@@ -214,16 +319,11 @@ addHook('PreToolUse', chainGuardCmd);
 addHook('PreToolUse', deleteGuardCmd);
 addHook('PreToolUse', ledgerSchemaGuardCmd);
 
-fs.mkdirSync(require('path').dirname(settingsPath), { recursive: true });
+fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-console.log(`  SessionStart: ${sessionCmd}`);
-console.log(`  UserPromptSubmit: ${userPromptCmd}`);
-console.log(`  PostToolUse:  ${evidenceCmd}`);
-console.log(`  PreToolUse:   ${chainGuardCmd}`);
-console.log(`  PreToolUse:   ${deleteGuardCmd}`);
-console.log(`  PreToolUse:   ${ledgerSchemaGuardCmd}`);
-console.log(`  PostToolUse:  ${postCmd}`);
-console.log(`  SessionEnd:   ${endCmd}`);
+console.log(`  statusLine: ${statuslineCmd}`);
+console.log(`  updated hooks in ${settingsPath}`);
+console.log('  enabled: SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, SessionEnd');
 NODEEOF
 }
 
@@ -231,30 +331,50 @@ HOOKS_INSTALLED="not installed"
 HOOKS_DIR_ESCAPED=$(echo "$HOOKS_DEST" | sed 's/\\/\\\\/g')
 
 if [[ "$TIER" == "advisory" ]]; then
-  echo "Advisory tier: no hooks installed (skill-only guidance)"
+  echo "Hook install skipped: advisory tier"
   HOOKS_INSTALLED="none (advisory tier)"
-elif command -v node &>/dev/null; then
-  echo "Installing hooks into settings.json..."
-  if [[ "$TIER" == "structural" ]]; then
+fi
+
+if command -v node &>/dev/null; then
+  if [[ "$TIER" == "advisory" ]]; then
+    configure_statusline_only "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
+    HOOKS_INSTALLED="statusLine -> $SETTINGS_PATH"
+  elif [[ "$TIER" == "structural" ]]; then
     # Structural: session-start only (auto-creates ledger, no ongoing enforcement)
-    merge_with_node_session_only "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED"
-    HOOKS_INSTALLED="SessionStart + UserPromptSubmit -> $SETTINGS_PATH"
+    merge_with_node_session_only "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
+    HOOKS_INSTALLED="statusLine + SessionStart + UserPromptSubmit -> $SETTINGS_PATH"
   else
     # Enforced: full hook bundle
-    merge_with_node "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED"
-    HOOKS_INSTALLED="SessionStart + UserPromptSubmit + PreToolUse + PostToolUse + SessionEnd -> $SETTINGS_PATH"
+    merge_with_node "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
+    HOOKS_INSTALLED="statusLine + SessionStart + UserPromptSubmit + PreToolUse + PostToolUse + SessionEnd -> $SETTINGS_PATH"
   fi
 else
   echo ""
   echo "WARNING: node not found."
   echo "Add the following to $SETTINGS_PATH manually:"
   echo ""
-  if [[ "$TIER" == "structural" ]]; then
+  if [[ "$TIER" == "advisory" ]]; then
+    HOOKS_INSTALLED="MANUAL -- add statusLine"
+    echo '  "statusLine": {'
+    echo '    "type": "command",'
+    echo '    "command": "node ~/.claude/skills/plan-enforcer/hooks/statusline.js"'
+    echo '  }'
+  elif [[ "$TIER" == "structural" ]]; then
+    HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit"
+    echo '  "statusLine": {'
+    echo '    "type": "command",'
+    echo '    "command": "node ~/.claude/skills/plan-enforcer/hooks/statusline.js"'
+    echo '  },'
     echo '  "hooks": {'
     echo '    "SessionStart": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/session-start.js", "statusMessage": "Plan Enforcer: checking for active plan..."}]}],'
     echo '    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/user-message.js"}]}]'
     echo '  }'
   else
+    HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit + PreToolUse + PostToolUse + SessionEnd"
+    echo '  "statusLine": {'
+    echo '    "type": "command",'
+    echo '    "command": "node ~/.claude/skills/plan-enforcer/hooks/statusline.js"'
+    echo '  },'
     echo '  "hooks": {'
     echo '    "SessionStart": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/session-start.js", "statusMessage": "Plan Enforcer: checking for active plan..."}]}],'
     echo '    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/user-message.js"}]}],'
@@ -264,7 +384,6 @@ else
     echo '  }'
   fi
   echo ""
-  HOOKS_INSTALLED="MANUAL -- see instructions above"
 fi
 
 CONFIG_DIR="$(pwd)/.plan-enforcer"
@@ -296,7 +415,7 @@ Ledger schema v2 adds:
 Hooks active at this tier:
 - SessionStart:  ledger activation, session log truncation,
                  hook-staleness check
-- UserPromptSubmit: raw user-prompt capture to `.user-messages.jsonl`
+- UserPromptSubmit: raw user-prompt capture to '.user-messages.jsonl'
                     for awareness quote verification
 - PreToolUse:    chain-guard (unplanned edits), delete-guard (deletions), ledger-schema-guard (T-row tampering)
                  [enforced tier only]
@@ -308,17 +427,34 @@ EOF
 echo "Config written to $CONFIG_DIR/config.md"
 
 echo ""
-echo "Plan Enforcer installed successfully!"
+echo "Plan Enforcer installed."
+echo "  tier: ${TIER}"
+echo -n "  skills: ${SKILLS_INSTALLED} copied"
+if [[ "$SKILLS_SKIPPED" -gt 0 ]]; then
+  echo ", ${SKILLS_SKIPPED} skipped"
+else
+  echo ""
+fi
+echo -n "  hooks: ${HOOKS_COPIED} copied"
+if [[ "$HOOKS_SKIPPED" -gt 0 ]]; then
+  echo ", ${HOOKS_SKIPPED} skipped"
+else
+  echo ""
+fi
+echo -n "  runtime modules: ${MODULES_COPIED} copied"
+if [[ "$MODULES_SKIPPED" -gt 0 ]]; then
+  echo ", ${MODULES_SKIPPED} skipped"
+else
+  echo ""
+fi
+echo "  hook settings: ${HOOKS_INSTALLED}"
+if [[ -n "$REPO_SHA" ]]; then
+  echo "  repo commit: ${REPO_SHA}"
+fi
+echo "  config: .plan-enforcer/config.md"
 echo ""
-echo "  Skills: ~/.claude/skills/plan-enforcer*/"
-echo "  Tier:   ${TIER}"
-echo "  Hooks:  ${HOOKS_INSTALLED}"
-echo "  Config: .plan-enforcer/config.md"
-echo ""
-echo "  Activate: /plan-enforcer <plan-file>"
-echo "  Review:   plan-enforcer-review <plan-file>"
-echo "  Status:   plan-enforcer-status [.plan-enforcer/ledger.md]"
-echo "  Logs:     plan-enforcer-logs [.plan-enforcer/ledger.md]"
-echo "  Report:   plan-enforcer-report [.plan-enforcer/archive]"
-echo "  Config:   plan-enforcer-config [.plan-enforcer/config.md] [--tier ...]"
-echo "  Commands: /plan-enforcer:status, /plan-enforcer:logs, /plan-enforcer:config"
+echo "Next:"
+echo "  check install: plan-enforcer doctor"
+echo "  start with discuss: plan-enforcer discuss \"your ask\""
+echo "  or seed existing plan: plan-enforcer import docs/plans/<plan-file>.md"
+echo "  inspect live state: plan-enforcer status | plan-enforcer report --active"

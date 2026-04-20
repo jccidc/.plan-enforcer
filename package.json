@@ -18,6 +18,7 @@
     "plan-enforcer-audit": "src/audit-cli.js",
     "plan-enforcer-chain": "src/chain-cli.js",
     "plan-enforcer-config": "src/config-cli.js",
+    "plan-enforcer-doctor": "src/doctor-cli.js",
     "plan-enforcer-export": "src/export-cli.js",
     "plan-enforcer-import": "src/import-cli.js",
     "plan-enforcer-lint": "src/lint-cli.js",

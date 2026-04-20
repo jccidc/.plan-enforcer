@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { archiveLedger, cleanupWorkingFiles } = require('../src/archive');
+const { archiveLedger, cleanupWorkingFiles, writeArchiveTruthManifest } = require('../src/archive');
 const { readConfig } = require('../src/config');
 const {
   parseDecisionLog,
@@ -18,6 +18,7 @@ const {
 } = require('../src/plan-detector');
 const { detectPartialLedgerEdit } = require('../src/partial-ledger-edit');
 const { buildVerdict, parsePhaseContext, writeArchiveVerdict, writeVerdict } = require('../src/phase-verify-cli');
+const { clearStatuslineState, writeTaskStatuslineState } = require('../src/statusline-state');
 
 function ledgerHash(content) {
   return crypto.createHash('sha256').update(content || '').digest('hex').slice(0, 8);
@@ -426,7 +427,12 @@ function tryAutoActivate() {
     if (tasks.length === 0) return false;
 
     fs.mkdirSync(rootEnforcerDir, { recursive: true });
-    fs.writeFileSync(rootLedgerPath, generateLedger(relativePlan, tasks, config.tier));
+    const freshLedger = generateLedger(relativePlan, tasks, config.tier);
+    fs.writeFileSync(rootLedgerPath, freshLedger);
+    writeTaskStatuslineState(freshLedger, {
+      cwd: detectedRoot,
+      source: 'post-tool:auto-activate'
+    });
 
     if (!fs.existsSync(rootConfigPath)) {
       fs.writeFileSync(rootConfigPath, `---\ntier: ${config.tier}\nreconcile_interval: 25\nstale_threshold: 10\ncompletion_gate: soft\nledger_path: .plan-enforcer/ledger.md\n---\n`);
@@ -611,7 +617,9 @@ if (remaining === 0 && totalTasks > 0) {
     }, config.tier);
     writePhaseContext(enforcerDir, ledger, result.archiveName);
     writePhaseVerdict(enforcerDir, result.archivePath);
+    writeArchiveTruthManifest(result.archivePath);
     cleanupWorkingFiles(enforcerDir);
+    clearStatuslineState({ cwd: projectRoot });
     try { fs.unlinkSync(activeRootPath); } catch (e) {}
     output.push(` Archived: .plan-enforcer/archive/${result.archiveName}`);
     output.push('------------------------------------------------------');
@@ -621,6 +629,10 @@ if (remaining === 0 && totalTasks > 0) {
 }
 
 if (remaining > 0) {
+  writeTaskStatuslineState(ledger, {
+    cwd: projectRoot,
+    source: 'post-tool'
+  });
   try {
     const currentMtime = fs.statSync(ledgerPath).mtimeMs;
     let prevMtime = 0;

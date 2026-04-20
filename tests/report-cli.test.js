@@ -174,6 +174,24 @@ describe('report-cli', () => {
       '| T1 | One | verified | yes | |'
     ].join('\n'));
     fs.writeFileSync(path.join(archiveDir, '2026-04-12-run.md.verdict.md'), '# Phase Verify Report\n');
+    fs.writeFileSync(path.join(archiveDir, '2026-04-12-run.md.final-truth.json'), JSON.stringify({
+      schema: 'v1',
+      archived_at: '2026-04-12T12:00:00Z',
+      source_plan: 'docs/plans/run.md',
+      tier: 'structural',
+      result: 'clean',
+      counts: { total_tasks: 1, verified: 1, done_unverified: 0, remaining: 0, drift: 0, decisions: 0, reconciliations: 0 },
+      truth_surfaces: {
+        archive_markdown: '.plan-enforcer/archive/2026-04-12-run.md',
+        phase_verdict_json: null,
+        phase_verdict_report: '.plan-enforcer/archive/2026-04-12-run.md.verdict.md',
+        checks_root: '.plan-enforcer/checks'
+      },
+      lineage_roots: {
+        source_plan: 'docs/plans/run.md',
+        awareness: '.plan-enforcer/awareness.md'
+      }
+    }, null, 2));
 
     const result = spawnSync(process.execPath, [reportBin, archiveDir], {
       cwd: path.resolve(__dirname, '..'),
@@ -183,6 +201,7 @@ describe('report-cli', () => {
     assert.equal(result.status, 0);
     assert.match(result.stdout, /Runs: 1/);
     assert.match(result.stdout, /Final truth:/);
+    assert.match(result.stdout, /final truth manifest: .*2026-04-12-run\.md\.final-truth\.json/);
     assert.match(result.stdout, /phase verify report:/);
     assert.match(result.stdout, /Lineage roots:/);
     assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
@@ -223,6 +242,24 @@ describe('report-cli', () => {
       warnings: ['phase proof note missing']
     }, null, 2));
     fs.writeFileSync(`${archivePath}.verdict.md`, '# Phase Verify Report\n');
+    fs.writeFileSync(`${archivePath}.final-truth.json`, JSON.stringify({
+      schema: 'v1',
+      archived_at: '2026-04-12T12:00:00Z',
+      source_plan: 'docs/plans/run.md',
+      tier: 'enforced',
+      result: 'has_unverified',
+      counts: { total_tasks: 2, verified: 1, done_unverified: 1, remaining: 0, drift: 1, decisions: 1, reconciliations: 0 },
+      truth_surfaces: {
+        archive_markdown: '2026-04-12-run.md',
+        phase_verdict_json: '2026-04-12-run.md.verdict.json',
+        phase_verdict_report: '2026-04-12-run.md.verdict.md',
+        checks_root: null
+      },
+      lineage_roots: {
+        source_plan: 'docs/plans/run.md',
+        awareness: null
+      }
+    }, null, 2));
 
     const result = spawnSync(process.execPath, [reportBin, archivePath], {
       cwd: path.resolve(__dirname, '..'),
@@ -232,6 +269,7 @@ describe('report-cli', () => {
     assert.equal(result.status, 0);
     assert.match(result.stdout, /Result: has_unverified/);
     assert.match(result.stdout, /Final truth:/);
+    assert.match(result.stdout, /final truth manifest: .*2026-04-12-run\.md\.final-truth\.json/);
     assert.match(result.stdout, /phase verify report:/);
     assert.match(result.stdout, /Lineage roots:/);
     assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
@@ -248,7 +286,7 @@ describe('report-cli', () => {
     });
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /Start with `\/plan-enforcer <plan-file>` or import an existing plan with `plan-enforcer import <plan-file>`/);
+    assert.match(result.stderr, /Start with `plan-enforcer discuss "<ask>"` for a fuzzy request, or import an existing plan with `plan-enforcer import <plan-file>`/);
     assert.match(result.stderr, /No archive reports found yet/);
   });
 });

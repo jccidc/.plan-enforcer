@@ -6,6 +6,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const INSTALL = fs.readFileSync(path.join(ROOT, 'install.sh'), 'utf8');
 const SETUP = fs.readFileSync(path.join(ROOT, 'setup.sh'), 'utf8');
+const PKG = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
 
 function extractForList(script, label) {
   const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -37,5 +38,24 @@ describe('installer parity', () => {
       extractForList(INSTALL, 'module'),
       extractForList(SETUP, 'module')
     );
+  });
+
+  it('ships discuss skill, standalone statusline hook, and all package bins', () => {
+    const skills = new Set(extractForList(INSTALL, 'skill'));
+    const hooks = new Set(extractForList(INSTALL, 'hook'));
+    const modules = new Set(extractForList(INSTALL, 'module'));
+
+    assert.equal(skills.has('plan-enforcer-discuss'), true);
+    assert.equal(hooks.has('statusline.js'), true);
+    for (const target of Object.values(PKG.bin)) {
+      assert.equal(modules.has(path.basename(target)), true, `missing runtime for ${target}`);
+    }
+  });
+
+  it('ships critical shared modules used by status and hook surfaces', () => {
+    const modules = new Set(extractForList(INSTALL, 'module'));
+    for (const file of ['git-worktree.js', 'partial-ledger-edit.js', 'statusline-state.js']) {
+      assert.equal(modules.has(file), true, `missing ${file}`);
+    }
   });
 });

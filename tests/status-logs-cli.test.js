@@ -284,7 +284,7 @@ describe('status-cli', () => {
     });
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /Start with `\/plan-enforcer <plan-file>` or import an existing plan with `plan-enforcer import <plan-file>`/);
+    assert.match(result.stderr, /Start with `plan-enforcer discuss "<ask>"` for a fuzzy request, or import an existing plan with `plan-enforcer import <plan-file>`/);
   });
 });
 
@@ -525,6 +525,6 @@ describe('logs-cli', () => {
     });
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /Start with `\/plan-enforcer <plan-file>` or import an existing plan with `plan-enforcer import <plan-file>`/);
+    assert.match(result.stderr, /Start with `plan-enforcer discuss "<ask>"` for a fuzzy request, or import an existing plan with `plan-enforcer import <plan-file>`/);
   });
 });

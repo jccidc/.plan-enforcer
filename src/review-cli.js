@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { buildPatchedPlanContent, formatReviewReport, reviewPlanContent } = require('./plan-review');
+const { writeNamedStatuslineStage } = require('./statusline-state');
 
 function printUsage() {
   console.error('Usage: plan-enforcer-review [--adversarial] [--write [output-path]] <plan-path>');
@@ -45,7 +46,7 @@ function defaultPatchedPath(resolvedPath) {
   return resolvedPath.slice(0, -ext.length) + '.repaired' + ext;
 }
 
-function findCombobulatePacket(resolvedPlanPath) {
+function findDiscussPacket(resolvedPlanPath) {
   const candidates = [
     path.join(path.dirname(resolvedPlanPath), '.plan-enforcer', 'discuss.md'),
     path.join(path.dirname(resolvedPlanPath), '.plan-enforcer', 'combobulate.md'),
@@ -87,12 +88,18 @@ function main(argv = process.argv.slice(2)) {
   }
 
   const content = fs.readFileSync(resolvedPath, 'utf8');
-  const packetPath = findCombobulatePacket(resolvedPath);
+  const packetPath = findDiscussPacket(resolvedPath);
   const packetContent = packetPath ? fs.readFileSync(packetPath, 'utf8') : '';
   const review = reviewPlanContent(content, { adversarial, packetContent });
+  writeNamedStatuslineStage('review', {
+    cwd: path.dirname(resolvedPath),
+    label: 'REVIEW',
+    source: 'review-cli',
+    title: path.basename(resolvedPath)
+  });
   let out = `${formatReviewReport(content, review)}\n`;
   if (packetPath) {
-    out += `\nIntent packet: ${packetPath}\n`;
+    out += `\nDiscuss packet: ${packetPath}\n`;
   }
   if (writeOutput && review.summary !== 'pass') {
     const outputPath = writePatchedDraft(resolvedPath, writeOutput, content, review);
@@ -109,7 +116,7 @@ if (require.main === module) {
 module.exports = {
   defaultPatchedPath,
   exitCodeForSummary,
-  findCombobulatePacket,
+  findDiscussPacket,
   parseArgs,
   writePatchedDraft,
   main

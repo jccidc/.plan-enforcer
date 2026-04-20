@@ -112,7 +112,7 @@ describe('review-cli', () => {
     });
 
     assert.notEqual(result.status, 0);
-    assert.match(result.stdout, /Intent packet:/);
+    assert.match(result.stdout, /Discuss packet:/);
     assert.match(result.stdout, /non-negotiable/i);
     assert.match(result.stdout, /proof requirement/i);
   });

@@ -9,6 +9,7 @@ const {
   loadAwarenessState,
   normalizePromptText
 } = require('./awareness');
+const { writeNamedStatuslineStage } = require('./statusline-state');
 
 const DEFAULT_PACKET_BASENAME = 'discuss.md';
 const LEGACY_PACKET_BASENAME = 'combobulate.md';
@@ -30,6 +31,27 @@ function usage() {
     '  - seeds awareness with the exact source ask when not already present',
     '  - interactive mode asks only plan-shaping questions'
   ].join('\n');
+}
+
+function createEmptyPacket(sourceAsk = '', title = '') {
+  return {
+    title,
+    sourceAsk,
+    normalizedGoal: '',
+    nonNegotiables: [],
+    hiddenContracts: [],
+    plausibleInterpretations: [],
+    chosenInterpretation: '',
+    forbiddenNarrowings: [],
+    inScope: [],
+    outOfScope: [],
+    constraints: [],
+    successSignals: [],
+    driftRisks: [],
+    proofRequirements: [],
+    phaseShapeHint: '',
+    planningRedLines: []
+  };
 }
 
 function parseArgs(argv) {
@@ -254,6 +276,27 @@ function ensureAwarenessIntent(sourceAsk, opts = {}) {
   return { created: true, id: row.id, awarenessPath: row.awarenessPath };
 }
 
+function writeDiscussPacket(packet, opts = {}) {
+  const paths = resolvePacketPaths(opts);
+  fs.mkdirSync(path.dirname(paths.packetPath), { recursive: true });
+  const markdown = renderPacket(packet);
+  fs.writeFileSync(paths.packetPath, markdown, 'utf8');
+  if (paths.legacyPath !== paths.packetPath) {
+    fs.writeFileSync(paths.legacyPath, markdown, 'utf8');
+  }
+  const awareness = ensureAwarenessIntent(packet.sourceAsk, {
+    cwd: paths.projectRoot,
+    awarenessPath: paths.awarenessPath
+  });
+  writeNamedStatuslineStage('discuss', {
+    cwd: paths.projectRoot,
+    label: 'DISCUSS',
+    source: opts.source || 'discuss-cli',
+    title: packet.title || slugTitle(packet.sourceAsk)
+  });
+  return { paths, awareness, markdown };
+}
+
 function buildSummary(packet, paths, awareness) {
   return {
     packetPath: paths.packetPath,
@@ -272,7 +315,7 @@ async function main(argv = process.argv.slice(2)) {
   }
 
   const cwd = process.cwd();
-  let sourceAsk = readAskText(args, cwd);
+  const sourceAsk = readAskText(args, cwd);
   const interactive = args.interactive != null
     ? args.interactive
     : Boolean(process.stdin.isTTY && process.stdout.isTTY);
@@ -282,24 +325,7 @@ async function main(argv = process.argv.slice(2)) {
     return 2;
   }
 
-  let packet = {
-    title: args.title || '',
-    sourceAsk,
-    normalizedGoal: '',
-    nonNegotiables: [],
-    hiddenContracts: [],
-    plausibleInterpretations: [],
-    chosenInterpretation: '',
-    forbiddenNarrowings: [],
-    inScope: [],
-    outOfScope: [],
-    constraints: [],
-    successSignals: [],
-    driftRisks: [],
-    proofRequirements: [],
-    phaseShapeHint: '',
-    planningRedLines: []
-  };
+  let packet = createEmptyPacket(sourceAsk, args.title || '');
 
   if (interactive) {
     packet = await collectInteractive(packet);
@@ -307,18 +333,9 @@ async function main(argv = process.argv.slice(2)) {
 
   packet.title = packet.title || slugTitle(packet.sourceAsk);
 
-  const paths = resolvePacketPaths({ cwd, packetPath: args.packetPath });
-  fs.mkdirSync(path.dirname(paths.packetPath), { recursive: true });
-
-  const markdown = renderPacket(packet);
-  fs.writeFileSync(paths.packetPath, markdown, 'utf8');
-  if (paths.legacyPath !== paths.packetPath) {
-    fs.writeFileSync(paths.legacyPath, markdown, 'utf8');
-  }
-
-  const awareness = ensureAwarenessIntent(packet.sourceAsk, {
+  const { paths, awareness } = writeDiscussPacket(packet, {
     cwd,
-    awarenessPath: paths.awarenessPath
+    packetPath: args.packetPath
   });
   const summary = buildSummary(packet, paths, awareness);
 
@@ -348,13 +365,16 @@ if (require.main === module) {
 module.exports = {
   buildSummary,
   collectInteractive,
+  createEmptyPacket,
   ensureAwarenessIntent,
+  findDiscussProjectRoot,
   main,
   parseArgs,
   readAskText,
   renderPacket,
-  findDiscussProjectRoot,
   resolvePacketPaths,
   slugTitle,
-  usage
+  splitLines,
+  usage,
+  writeDiscussPacket
 };
