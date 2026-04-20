@@ -129,6 +129,41 @@ describe('evidence-gate - verification with real signal', () => {
     assert.equal(latest.T1.command, 'npm test');
   });
 
+  it('runs every evidence-cited verification command before config fallback', () => {
+    const dir = mkProject('enforced', null, 'package.json and verified after npm run lint then npm test', {
+      test: 'node -e "process.exit(0)"',
+      lint: 'node -e "process.exit(0)"',
+      verify: 'node -e "process.exit(1)"'
+    }, 'check_cmd: npm run verify');
+    const r = runHook(dir, {
+      tool_name: 'Write',
+      tool_input: { file_path: path.join(dir, '.plan-enforcer', 'ledger.md') }
+    });
+    assert.equal(r.code, 0, r.stderr);
+    const latest = JSON.parse(fs.readFileSync(path.join(dir, '.plan-enforcer', 'checks', 'latest.json'), 'utf8'));
+    assert.equal(latest.T1.ok, true);
+    assert.equal(latest.T1.command, 'npm run lint && npm test');
+    assert.deepEqual(latest.T1.commands, ['npm run lint', 'npm test']);
+    assert.equal(latest.T1.runs.length, 2);
+  });
+
+  it('runs executed verification when evidence cites a node wrapper script', () => {
+    const dir = mkProject('enforced', null, 'verified after node scripts/verify.js --quick');
+    fs.mkdirSync(path.join(dir, 'scripts'), { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'scripts', 'verify.js'),
+      "console.log('verify wrapper');\nprocess.exit(0);\n"
+    );
+    const r = runHook(dir, {
+      tool_name: 'Write',
+      tool_input: { file_path: path.join(dir, '.plan-enforcer', 'ledger.md') }
+    });
+    assert.equal(r.code, 0, r.stderr);
+    const latest = JSON.parse(fs.readFileSync(path.join(dir, '.plan-enforcer', 'checks', 'latest.json'), 'utf8'));
+    assert.equal(latest.T1.ok, true);
+    assert.equal(latest.T1.command, 'node ./scripts/verify.js --quick');
+  });
+
   it('real commit SHA in evidence: allowed at enforced', () => {
     const dir = mkProject('enforced');
     const sha = execSync('git rev-parse --short HEAD', { cwd: dir }).toString().trim();
@@ -197,6 +232,26 @@ describe('evidence-gate - missing evidence by tier', () => {
     assert.match(r.stderr, /npm test/);
     const latest = JSON.parse(fs.readFileSync(path.join(dir, '.plan-enforcer', 'checks', 'latest.json'), 'utf8'));
     assert.equal(latest.T1.ok, false);
+  });
+
+  it('blocks when evidence claims tests passed but no runnable command can be detected', () => {
+    const dir = mkProject('enforced', null, 'package.json, 3 tests passed, 0 failed');
+    const r = runHook(dir, {
+      tool_name: 'Write',
+      tool_input: { file_path: path.join(dir, '.plan-enforcer', 'ledger.md') }
+    });
+    assert.equal(r.code, 2);
+    assert.match(r.stderr, /no runnable command could be detected/i);
+    assert.match(r.stderr, /set check_cmd/i);
+  });
+
+  it('still allows artifact-only verified evidence when no command is claimed', () => {
+    const dir = mkProject('enforced', null, 'package.json');
+    const r = runHook(dir, {
+      tool_name: 'Write',
+      tool_input: { file_path: path.join(dir, '.plan-enforcer', 'ledger.md') }
+    });
+    assert.equal(r.code, 0, r.stderr);
   });
 });
 

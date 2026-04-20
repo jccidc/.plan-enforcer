@@ -58,6 +58,7 @@ Start here:
 - [CLI guide](docs/cli.md)
 - [Examples](docs/examples/README.md)
 - [Public proof](docs/proof/public-proof.md)
+- [Proof pack](docs/proof/README.md)
 
 ---
 
@@ -129,7 +130,7 @@ Not "better prompting." Not "nicer planning."
 
 Plan Enforcer is not planner lock-in.
 
-Use the built-in flow:
+Use the built-in front door:
 
 - `discuss -> draft -> review -> execute -> verify`
 
@@ -161,6 +162,7 @@ The public claim is intentionally narrow:
 
 This repo includes a proof pack focused on those claims:
 
+- [Proof pack index](docs/proof/README.md)
 - [Benchmark summary](docs/proof/benchmark-summary.md)
 - [Carryover proof](docs/proof/carryover-proof.md)
 - [Composability proof](docs/proof/composability-proof.md)

@@ -4,8 +4,151 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const reportBin = path.resolve(__dirname, '..', 'src', 'report-cli.js');
 
 describe('report-cli', () => {
+  it('defaults to active-session report when an active ledger exists', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-active-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/run.md -->',
+      '<!-- tier: structural -->',
+      '<!-- created: 2026-04-11T08:00:00Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | One | verified | npm test | | |',
+      '| T2  | Two | pending | | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, [reportBin], {
+      cwd: tempDir,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Plan Enforcer Active Report/);
+    assert.match(result.stdout, /Source: docs\/plans\/run.md/);
+    assert.match(result.stdout, /Current: T2 - Two/);
+    assert.match(result.stdout, /Truth surfaces:/);
+    assert.match(result.stdout, /phase report: .*phase-report\.md \(not written yet\)/);
+    assert.match(result.stdout, /Lineage roots:/);
+    assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
+    assert.match(result.stdout, /Executed Verification: 1 gap/);
+    assert.match(result.stdout, /rerun T1: npm test/);
+  });
+
+  it('supports explicit --active mode', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-active-flag-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/run.md -->',
+      '<!-- tier: structural -->',
+      '<!-- created: 2026-04-11T08:00:00Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | One | verified | npm test | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, [reportBin, '--active'], {
+      cwd: tempDir,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Plan Enforcer Active Report/);
+  });
+
+  it('scopes active-report awareness summary to current-package same-day intents', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-awareness-scope-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/run.md -->',
+      '<!-- tier: structural -->',
+      '<!-- created: 2026-04-20T13:04:04Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Current package intent task | verified | current package intent proof | A:I18 | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+    fs.writeFileSync(path.join(enforcerDir, 'awareness.md'), [
+      '# Awareness',
+      '<!-- schema: v1 -->',
+      '',
+      '## Project-level intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '| I15 | older same-day intent | manual | 2026-04-20 |',
+      '| I16 | another older same-day intent | manual | 2026-04-20 |',
+      '| I18 | current package intent | manual | 2026-04-20 |',
+      '',
+      '## This-session intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '',
+      '## Restate rows',
+      '',
+      '| ID | Summary | Refs | Captured |',
+      '|----|---------|------|----------|',
+      '',
+      '## Correction rows',
+      '',
+      '| ID | Type | Refs | Note | Captured |',
+      '|----|------|------|------|----------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, [reportBin, '--active'], {
+      cwd: tempDir,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Awareness: 1 live\s+\|\s+1 linked\s+\|\s+0 orphan\s+\|\s+0 quote issues/);
+    assert.doesNotMatch(result.stdout, /I15|I16/);
+  });
+
   it('prints a summary for an archive directory', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-cli-'));
     const archiveDir = path.join(tempDir, '.plan-enforcer', 'archive');
@@ -30,15 +173,21 @@ describe('report-cli', () => {
       '<!-- source: docs/plans/run.md -->',
       '| T1 | One | verified | yes | |'
     ].join('\n'));
+    fs.writeFileSync(path.join(archiveDir, '2026-04-12-run.md.verdict.md'), '# Phase Verify Report\n');
 
-    const result = spawnSync(process.execPath, ['src/report-cli.js', archiveDir], {
+    const result = spawnSync(process.execPath, [reportBin, archiveDir], {
       cwd: path.resolve(__dirname, '..'),
       encoding: 'utf8'
     });
 
     assert.equal(result.status, 0);
     assert.match(result.stdout, /Runs: 1/);
+    assert.match(result.stdout, /Final truth:/);
+    assert.match(result.stdout, /phase verify report:/);
+    assert.match(result.stdout, /Lineage roots:/);
+    assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
     assert.match(result.stdout, /Archived runs:/);
+    assert.match(result.stdout, /\n  2026-04-12-run\.md  clean  1\/1 done  drift=0  source=docs\/plans\/run\.md/);
   });
 
   it('prints a detailed report for a single archive file', () => {
@@ -75,64 +224,31 @@ describe('report-cli', () => {
     }, null, 2));
     fs.writeFileSync(`${archivePath}.verdict.md`, '# Phase Verify Report\n');
 
-    const result = spawnSync(process.execPath, ['src/report-cli.js', archivePath], {
+    const result = spawnSync(process.execPath, [reportBin, archivePath], {
       cwd: path.resolve(__dirname, '..'),
       encoding: 'utf8'
     });
 
     assert.equal(result.status, 0);
     assert.match(result.stdout, /Result: has_unverified/);
+    assert.match(result.stdout, /Final truth:/);
+    assert.match(result.stdout, /phase verify report:/);
+    assert.match(result.stdout, /Lineage roots:/);
+    assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
     assert.match(result.stdout, /Done but unverified:/);
     assert.match(result.stdout, /Phase verify:/);
     assert.match(result.stdout, /warning: phase proof note missing/);
   });
 
-  it('prints an active report when asked for the live ledger', () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-active-cli-'));
-    const enforcerDir = path.join(tempDir, '.plan-enforcer');
-    fs.mkdirSync(enforcerDir, { recursive: true });
-    fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({
-      name: 'fixture',
-      scripts: { test: 'node -e "process.exit(0)"' }
-    }, null, 2));
-    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
-      '# Ledger',
-      '<!-- schema: v2 -->',
-      '<!-- source: docs/plans/run.md -->',
-      '<!-- tier: structural -->',
-      '',
-      '## Task Ledger',
-      '',
-      '| ID  | Task | Status | Evidence | Chain | Notes |',
-      '|-----|------|--------|----------|-------|-------|',
-      '| T1  | Ship proof | verified | package.json | | |',
-      '',
-      '## Decision Log',
-      '| ID | Type | Scope | Reason | Evidence |',
-      '|----|------|-------|--------|----------|',
-      '',
-      '## Reconciliation History',
-      '| Round | Tasks Checked | Gaps Found | Action Taken |',
-      '|-------|---------------|------------|--------------|'
-    ].join('\n'));
-    fs.mkdirSync(path.join(enforcerDir, 'checks'), { recursive: true });
-    fs.writeFileSync(path.join(enforcerDir, 'checks', 'latest.json'), JSON.stringify({
-      T1: {
-        taskId: 'T1',
-        command: 'npm test',
-        ok: true,
-        exitCode: 0
-      }
-    }, null, 2));
-
-    const result = spawnSync(process.execPath, ['src/report-cli.js', '--active', '--ledger', path.join(enforcerDir, 'ledger.md')], {
-      cwd: path.resolve(__dirname, '..'),
+  it('shows authored-or-import guidance when no active session or archive exists', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-empty-cli-'));
+    const result = spawnSync(process.execPath, [reportBin], {
+      cwd: tempDir,
       encoding: 'utf8'
     });
 
-    assert.equal(result.status, 0);
-    assert.match(result.stdout, /Plan Enforcer Active Report/);
-    assert.match(result.stdout, /Checks:\s+1 ok/);
-    assert.match(result.stdout, /Clean active session/);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Start with `\/plan-enforcer <plan-file>` or import an existing plan with `plan-enforcer import <plan-file>`/);
+    assert.match(result.stderr, /No archive reports found yet/);
   });
 });

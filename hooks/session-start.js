@@ -129,11 +129,11 @@ function resolvePaths() {
 function buildProtocolGuidance(tier, completionGate) {
   const lines = [];
   if (tier === 'enforced') {
-    lines.push('Protocol per task: announce -> execute -> ONE atomic Edit to the ledger updating status + evidence + scoreboard in a single diff. Do not split into multiple small edits.');
-    lines.push('MANDATORY: Reconcile at meaningful checkpoints and whenever the hook asks. Mark VERIFIED (not done) when you have evidence. ALL deviations go in Decision Log.');
-    lines.push('MANDATORY: Do not end the session while any row is pending or in-progress. Completion means 0 remaining rows and archive-ready ledger state.');
-    lines.push('MANDATORY: In final stretch (5 rows or fewer left), claim next pending row in ledger before more workspace work.');
-    lines.push('MANDATORY: Keep completion summaries terse. Report shipped work, verification result, and deviation refs only.');
+    lines.push('Protocol: work in row-sized chunks. When a row is actually complete, use ONE atomic Edit to the ledger updating status + evidence + scoreboard in a single diff.');
+    lines.push('REQUIRED: Mark VERIFIED (not done) when you have evidence. ALL deviations go in Decision Log.');
+    lines.push('REQUIRED: Reconcile at meaningful checkpoints and whenever the hook asks. Completion still means 0 remaining rows and archive-ready ledger state.');
+    lines.push('RECOMMENDED: In final stretch, keep one clearly active row at a time. Use closeout-next as focus guidance; no separate claim edit is required before planned workspace work.');
+    lines.push('RECOMMENDED: Keep completion summaries terse. Report shipped work, verification result, and deviation refs only.');
     return lines;
   }
 
@@ -255,6 +255,21 @@ function parseResumeSnapshot(resumeText) {
   };
 }
 
+function normalizePlanRef(ref) {
+  return String(ref || '').trim().replace(/\\/g, '/').replace(/^\.\//, '');
+}
+
+function archiveMatchesPlan(archiveContent, planFile) {
+  const expected = normalizePlanRef(planFile);
+  if (!expected) return false;
+  const candidates = [];
+  const planMatch = archiveContent.match(/^plan:\s*(.+)$/m);
+  const sourceMatch = archiveContent.match(/^<!-- source:\s*(.+?)\s*-->$/m);
+  if (planMatch) candidates.push(planMatch[1]);
+  if (sourceMatch) candidates.push(sourceMatch[1]);
+  return candidates.some((candidate) => normalizePlanRef(candidate) === expected);
+}
+
 function buildResumeOrderPacket(resolvedEnforcerDir, tier, isBenchmarkLinear) {
   const resumePath = path.join(resolvedEnforcerDir, 'resume.md');
   if (!fs.existsSync(resumePath)) return '';
@@ -274,7 +289,7 @@ function buildResumeOrderPacket(resolvedEnforcerDir, tier, isBenchmarkLinear) {
       const thenPrefix = index === 0 ? 'Finish' : 'Then';
       out += `  ${index + 1}. ${thenPrefix} ${row}\n`;
     });
-    out += `  Do NOT edit workspace files before claiming ${parsed.nextId} in the ledger.\n`;
+    out += `  Start with ${parsed.nextId}. Keep one active row at a time; no separate claim edit is required before planned workspace work.\n`;
     return out;
   }
 
@@ -438,13 +453,13 @@ if (!planFile) {
 }
 
 // Skip if this plan was already completed and archived
-const archiveDir = path.join(enforcerDir, 'archive');
+const archiveDir = path.join(resolvedEnforcerDir, 'archive');
 if (fs.existsSync(archiveDir)) {
   try {
-    const archives = fs.readdirSync(archiveDir);
+    const archives = fs.readdirSync(archiveDir).filter((name) => name.endsWith('.md') && !name.endsWith('.verdict.md'));
     for (const af of archives) {
       const ac = fs.readFileSync(path.join(archiveDir, af), 'utf8');
-      if (ac.includes(`plan: ${planFile}`) || ac.includes(`source: ${planFile}`)) {
+      if (archiveMatchesPlan(ac, planFile)) {
         process.exit(0); // Already completed — don't re-activate
       }
     }

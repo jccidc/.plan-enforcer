@@ -445,13 +445,12 @@ function tryAutoActivate() {
       ` Ledger: ${path.relative(cwd, rootLedgerPath).replace(/\\/g, '/')}`,
       ` Tier:   ${config.tier}`,
       '-----------------------------------------------------',
-      'Protocol per task in the ledger:',
-      '  1. Announce: "Starting T{N}: {task name}"',
-      '  2. Execute the task',
-      '  3. ONE atomic Edit to the ledger updating status + evidence + scoreboard in a single diff. Do not split into multiple small edits.',
-      'MANDATORY: Reconciliation sweep every 3-4 tasks.',
-      'MANDATORY: Mark VERIFIED (not done) when you have evidence.',
-      'MANDATORY: Any deviation from the plan goes in Decision Log.',
+      'Protocol:',
+      '  1. Work in row-sized chunks.',
+      '  2. When a row is actually complete, use ONE atomic Edit to the ledger updating status + evidence + scoreboard in a single diff.',
+      'REQUIRED: Mark VERIFIED (not done) when you have evidence.',
+      'REQUIRED: Any deviation from the plan goes in Decision Log.',
+      'RECOMMENDED: In the final stretch, keep one clearly active row at a time. No separate claim edit is required before planned workspace work.',
       'Commands: /plan-enforcer:status  /plan-enforcer:logs  /plan-enforcer:config',
       '-----------------------------------------------------'
     ]);
@@ -690,11 +689,7 @@ if (config.tier === 'enforced' && remaining > 0 && totalTasks > 0 && remaining <
     output.push(`Plan Enforcer [closeout-next]: ${nextTask.id} [${nextTask.status}] ${nextTask.name}`);
   }
   if (isLedgerMutation(toolContext) && nextTask && nextTask.status === 'pending') {
-    output.push(`Plan Enforcer [closeout-claim]: final stretch entered with ${nextTask.id} still pending. Claim the next row now, then continue row-by-row.`);
-  }
-  if (config.tier === 'enforced' && isWorkspaceMutation(toolContext) && nextTask && nextTask.status === 'pending') {
-    output.push(`Plan Enforcer [block]: ${nextTask.id} is still pending in the ledger. Claim the next row by marking it in-progress before more workspace work in the final stretch.`);
-    emitOutput(output, true);
+    output.push(`Plan Enforcer [closeout-focus]: final stretch active. ${nextTask.id} is next; keep work aligned and fold the row update into the next real ledger edit.`);
   }
   if (config.tier === 'enforced' && isWorkspaceMutation(toolContext) && inProgressCount >= 2) {
     output.push(`Plan Enforcer [block]: ${inProgressCount} rows are simultaneously in-progress in the final stretch. Collapse back to one active row, reconcile finished work, and update the ledger before continuing.`);

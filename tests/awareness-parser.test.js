@@ -12,7 +12,7 @@ describe('awareness-parser', () => {
     assert.equal(state.schema, 'v0-handauthored');
     assert.equal(state.intents.length >= 11, true);
     assert.equal(state.restates.length >= 4, true);
-    assert.equal(state.corrections.length, 0);
+    assert.equal(state.corrections.length >= 1, true);
     assert.equal(state.intents[0].id, 'I1');
   });
 

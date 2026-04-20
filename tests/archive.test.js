@@ -223,6 +223,7 @@ describe('archive parsing and reports', () => {
       '| D1 | T2 | drift | Extra step |',
       '| R1 | T1-T2 | 1 | Logged D1 |'
     ].join('\n'));
+    fs.writeFileSync(path.join(archiveDir, '2026-04-12-messy.md.verdict.md'), '# Verdict sidecar\n');
 
     try {
       const reports = listArchiveReports(archiveDir);
@@ -265,15 +266,75 @@ describe('archive parsing and reports', () => {
       '| T2 | Two | skipped | | deferred |',
       '| D1 | T2 | drift | Deferred for later |'
     ].join('\n'));
+    fs.writeFileSync(`${archivePath}.verdict.md`, '# Phase Verify Report\n');
 
     try {
       const dirReport = formatArchiveReport(archiveDir);
       const fileReport = formatArchiveReport(archivePath);
       assert.match(dirReport, /Runs: 1/);
+      assert.match(dirReport, /Final truth:/);
+      assert.match(dirReport, /Lineage roots:/);
       assert.match(dirReport, /Archived runs:/);
+      assert.match(dirReport, /\n  2026-04-12-run\.md  has_unverified  1\/2 done  drift=1  source=docs\/plans\/run\.md/);
       assert.match(fileReport, /Source: docs\/plans\/run.md/);
+      assert.match(fileReport, /Final truth:/);
+      assert.match(fileReport, /Lineage roots:/);
       assert.match(fileReport, /Skipped\/superseded:/);
       assert.match(fileReport, /Decision log:/);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it('highlights the newest completed clean archive instead of filename order', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-archive-focus-order-'));
+    const archiveDir = path.join(tmpDir, 'archive');
+    fs.mkdirSync(archiveDir, { recursive: true });
+
+    fs.writeFileSync(path.join(archiveDir, '2026-04-20-zeta.md'), [
+      '---',
+      'plan: docs/plans/older.md',
+      'tier: structural',
+      'tasks: 1',
+      'verified: 1',
+      'done_unverified: 0',
+      'skipped: 0',
+      'blocked: 0',
+      'decisions: 0',
+      'reconciliations: 0',
+      'started: 2026-04-20T17:00:00Z',
+      'completed: 2026-04-20T18:00:00Z',
+      'result: clean',
+      '---',
+      '',
+      '<!-- source: docs/plans/older.md -->',
+      '| T1 | Older clean run | verified | yes | |'
+    ].join('\n'));
+
+    fs.writeFileSync(path.join(archiveDir, '2026-04-20-alpha.md'), [
+      '---',
+      'plan: docs/plans/newer.md',
+      'tier: structural',
+      'tasks: 1',
+      'verified: 1',
+      'done_unverified: 0',
+      'skipped: 0',
+      'blocked: 0',
+      'decisions: 0',
+      'reconciliations: 0',
+      'started: 2026-04-20T18:10:00Z',
+      'completed: 2026-04-20T18:30:00Z',
+      'result: clean',
+      '---',
+      '',
+      '<!-- source: docs/plans/newer.md -->',
+      '| T1 | Newer clean run | verified | yes | |'
+    ].join('\n'));
+
+    try {
+      const dirReport = formatArchiveReport(archiveDir);
+      assert.match(dirReport, /archive: .*2026-04-20-alpha\.md/);
+      assert.match(dirReport, /source plan: docs\/plans\/newer\.md/);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

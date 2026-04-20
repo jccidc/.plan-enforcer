@@ -124,12 +124,112 @@ describe('awareness runtime', () => {
     assert.equal(orphans.length, 0);
   });
 
+  it('ignores same-day orphan intents older than the current package intent ids', () => {
+    const dir = mkProject();
+    fs.writeFileSync(path.join(dir, '.plan-enforcer', 'awareness.md'), [
+      '# Awareness',
+      '<!-- schema: v1 -->',
+      '',
+      '## Project-level intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '| I15 | older same-day intent | manual | 2026-04-20 |',
+      '| I16 | another older same-day intent | manual | 2026-04-20 |',
+      '| I18 | current package intent | manual | 2026-04-20 |',
+      '',
+      '## This-session intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '',
+      '## Restate rows',
+      '',
+      '| ID | Summary | Refs | Captured |',
+      '|----|---------|------|----------|',
+      '',
+      '## Correction rows',
+      '',
+      '| ID | Type | Refs | Note | Captured |',
+      '|----|------|------|------|----------|'
+    ].join('\n'));
+
+    fs.writeFileSync(path.join(dir, '.plan-enforcer', 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- created: 2026-04-20T13:04:04Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Current package intent task | verified | current package intent proof | A:I18 | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const state = parseAwareness(fs.readFileSync(path.join(dir, '.plan-enforcer', 'awareness.md'), 'utf8'));
+    const orphans = orphanIntents(state, path.join(dir, '.plan-enforcer', 'ledger.md'), {
+      minCapturedDate: '2026-04-20T13:04:04Z'
+    });
+
+    assert.deepEqual(orphans.map((row) => row.id), []);
+  });
+
   it('creates an awareness file and appends a new intent row', () => {
     const dir = mkProject();
     const added = addIntent({ cwd: dir, quote: 'keep the resume dossier intact', source: 'manual' });
     const content = fs.readFileSync(added.awarenessPath, 'utf8');
     assert.equal(added.id, 'I1');
     assert.match(content, /\| I1 \| keep the resume dossier intact \| manual \|/);
+  });
+
+  it('appends a new intent row after legacy pre-hook prose and table', () => {
+    const dir = mkProject();
+    fs.writeFileSync(path.join(dir, '.plan-enforcer', 'awareness.md'), [
+      '# Plan Enforcer Awareness Ledger',
+      '<!-- schema: v0-handauthored -->',
+      '',
+      '## Project-level intents (pre-capture)',
+      '',
+      '| ID | Quote (best-effort summary) | Source | Captured |',
+      '|----|------------------------------|--------|----------|',
+      '| I1 | ship chain of custody | pre-capture | 2026-04-13 |',
+      '',
+      '## This-session intents (legacy verbatim, pre-hook)',
+      '',
+      'Captured from the 2026-04-13 conversation before `user-message.js` existed.',
+      'Quotes are still verbatim from the user.',
+      '',
+      '| ID | Quote (verbatim) | Source | Captured |',
+      '|----|-------------------|--------|----------|',
+      '| I8 | "keep going" | pre-capture | 2026-04-13 |',
+      '| I9 | "ship it" | pre-capture | 2026-04-13 |',
+      '',
+      '## Restate rows',
+      '',
+      '| ID | Summary | Refs | Captured |',
+      '|----|---------|------|----------|',
+      '',
+      '## Correction rows',
+      '',
+      '| ID | Type | Refs | Note | Captured |',
+      '|----|------|------|------|----------|'
+    ].join('\n'));
+
+    const added = addIntent({ cwd: dir, quote: 'repair proof links', source: 'manual', captured: '2026-04-20' });
+    const content = fs.readFileSync(added.awarenessPath, 'utf8');
+
+    assert.equal(added.id, 'I10');
+    assert.ok(content.indexOf('Captured from the 2026-04-13 conversation') < content.indexOf('| ID | Quote (verbatim) | Source | Captured |'));
+    assert.ok(content.indexOf('| ID | Quote (verbatim) | Source | Captured |') < content.indexOf('| I10 | repair proof links | manual | 2026-04-20 |'));
+    assert.ok(content.indexOf('| I10 | repair proof links | manual | 2026-04-20 |') < content.indexOf('## Restate rows'));
   });
 
   it('verifies non-manual intent quotes against captured user messages', () => {
@@ -277,5 +377,64 @@ describe('awareness runtime', () => {
     assert.equal(summary.linkedCount, 1);
     assert.deepEqual(summary.orphanRows.map((row) => row.id), ['I2']);
     assert.deepEqual(summary.quoteIssues.map((issue) => issue.row), ['I2']);
+  });
+
+  it('scopes summarized live intents to current-package same-day intent ids', () => {
+    const dir = mkProject();
+    fs.writeFileSync(path.join(dir, '.plan-enforcer', 'awareness.md'), [
+      '# Awareness',
+      '<!-- schema: v1 -->',
+      '',
+      '## Project-level intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '| I15 | older same-day intent | manual | 2026-04-20 |',
+      '| I16 | another older same-day intent | manual | 2026-04-20 |',
+      '| I18 | current package intent | manual | 2026-04-20 |',
+      '',
+      '## This-session intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '',
+      '## Restate rows',
+      '',
+      '| ID | Summary | Refs | Captured |',
+      '|----|---------|------|----------|',
+      '',
+      '## Correction rows',
+      '',
+      '| ID | Type | Refs | Note | Captured |',
+      '|----|------|------|------|----------|'
+    ].join('\n'));
+    fs.writeFileSync(path.join(dir, '.plan-enforcer', 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- created: 2026-04-20T13:04:04Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Current package intent task | verified | current package intent proof | A:I18 | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const summary = summarizeAwareness({
+      cwd: dir,
+      minCapturedDate: '2026-04-20T13:04:04Z'
+    });
+
+    assert.deepEqual(summary.liveIntents.map((row) => row.id), ['I18']);
+    assert.equal(summary.linkedCount, 1);
+    assert.deepEqual(summary.orphanRows.map((row) => row.id), []);
   });
 });

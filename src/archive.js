@@ -171,7 +171,7 @@ function parseArchiveFile(archivePath) {
 function listArchiveReports(archiveDir) {
   if (!fs.existsSync(archiveDir)) return [];
   return fs.readdirSync(archiveDir)
-    .filter((name) => name.endsWith('.md'))
+    .filter((name) => name.endsWith('.md') && !name.endsWith('.verdict.md'))
     .sort()
     .reverse()
     .map((name) => parseArchiveFile(path.join(archiveDir, name)));
@@ -189,11 +189,66 @@ function summarizeArchiveReports(reports) {
   }, { total: 0, clean: 0, hasUnverified: 0, decisions: 0, reconciliations: 0, drift: 0 });
 }
 
+function formatDisplayPath(targetPath) {
+  const resolved = path.resolve(targetPath);
+  const rel = path.relative(process.cwd(), resolved).replace(/\\/g, '/');
+  if (!rel || rel === '') return '.';
+  if (!rel.startsWith('..')) return rel;
+  return resolved.replace(/\\/g, '/');
+}
+
+function resolveEnforcerDirFromArchiveTarget(targetPath) {
+  const resolved = path.resolve(targetPath);
+  const stats = fs.statSync(resolved);
+  const dir = stats.isDirectory() ? resolved : path.dirname(resolved);
+  if (path.basename(dir) !== 'archive') return null;
+  const parent = path.dirname(dir);
+  return path.basename(parent) === '.plan-enforcer' ? parent : null;
+}
+
+function buildArchiveTruthSections(targetPath, focusReport) {
+  if (!focusReport) return [];
+
+  const lines = ['', 'Final truth:'];
+  lines.push(`  archive: ${formatDisplayPath(focusReport.path)}`);
+  lines.push(`  phase verify report: ${focusReport.verdictReportPath ? formatDisplayPath(focusReport.verdictReportPath) : 'none yet'}`);
+
+  const enforcerDir = resolveEnforcerDirFromArchiveTarget(targetPath);
+  if (enforcerDir) {
+    const checksDir = path.join(enforcerDir, 'checks');
+    lines.push(`  checks root: ${formatDisplayPath(checksDir)}${fs.existsSync(checksDir) ? '' : ' (none yet)'}`);
+  }
+
+  lines.push('', 'Lineage roots:');
+  lines.push(`  source plan: ${focusReport.source}`);
+  if (enforcerDir) {
+    const awarenessPath = path.join(enforcerDir, 'awareness.md');
+    lines.push(`  awareness: ${formatDisplayPath(awarenessPath)}${fs.existsSync(awarenessPath) ? '' : ' (missing)'}`);
+  }
+  return lines;
+}
+
+function parseCompletedTime(report) {
+  const ms = Date.parse(report && report.completed ? report.completed : '');
+  return Number.isNaN(ms) ? Number.NEGATIVE_INFINITY : ms;
+}
+
+function pickFocusReport(reports) {
+  if (!Array.isArray(reports) || reports.length === 0) return null;
+  const candidates = reports.filter((report) => report.result === 'clean');
+  const pool = candidates.length > 0 ? candidates : reports;
+  return pool.reduce((best, report) => {
+    if (!best) return report;
+    return parseCompletedTime(report) > parseCompletedTime(best) ? report : best;
+  }, null);
+}
+
 function formatArchiveReport(targetPath) {
   const stats = fs.statSync(targetPath);
   if (stats.isDirectory()) {
     const reports = listArchiveReports(targetPath);
     const summary = summarizeArchiveReports(reports);
+    const focusReport = pickFocusReport(reports);
     const lines = [
       '---Plan Enforcer Report ------------------------------',
       ` Runs: ${summary.total}  |  Clean: ${summary.clean}  |  Needs verification: ${summary.hasUnverified}`,
@@ -204,6 +259,7 @@ function formatArchiveReport(targetPath) {
     if (reports.length === 0) {
       lines.push('', 'No archived runs found.');
     } else {
+      lines.push(...buildArchiveTruthSections(targetPath, focusReport));
       lines.push('', 'Archived runs:');
       reports.forEach((report) => {
       lines.push(`  ${report.name}  ${report.result}  ${report.ledger.doneCount}/${report.ledger.total} done  drift=${report.ledger.drift}  source=${report.source}`);
@@ -228,6 +284,7 @@ function formatArchiveReport(targetPath) {
     ` Tasks: ${report.ledger.doneCount}/${report.ledger.total} done  |  Drift: ${report.ledger.drift}  |  Decisions: ${report.decisions.length}`,
     '-----------------------------------------------------'
   ];
+  lines.push(...buildArchiveTruthSections(targetPath, report));
 
   if (report.phaseVerdict) {
     lines.push('', 'Phase verify:');
@@ -270,5 +327,6 @@ module.exports = {
   listArchiveReports,
   parseArchiveFile,
   parseArchiveFrontmatter,
-  summarizeArchiveReports
+  summarizeArchiveReports,
+  pickFocusReport
 };

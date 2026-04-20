@@ -212,6 +212,17 @@ function main() {
       evidenceText: row.evidence,
       config
     });
+    if (!executed.detected && executed.required) {
+      invalid.push({
+        id,
+        name: row.name,
+        warnings: [
+          'Evidence claims executable verification but no runnable command could be detected.',
+          'Cite the exact command in Evidence or set check_cmd in .plan-enforcer/config.md before marking verified.'
+        ]
+      });
+      continue;
+    }
     if (executed.detected && !executed.ok) {
       const why = executed.timedOut
         ? `Executed verification timed out for "${executed.command}".`

@@ -134,7 +134,9 @@ function auditLedger(opts) {
             evidenceText: t.evidence,
             config
           });
-          if (executed.state === 'missing') {
+          if (executed.state === 'undetected') {
+            addFinding(findings, 'error', 'EXECUTED_VERIFICATION_UNDETECTED', `Task ${t.id} claims executable verification but no runnable command could be detected. Cite the exact command or set check_cmd.`, t.id);
+          } else if (executed.state === 'missing') {
             addFinding(findings, 'error', 'EXECUTED_VERIFICATION_MISSING', `Task ${t.id} is verified and expects executed verification (${executed.command}) but no check sidecar exists`, t.id);
           } else if (executed.state === 'failed') {
             addFinding(findings, 'error', 'EXECUTED_VERIFICATION_FAILED', `Task ${t.id} is verified but latest executed verification failed (${executed.latest.command})`, t.id);

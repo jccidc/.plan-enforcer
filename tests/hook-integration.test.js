@@ -46,6 +46,76 @@ describe('session-start hook', () => {
     assert.match(ledger, /T2/);
   });
 
+  it('does not re-activate when an archived run exists for the same plan with different path separators', () => {
+    const projectDir = makeTempProject('plan-enforcer-session-start-archived-');
+    const planDir = path.join(projectDir, 'docs', 'plans');
+    const enforcerDir = path.join(projectDir, '.plan-enforcer');
+    const archiveDir = path.join(enforcerDir, 'archive');
+    fs.mkdirSync(planDir, { recursive: true });
+    fs.mkdirSync(archiveDir, { recursive: true });
+    fs.writeFileSync(path.join(planDir, 'test-plan.md'), [
+      '# Test plan',
+      '',
+      '- [ ] Ship feature',
+      '- [ ] Verify feature'
+    ].join('\n'));
+
+    const archivePlanRef = path.sep === '\\'
+      ? 'docs/plans/test-plan.md'
+      : 'docs\\plans\\test-plan.md';
+    fs.writeFileSync(path.join(archiveDir, '2026-04-20-test-plan.md'), [
+      '---',
+      `plan: ${archivePlanRef}`,
+      'tier: structural',
+      'tasks: 2',
+      'verified: 2',
+      'done_unverified: 0',
+      'skipped: 0',
+      'blocked: 0',
+      'decisions: 0',
+      'reconciliations: 0',
+      'started: 2026-04-20T00:00:00Z',
+      'completed: 2026-04-20T00:05:00Z',
+      'result: clean',
+      '---',
+      '',
+      '# Plan Enforcer Ledger',
+      '<!-- schema: v2 -->',
+      `<!-- source: ${archivePlanRef} -->`,
+      '<!-- tier: structural -->',
+      '',
+      '## Scoreboard',
+      ' 2 total  |  0 done  |  2 verified  |  0 skipped  |  0 blocked  |  0 remaining',
+      ' Drift: 0  |  Last reconcile: none  |  Tier: structural',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Ship feature | verified | yes | | |',
+      '| T2  | Verify feature | verified | yes | | |',
+      '',
+      '## Decision Log',
+      '',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, [sessionStartHook], {
+      cwd: projectDir,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.doesNotMatch(result.stdout, /PLAN ENFORCER ACTIVATED/);
+    assert.equal(fs.existsSync(path.join(enforcerDir, 'ledger.md')), false);
+  });
+
   it('emits ordered resume packet for enforced benchmark resumes', () => {
     const projectDir = makeTempProject('plan-enforcer-session-resume-');
     const enforcerDir = path.join(projectDir, '.plan-enforcer');
@@ -122,8 +192,8 @@ describe('session-start hook', () => {
     assert.match(result.stdout, /ORDER TO EXECUTE \(from \.plan-enforcer\/resume\.md\):/);
     assert.match(result.stdout, /1\. Finish T11 \[pending\] Unit Tests/);
     assert.match(result.stdout, /2\. Then T12 \[pending\] Auth Tests/);
-    assert.match(result.stdout, /Do NOT edit workspace files before claiming T11 in the ledger/);
-    assert.match(result.stdout, /Reconcile at meaningful checkpoints and whenever the hook asks/);
+    assert.match(result.stdout, /Start with T11\. Keep one active row at a time; no separate claim edit is required before planned workspace work\./);
+    assert.match(result.stdout, /Completion still means 0 remaining rows and archive-ready ledger state/);
   });
 
   it('advisory startup guidance stays lightweight', () => {
@@ -356,7 +426,7 @@ describe('post-tool hook', () => {
     assert.equal(fs.existsSync(`${archivePath}.verdict.md`), true);
   });
 
-  it('blocks final-stretch workspace edits until the next pending row is claimed', () => {
+  it('allows final-stretch workspace edits without a separate claim ritual', () => {
     const projectDir = makeTempProject('plan-enforcer-post-tool-closeout-');
     const enforcerDir = path.join(projectDir, '.plan-enforcer');
     fs.mkdirSync(enforcerDir, { recursive: true });
@@ -408,11 +478,14 @@ describe('post-tool hook', () => {
       input: JSON.stringify({ tool_name: 'Edit', tool_input: { file_path: targetFile } })
     });
 
-    assert.equal(result.status, 2);
-    assert.match(result.stderr, /Plan Enforcer \[block\]: T3 is still pending in the ledger/);
+    assert.equal(result.status, 0);
+    const parsed = JSON.parse(result.stdout);
+    const output = parsed.hookSpecificOutput.additionalContext;
+    assert.match(output, /Plan Enforcer \[closeout-next\]: T3 \[pending\] Next task/);
+    assert.doesNotMatch(output, /\[block\]: T3 is still pending in the ledger/);
   });
 
-  it('warns on ledger edits that enter final stretch with the next row still pending', () => {
+  it('emits focus guidance, not claim ritual, on ledger edits that enter final stretch', () => {
     const projectDir = makeTempProject('plan-enforcer-post-tool-closeout-enter-');
     const enforcerDir = path.join(projectDir, '.plan-enforcer');
     fs.mkdirSync(enforcerDir, { recursive: true });
@@ -485,7 +558,8 @@ describe('post-tool hook', () => {
     const parsed = JSON.parse(result.stdout);
     const output = parsed.hookSpecificOutput.additionalContext;
     assert.match(output, /Plan Enforcer \[closeout-next\]: T11 \[pending\] K/);
-    assert.match(output, /Plan Enforcer \[closeout-claim\]: final stretch entered with T11 still pending/);
+    assert.match(output, /Plan Enforcer \[closeout-focus\]: final stretch active\. T11 is next; keep work aligned and fold the row update into the next real ledger edit\./);
+    assert.doesNotMatch(output, /closeout-claim/);
   });
 
   it('structural post-tool guidance omits ledger hash prefix', () => {
@@ -580,7 +654,7 @@ describe('post-tool hook', () => {
       input: JSON.stringify({ tool_name: 'Edit', tool_input: { file_path: strayFile } })
     });
 
-    assert.equal(result.status, 2);
+    assert.equal(result.status, 0);
     const parsed = JSON.parse(result.stdout);
     const output = parsed.hookSpecificOutput.additionalContext;
     assert.match(output, /Plan Enforcer \[state\]: ledger hash [0-9a-f]{8}\./);
@@ -616,5 +690,6 @@ describe('post-tool hook', () => {
     assert.match(output, /single diff/);
     assert.ok(!/Re-read the ledger file/.test(output), 'per-task re-read step should be gone');
     assert.ok(!/Print scoreboard after each update/.test(output), 'standalone scoreboard step should be gone');
+    assert.match(output, /No separate claim edit is required before planned workspace work\./);
   });
 });

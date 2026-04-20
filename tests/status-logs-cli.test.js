@@ -118,6 +118,67 @@ describe('status-cli', () => {
     assert.match(result.stdout, /quote issues: I2/);
   });
 
+  it('scopes awareness summary to current-package same-day intents', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-awareness-scope-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- created: 2026-04-20T13:04:04Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Current package intent task | verified | current package intent proof | A:I18 | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+    fs.writeFileSync(path.join(enforcerDir, 'awareness.md'), [
+      '# Awareness',
+      '<!-- schema: v1 -->',
+      '',
+      '## Project-level intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '| I15 | older same-day intent | manual | 2026-04-20 |',
+      '| I16 | another older same-day intent | manual | 2026-04-20 |',
+      '| I18 | current package intent | manual | 2026-04-20 |',
+      '',
+      '## This-session intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '',
+      '## Restate rows',
+      '',
+      '| ID | Summary | Refs | Captured |',
+      '|----|---------|------|----------|',
+      '',
+      '## Correction rows',
+      '',
+      '| ID | Type | Refs | Note | Captured |',
+      '|----|------|------|------|----------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, ['src/status-cli.js', path.join(enforcerDir, 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Awareness: 1 live\s+\|\s+1 linked\s+\|\s+0 orphan\s+\|\s+0 quote issues/);
+    assert.doesNotMatch(result.stdout, /I15|I16/);
+  });
+
   it('shows uncommitted git files instead of only raw untracked state', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-git-cli-'));
     const enforcerDir = path.join(tempDir, '.plan-enforcer');
@@ -143,25 +204,57 @@ describe('status-cli', () => {
     assert.match(result.stdout, /files: README.md, docs\/note.md|files: docs\/note.md, README.md/);
   });
 
-  it('includes executed-check summary and next step when command is known but no sidecar exists', () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-checks-cli-'));
+  it('surfaces executed-verification gaps for verified rows', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-exec-cli-'));
     const enforcerDir = path.join(tempDir, '.plan-enforcer');
-    fs.mkdirSync(enforcerDir, { recursive: true });
-    fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({
-      name: 'fixture',
-      scripts: { test: 'node -e "process.exit(0)"' }
-    }, null, 2));
+    const checksDir = path.join(enforcerDir, 'checks');
+    fs.mkdirSync(checksDir, { recursive: true });
     fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
       '# Ledger',
       '<!-- schema: v2 -->',
-      '<!-- source: docs/plans/run.md -->',
-      '<!-- tier: structural -->',
       '',
       '## Task Ledger',
       '',
       '| ID  | Task | Status | Evidence | Chain | Notes |',
       '|-----|------|--------|----------|-------|-------|',
-      '| T1  | Ship proof | verified | package.json | | |',
+      '| T1  | Verify CLI output | verified | npm test | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+    fs.writeFileSync(path.join(enforcerDir, 'config.md'), 'tier: structural\n');
+
+    const result = spawnSync(process.execPath, ['src/status-cli.js', path.join(enforcerDir, 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Executed Verification: 1 gap/);
+    assert.match(result.stdout, /T1 missing npm test/);
+    assert.match(result.stdout, /next:/);
+    assert.match(result.stdout, /rerun T1: npm test/);
+    assert.match(result.stdout, /plan-enforcer-config --check-cmd "<cmd>"/);
+  });
+
+  it('surfaces undetected executed-verification claims for verified rows', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-undetected-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Verify CLI output | verified | 3 tests passed, 0 failed | | |',
       '',
       '## Decision Log',
       '| ID | Type | Scope | Reason | Evidence |',
@@ -178,8 +271,20 @@ describe('status-cli', () => {
     });
 
     assert.equal(result.status, 0);
-    assert.match(result.stdout, /Checks:\s+0 ok\s+\|\s+0 failed\s+\|\s+0 stale\s+\|\s+1 missing\s+\|\s+0 no command/);
-    assert.match(result.stdout, /check issues: T1 missing \(npm test\)/);
+    assert.match(result.stdout, /Executed Verification: 1 gap/);
+    assert.match(result.stdout, /T1 undetected cite exact command or set check_cmd/);
+    assert.match(result.stdout, /fix T1: cite exact command or set check_cmd before verified/);
+  });
+
+  it('shows authored-or-import guidance when no active ledger exists', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-empty-cli-'));
+    const result = spawnSync(process.execPath, ['src/status-cli.js', path.join(tempDir, '.plan-enforcer', 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Start with `\/plan-enforcer <plan-file>` or import an existing plan with `plan-enforcer import <plan-file>`/);
   });
 });
 
@@ -265,25 +370,132 @@ describe('logs-cli', () => {
     assert.match(result.stdout, /quote issues:/);
   });
 
-  it('includes executed-check detail block', () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-logs-checks-cli-'));
+  it('scopes awareness detail to current-package same-day intents', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-logs-awareness-scope-cli-'));
     const enforcerDir = path.join(tempDir, '.plan-enforcer');
     fs.mkdirSync(enforcerDir, { recursive: true });
-    fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({
-      name: 'fixture',
-      scripts: { test: 'node -e "process.exit(0)"' }
-    }, null, 2));
     fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
       '# Ledger',
       '<!-- schema: v2 -->',
-      '<!-- source: docs/plans/run.md -->',
-      '<!-- tier: structural -->',
+      '<!-- created: 2026-04-20T13:04:04Z -->',
       '',
       '## Task Ledger',
       '',
       '| ID  | Task | Status | Evidence | Chain | Notes |',
       '|-----|------|--------|----------|-------|-------|',
-      '| T1  | Ship proof | verified | package.json | | |',
+      '| T1  | Current package intent task | verified | current package intent proof | A:I18 | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+    fs.writeFileSync(path.join(enforcerDir, 'awareness.md'), [
+      '# Awareness',
+      '<!-- schema: v1 -->',
+      '',
+      '## Project-level intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '| I15 | older same-day intent | manual | 2026-04-20 |',
+      '| I16 | another older same-day intent | manual | 2026-04-20 |',
+      '| I18 | current package intent | manual | 2026-04-20 |',
+      '',
+      '## This-session intents',
+      '',
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      '',
+      '## Restate rows',
+      '',
+      '| ID | Summary | Refs | Captured |',
+      '|----|---------|------|----------|',
+      '',
+      '## Correction rows',
+      '',
+      '| ID | Type | Refs | Note | Captured |',
+      '|----|------|------|------|----------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, ['src/logs-cli.js', path.join(enforcerDir, 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /live=1\s+linked=1\s+orphan=0\s+quote_issues=0/);
+    assert.doesNotMatch(result.stdout, /I15|I16/);
+  });
+
+  it('surfaces executed-verification stale details for verified rows', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-logs-exec-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    const checksDir = path.join(enforcerDir, 'checks');
+    fs.mkdirSync(checksDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Verify CLI output | verified | npm test | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+    fs.writeFileSync(path.join(enforcerDir, 'config.md'), 'tier: structural\n');
+    fs.writeFileSync(path.join(checksDir, 'latest.json'), JSON.stringify({
+      T1: {
+        taskId: 'T1',
+        ts: '2026-04-19T08:00:00.000Z',
+        command: 'npm run lint',
+        source: 'evidence',
+        ok: true,
+        exitCode: 0,
+        timedOut: false,
+        durationMs: 123,
+        logPath: '.plan-enforcer/checks/T1.log',
+        jsonPath: '.plan-enforcer/checks/T1.json'
+      }
+    }, null, 2));
+
+    const result = spawnSync(process.execPath, ['src/logs-cli.js', path.join(enforcerDir, 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /EXECUTED VERIFICATION:/);
+    assert.match(result.stdout, /T1\s+stale\s+expected=npm test\s+latest=npm run lint/);
+    assert.match(result.stdout, /next:/);
+    assert.match(result.stdout, /rerun T1: npm test/);
+    assert.match(result.stdout, /plan-enforcer-config --check-cmd "<cmd>"/);
+  });
+
+  it('surfaces undetected executed-verification details for verified rows', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-logs-undetected-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Verify CLI output | verified | 3 tests passed, 0 failed | | |',
       '',
       '## Decision Log',
       '| ID | Type | Scope | Reason | Evidence |',
@@ -300,8 +512,19 @@ describe('logs-cli', () => {
     });
 
     assert.equal(result.status, 0);
-    assert.match(result.stdout, /EXECUTED CHECKS:/);
-    assert.match(result.stdout, /ok=0\s+failed=0\s+stale=0\s+missing=1\s+no_command=0/);
-    assert.match(result.stdout, /T1 missing \(npm test\)/);
+    assert.match(result.stdout, /EXECUTED VERIFICATION:/);
+    assert.match(result.stdout, /T1\s+undetected\s+action=cite exact command or set check_cmd/);
+    assert.match(result.stdout, /fix T1: cite exact command or set check_cmd before verified/);
+  });
+
+  it('shows authored-or-import guidance when no active ledger exists', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-logs-empty-cli-'));
+    const result = spawnSync(process.execPath, ['src/logs-cli.js', path.join(tempDir, '.plan-enforcer', 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Start with `\/plan-enforcer <plan-file>` or import an existing plan with `plan-enforcer import <plan-file>`/);
   });
 });

@@ -180,6 +180,41 @@ function currentIntents(state, opts = {}) {
     .filter((intent) => includeSuperseded || intent.active);
 }
 
+function normalizeCapturedDate(value) {
+  const text = String(value || '').trim().slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : '';
+}
+
+function awarenessOrdinal(id) {
+  const match = String(id || '').trim().match(/^[IR](\d+)$/i);
+  return match ? Number(match[1]) : null;
+}
+
+function packageScopedIntents(state, opts = {}) {
+  const intents = currentIntents(state, opts);
+  const scopedIntentIds = normalizeAwarenessRefs([
+    ...(opts.mustHaveIntentIds || []),
+    ...(opts.taskIntentIds || [])
+  ]);
+  const mustHaveIntentIds = new Set(scopedIntentIds);
+  const scopedOrdinals = scopedIntentIds
+    .map((id) => awarenessOrdinal(id))
+    .filter((value) => Number.isInteger(value));
+  const minScopedOrdinal = scopedOrdinals.length > 0 ? Math.min(...scopedOrdinals) : null;
+  const minCapturedDate = normalizeCapturedDate(opts.minCapturedDate);
+  if (!minCapturedDate) return intents;
+  return intents.filter((intent) => {
+    if (mustHaveIntentIds.has(intent.id)) return true;
+    const captured = normalizeCapturedDate(intent.captured);
+    if (!captured) return false;
+    if (captured > minCapturedDate) return true;
+    if (captured < minCapturedDate) return false;
+    if (!Number.isInteger(minScopedOrdinal)) return true;
+    const ordinal = awarenessOrdinal(intent.id);
+    return Number.isInteger(ordinal) && ordinal >= minScopedOrdinal;
+  });
+}
+
 function shouldVerifyIntentQuote(intent) {
   const source = String(intent && intent.source || '').trim().toLowerCase();
   if (!source) return true;
@@ -336,12 +371,17 @@ function taskAwareness(taskId, state, ledgerPath, opts = {}) {
 function orphanIntents(state, ledgerPath, opts = {}) {
   const linked = new Set();
   const tasks = readLedgerTasks(ledgerPath);
+  const taskIntentIds = new Set(normalizeAwarenessRefs(opts.taskIntentIds || []));
   for (const task of tasks) {
+    extractAwarenessRefs(task.chain).forEach((id) => taskIntentIds.add(id));
     const assessment = resolveTaskAwareness(task, state, opts);
     for (const id of assessment.validIntentIds) linked.add(id);
   }
 
-  return currentIntents(state).filter((intent) => !linked.has(intent.id));
+  return packageScopedIntents(state, {
+    ...opts,
+    taskIntentIds: Array.from(taskIntentIds)
+  }).filter((intent) => !linked.has(intent.id));
 }
 
 function nextIntentId(state) {
@@ -385,6 +425,10 @@ function quoteCell(value) {
   return String(value || '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ').trim();
 }
 
+function isIntentTableHeader(line) {
+  return /^\|\s*ID\s*\|\s*Quote(?:\s*\([^)]+\))?\s*\|\s*Source\s*\|\s*Captured\s*\|/i.test(line || '');
+}
+
 function appendIntentRow(markdown, row) {
   const lines = String(markdown || '').split(/\r?\n/);
   const sectionIndex = lines.findIndex((line) => /^##\s+This-session intents/i.test(line));
@@ -392,21 +436,38 @@ function appendIntentRow(markdown, row) {
     return `${markdown.trimEnd()}\n\n## This-session intents\n\n| ID | Quote | Source | Captured |\n|----|-------|--------|----------|\n| ${row.id} | ${quoteCell(row.quote)} | ${quoteCell(row.source)} | ${quoteCell(row.captured)} |\n`;
   }
 
-  let insertAt = sectionIndex + 1;
-  while (insertAt < lines.length && /^\s*$/.test(lines[insertAt])) insertAt++;
-
-  const headerPresent = /^\|/.test(lines[insertAt] || '') && /^\|/.test(lines[insertAt + 1] || '');
-  if (!headerPresent) {
-    lines.splice(insertAt, 0,
-      '| ID | Quote | Source | Captured |',
-      '|----|-------|--------|----------|'
-    );
-    insertAt += 2;
-  } else {
-    insertAt += 2;
+  let sectionEnd = lines.length;
+  for (let i = sectionIndex + 1; i < lines.length; i++) {
+    if (/^##\s+/.test(lines[i])) {
+      sectionEnd = i;
+      break;
+    }
   }
 
-  while (insertAt < lines.length && /^\|/.test(lines[insertAt])) insertAt++;
+  let tableHeaderIndex = -1;
+  for (let i = sectionIndex + 1; i < sectionEnd - 1; i++) {
+    if (!isIntentTableHeader(lines[i])) continue;
+    if (!/^\|[-\s|]+\|?$/.test(lines[i + 1] || '')) continue;
+    tableHeaderIndex = i;
+    break;
+  }
+
+  let insertAt = sectionEnd;
+  if (tableHeaderIndex === -1) {
+    const newLines = [];
+    if (insertAt > 0 && lines[insertAt - 1].trim() !== '') newLines.push('');
+    newLines.push(
+      '| ID | Quote | Source | Captured |',
+      '|----|-------|--------|----------|',
+      `| ${row.id} | ${quoteCell(row.quote)} | ${quoteCell(row.source)} | ${quoteCell(row.captured)} |`
+    );
+    if (insertAt < lines.length && lines[insertAt].trim() !== '') newLines.push('');
+    lines.splice(insertAt, 0, ...newLines);
+    return `${lines.join('\n').replace(/\n{3,}/g, '\n\n')}\n`;
+  }
+
+  insertAt = tableHeaderIndex + 2;
+  while (insertAt < sectionEnd && /^\|/.test(lines[insertAt])) insertAt++;
   lines.splice(insertAt, 0, `| ${row.id} | ${quoteCell(row.quote)} | ${quoteCell(row.source)} | ${quoteCell(row.captured)} |`);
   return `${lines.join('\n').replace(/\n{3,}/g, '\n\n')}\n`;
 }
@@ -547,8 +608,16 @@ function summarizeAwareness(opts = {}) {
     };
   }
 
-  const liveIntents = currentIntents(loaded.state);
-  const orphanRows = orphanIntents(loaded.state, loaded.ledgerPath, opts);
+  const taskIntentIds = new Set(normalizeAwarenessRefs(opts.taskIntentIds || []));
+  for (const task of readLedgerTasks(loaded.ledgerPath)) {
+    extractAwarenessRefs(task.chain).forEach((id) => taskIntentIds.add(id));
+  }
+  const packageOpts = {
+    ...opts,
+    taskIntentIds: Array.from(taskIntentIds)
+  };
+  const liveIntents = packageScopedIntents(loaded.state, packageOpts);
+  const orphanRows = orphanIntents(loaded.state, loaded.ledgerPath, packageOpts);
   const quoteAssessment = assessAwarenessQuoteVerification(loaded.state, {
     ...opts,
     cwd: loaded.cwd,
@@ -577,6 +646,7 @@ module.exports = {
   createAwarenessTemplate,
   currentIntents,
   expandIntentRefs,
+  packageScopedIntents,
   extractAwarenessRefs,
   findProjectRoot,
   loadAwarenessState,
