@@ -49,18 +49,13 @@ scope.
    packet, not a plan.
 4. Ask only questions whose answers change the plan shape. If the
    user has already stated something, record it; do not re-ask.
-5. Ask at most 3 unresolved plan-shaping questions per turn. If one
-   answer would collapse the rest, ask that one first and wait.
-6. When asking more than one question, use numbered inline questions
-   with short choices when useful. The user should be able to answer
-   in main chat as `1. ...`, `2. ...`, `3. skip`.
-7. Default to the packet sections below. Only omit a section when it
+5. Default to the packet sections below. Only omit a section when it
    truly adds no value for the current ask.
-8. If a question has two plausible answers that would lead to very
+6. If a question has two plausible answers that would lead to very
    different plans, ask the user. Do NOT pick one silently.
-9. When done, tell the user the packet path and that `plan-enforcer-
+7. When done, tell the user the packet path and that `plan-enforcer-
    draft` will consume it automatically on its next run.
-10. Before writing the packet, ensure awareness has at least one
+8. Before writing the packet, ensure awareness has at least one
    verbatim intent row:
    - run `plan-enforcer-awareness capture-latest --if-empty`
    - if you rely on additional scope-bearing user quotes beyond the
@@ -68,34 +63,6 @@ scope.
      --intent "<verbatim quote>"`
    - do not paraphrase those quotes into awareness rows; exact text
      only
-
-## Interactive ask format
-
-Prefer this pattern when you need clarification:
-
-```text
-Need 2 quick answers before I write packet:
-
-1. Session target?
-   A. Claude Code sessions
-   B. SSH / VPS terminals
-   C. Mix
-   Other:
-
-2. Interaction mode?
-   A. Watch-only dashboard
-   B. Send input back into sessions too
-   Other:
-
-Reply in this format:
-1. B
-2. A
-3. skip
-```
-
-If choices are obvious, offer them. If not, keep the numbered format
-but let the user answer freeform under each number. Do not dump 8+
-questions at once unless the user explicitly asks for a full intake.
 
 ## Recommended packet shape
 

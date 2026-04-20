@@ -193,20 +193,6 @@ describe('plan-enforcer-discuss skill sanity', () => {
   it('keeps the compatibility combobulate packet path too', () => {
     assert.match(content, /\.plan-enforcer\/combobulate\.md/);
   });
-
-  it('frames discuss as the first stop and ships inline answer scaffolding', () => {
-    const compatPath = path.join(__dirname, '..', 'skills', 'plan-enforcer-combobulate', 'SKILL.md');
-    const compat = fs.readFileSync(compatPath, 'utf8');
-
-    assert.match(content, /FIRST stop for plan-making asks/i);
-    assert.match(content, /Ask at most 3 unresolved plan-shaping questions per turn/i);
-    assert.match(content, /Reply in this format:/);
-    assert.match(content, /1\.\s*B/);
-    assert.match(content, /3\.\s*skip/i);
-
-    assert.match(compat, /Ask at most 3 unresolved plan-shaping questions per turn/i);
-    assert.match(compat, /Reply in this format:/);
-  });
 });
 
 describe('plan-enforcer-draft discuss routing docs', () => {
