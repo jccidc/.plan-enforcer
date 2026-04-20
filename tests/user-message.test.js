@@ -52,6 +52,33 @@ describe('user-message hook', () => {
     assert.equal(fs.existsSync(path.join(dir, '.plan-enforcer', '.user-messages.jsonl')), false);
   });
 
+  it('bootstraps minimal .plan-enforcer state in a fresh folder for a plan ask', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-user-msg-fresh-'));
+    runHook(dir, {
+      hook_event_name: 'UserPromptSubmit',
+      prompt: "let's make a plan for a six-terminal dashboard"
+    });
+
+    const enforcerDir = path.join(dir, '.plan-enforcer');
+    const configPath = path.join(enforcerDir, 'config.md');
+    const packetPath = path.join(enforcerDir, 'discuss.md');
+    const awarenessPath = path.join(enforcerDir, 'awareness.md');
+    const messagesPath = path.join(enforcerDir, '.user-messages.jsonl');
+    const statuslinePath = path.join(enforcerDir, 'statusline-state.json');
+
+    assert.equal(fs.existsSync(configPath), true);
+    assert.equal(fs.existsSync(packetPath), true);
+    assert.equal(fs.existsSync(awarenessPath), true);
+    assert.equal(fs.existsSync(messagesPath), true);
+    assert.equal(fs.existsSync(statuslinePath), true);
+    assert.match(fs.readFileSync(configPath, 'utf8'), /tier:\s*structural/);
+    assert.match(fs.readFileSync(packetPath, 'utf8'), /six-terminal dashboard/i);
+
+    const statusline = JSON.parse(fs.readFileSync(statuslinePath, 'utf8'));
+    assert.equal(statusline.stage, 'discuss');
+    assert.equal(statusline.label, '1-DISCUSS');
+  });
+
   it('bootstraps discuss packet and statusline state for a plan ask', () => {
     const dir = mkProject();
     runHook(dir, {

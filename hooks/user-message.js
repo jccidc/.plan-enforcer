@@ -6,8 +6,10 @@
 // paraphrases.
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { createEmptyPacket, slugTitle, writeDiscussPacket } = require('../src/discuss-cli');
+const { writeConfig } = require('../src/config');
 
 function readContext() {
   try {
@@ -65,6 +67,35 @@ function resolveProjectRoot(cwd) {
   return findUpEnforcerDir(cwd) || findDownEnforcerDir(cwd, 3);
 }
 
+function resolveBootstrapRoot(startDir) {
+  const initial = path.resolve(startDir);
+  const rootPath = path.parse(initial).root;
+  const homePath = path.resolve(os.homedir());
+  let current = initial;
+
+  while (current && current !== rootPath) {
+    if (current === homePath || fs.existsSync(path.join(current, '.plan-enforcer-stop'))) break;
+    if (fs.existsSync(path.join(current, '.git')) || fs.existsSync(path.join(current, 'package.json'))) {
+      return current;
+    }
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+
+  return initial;
+}
+
+function ensureBootstrapConfig(projectRoot) {
+  const enforcerDir = path.join(projectRoot, '.plan-enforcer');
+  const configPath = path.join(enforcerDir, 'config.md');
+  fs.mkdirSync(enforcerDir, { recursive: true });
+  if (!fs.existsSync(configPath)) {
+    writeConfig(configPath, {});
+  }
+  return { enforcerDir, configPath };
+}
+
 function hasActiveLedger(projectRoot) {
   return fs.existsSync(path.join(projectRoot, '.plan-enforcer', 'ledger.md'));
 }
@@ -109,11 +140,12 @@ function main() {
   const prompt = typeof ctx.prompt === 'string' ? ctx.prompt : '';
   if (!prompt.trim()) process.exit(0);
 
-  const projectRoot = resolveProjectRoot(process.cwd());
+  const bootstrapAsk = shouldBootstrapDiscuss(prompt);
+  const projectRoot = resolveProjectRoot(process.cwd())
+    || (bootstrapAsk ? resolveBootstrapRoot(process.cwd()) : null);
   if (!projectRoot) process.exit(0);
 
-  const enforcerDir = path.join(projectRoot, '.plan-enforcer');
-  if (!fs.existsSync(enforcerDir)) process.exit(0);
+  const { enforcerDir } = ensureBootstrapConfig(projectRoot);
 
   const logPath = path.join(enforcerDir, '.user-messages.jsonl');
   const record = {
