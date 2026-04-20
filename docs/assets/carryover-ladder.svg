@@ -1,9 +1,9 @@
-<svg width="1200" height="760" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="1200" height="840" viewBox="0 0 1200 840" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Plan Enforcer carryover ladder</title>
   <desc id="desc">Carryover comparison bars across scenarios H through N.</desc>
 
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="760" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="840" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#0d1117"/>
       <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
@@ -25,14 +25,14 @@
     </style>
   </defs>
 
-  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="840" fill="url(#bg)"/>
 
   <text x="60" y="54" class="sans eyebrow">Carryover proof</text>
   <text x="60" y="84" class="sans title">The repaired contract keeps surviving.</text>
   <text x="60" y="108" class="sans subtitle">Same ask, harder truth each row. Bars show how much survives.</text>
 
   <g transform="translate(40, 164)">
-    <rect width="1120" height="540" rx="10" class="card-active" filter="url(#shadow)"/>
+    <rect width="1120" height="620" rx="10" class="card-active" filter="url(#shadow)"/>
     <text x="24" y="34" class="sans step-num">Carryover ladder</text>
 
     <rect x="24" y="54" width="14" height="10" rx="5" fill="#3fb950"/>
@@ -126,5 +126,5 @@
     <text x="900" y="632" class="sans value" text-anchor="end">47 / 56</text>
   </g>
 
-  <text x="60" y="728" class="sans footer">Every row: after the contract changed, what survived into final truth?</text>
+  <text x="60" y="808" class="sans footer">Every row: after the contract changed, what survived into final truth?</text>
 </svg>
