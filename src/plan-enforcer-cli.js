@@ -25,6 +25,7 @@ const SUBCOMMANDS = {
   chain: { module: './chain-cli', blurb: 'Full audit trail for a task ID' },
   why: { module: './why-cli', blurb: 'Reverse lookup: every D-row touching a file' },
   audit: { module: './audit-cli', blurb: 'Ledger integrity check (--strict for CI)' },
+  import: { module: './import-cli', blurb: 'Import an existing plan into a live ledger' },
   export: { module: './export-cli', blurb: 'Machine-readable JSON dump of the ledger' },
   lint: { module: './lint-cli', blurb: 'Ledger schema shape validator' }
 };

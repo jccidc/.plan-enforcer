@@ -19,6 +19,7 @@
     "plan-enforcer-chain": "src/chain-cli.js",
     "plan-enforcer-config": "src/config-cli.js",
     "plan-enforcer-export": "src/export-cli.js",
+    "plan-enforcer-import": "src/import-cli.js",
     "plan-enforcer-lint": "src/lint-cli.js",
     "plan-enforcer-logs": "src/logs-cli.js",
     "plan-enforcer-report": "src/report-cli.js",

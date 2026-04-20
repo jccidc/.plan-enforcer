@@ -86,4 +86,53 @@ describe('report-cli', () => {
     assert.match(result.stdout, /Phase verify:/);
     assert.match(result.stdout, /warning: phase proof note missing/);
   });
+
+  it('prints an active report when asked for the live ledger', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-active-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({
+      name: 'fixture',
+      scripts: { test: 'node -e "process.exit(0)"' }
+    }, null, 2));
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/run.md -->',
+      '<!-- tier: structural -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Ship proof | verified | package.json | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+    fs.mkdirSync(path.join(enforcerDir, 'checks'), { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'checks', 'latest.json'), JSON.stringify({
+      T1: {
+        taskId: 'T1',
+        command: 'npm test',
+        ok: true,
+        exitCode: 0
+      }
+    }, null, 2));
+
+    const result = spawnSync(process.execPath, ['src/report-cli.js', '--active', '--ledger', path.join(enforcerDir, 'ledger.md')], {
+      cwd: path.resolve(__dirname, '..'),
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Plan Enforcer Active Report/);
+    assert.match(result.stdout, /Checks:\s+1 ok/);
+    assert.match(result.stdout, /Clean active session/);
+  });
 });

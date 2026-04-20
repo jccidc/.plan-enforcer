@@ -1,6 +1,7 @@
 const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const GIT_STATUS_TIMEOUT_MS = 1000;
 
 function normalizePathFromPorcelain(raw) {
   const text = String(raw || '').trim();
@@ -48,13 +49,17 @@ function summarizeGitWorktree(projectRoot, opts = {}) {
 
   const top = spawnSync('git', ['rev-parse', '--show-toplevel'], {
     cwd: projectRoot,
-    encoding: 'utf8'
+    encoding: 'utf8',
+    timeout: GIT_STATUS_TIMEOUT_MS,
+    windowsHide: true
   });
   if (top.status !== 0) return null;
 
   const status = spawnSync('git', ['status', '--porcelain=v1', '-uall'], {
     cwd: projectRoot,
-    encoding: 'utf8'
+    encoding: 'utf8',
+    timeout: GIT_STATUS_TIMEOUT_MS,
+    windowsHide: true
   });
   if (status.status !== 0) return null;
 
@@ -114,5 +119,6 @@ module.exports = {
   normalizePathFromPorcelain,
   parsePorcelainLine,
   shouldIgnoreWorktreePath,
-  summarizeGitWorktree
+  summarizeGitWorktree,
+  GIT_STATUS_TIMEOUT_MS
 };

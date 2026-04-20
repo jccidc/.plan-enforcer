@@ -142,6 +142,45 @@ describe('status-cli', () => {
     assert.match(result.stdout, /Git: 2 uncommitted files/);
     assert.match(result.stdout, /files: README.md, docs\/note.md|files: docs\/note.md, README.md/);
   });
+
+  it('includes executed-check summary and next step when command is known but no sidecar exists', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-checks-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({
+      name: 'fixture',
+      scripts: { test: 'node -e "process.exit(0)"' }
+    }, null, 2));
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/run.md -->',
+      '<!-- tier: structural -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Ship proof | verified | package.json | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, ['src/status-cli.js', path.join(enforcerDir, 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Checks:\s+0 ok\s+\|\s+0 failed\s+\|\s+0 stale\s+\|\s+1 missing\s+\|\s+0 no command/);
+    assert.match(result.stdout, /check issues: T1 missing \(npm test\)/);
+  });
 });
 
 describe('logs-cli', () => {
@@ -224,5 +263,45 @@ describe('logs-cli', () => {
     assert.match(result.stdout, /orphan intents:/);
     assert.match(result.stdout, /I2  export explicit closure/);
     assert.match(result.stdout, /quote issues:/);
+  });
+
+  it('includes executed-check detail block', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-logs-checks-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({
+      name: 'fixture',
+      scripts: { test: 'node -e "process.exit(0)"' }
+    }, null, 2));
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/run.md -->',
+      '<!-- tier: structural -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | Ship proof | verified | package.json | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, ['src/logs-cli.js', path.join(enforcerDir, 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /EXECUTED CHECKS:/);
+    assert.match(result.stdout, /ok=0\s+failed=0\s+stale=0\s+missing=1\s+no_command=0/);
+    assert.match(result.stdout, /T1 missing \(npm test\)/);
   });
 });
