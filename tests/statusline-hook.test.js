@@ -95,4 +95,28 @@ describe('statusline hook', () => {
     assert.equal(result.status, 0);
     assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: 1-DISCUSS\] \[AUTO\]/);
   });
+
+  it('still discovers real .statusline hooks that mention PE chained markers', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    const claudeDir = path.join(fixture, '.claude');
+    const claudeHooks = path.join(claudeDir, 'hooks');
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.mkdirSync(claudeHooks, { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'discuss.md'), '# Packet\n');
+    fs.writeFileSync(
+      path.join(claudeHooks, 'statusline.js'),
+      [
+        'if (process.env.PLAN_ENFORCER_STATUSLINE_CHAINED === "1") {}',
+        'const file = ".plan-enforcer/statusline-state.json";',
+        'process.stdout.write("[AUTO-CHAIN]")'
+      ].join('\n')
+    );
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project, {
+      CLAUDE_CONFIG_DIR: claudeDir
+    });
+    assert.equal(result.status, 0);
+    assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: 1-DISCUSS\] \[AUTO-CHAIN\]/);
+  });
 });
