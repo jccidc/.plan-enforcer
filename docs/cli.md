@@ -1,4 +1,4 @@
-# Plan Enforcer — CLI Reference
+# Plan Enforcer - CLI Reference
 
 Every command below is available two ways:
 
@@ -15,20 +15,20 @@ to target a different project.
 
 ## Exit code convention
 
-| Code | Meaning                                                          |
-|------|------------------------------------------------------------------|
-| 0    | success or informational clean result                            |
-| 1    | the command ran but the result is "not found" / "has findings" / verification failed |
-| 2    | configuration error (no ledger, bad args, unsupported format)    |
+| Code | Meaning |
+|------|---------|
+| 0 | success or informational clean result |
+| 1 | the command ran but the result is "not found" / "has findings" / verification failed |
+| 2 | configuration error (no ledger, bad args, unsupported format) |
 
-Use `plan-enforcer-audit --strict` in CI: it exits 1 on *any* finding
+Use `plan-enforcer-audit --strict` in CI: it exits 1 on any finding
 (errors or warnings), suitable as a required check.
 
 ---
 
 ## plan-enforcer (dispatcher)
 
-```
+```bash
 plan-enforcer <subcommand> [args...]
 plan-enforcer --help
 plan-enforcer --version
@@ -41,14 +41,14 @@ per-subcommand help is `plan-enforcer <sub> --help`.
 
 ## plan-enforcer-discuss
 
-```
+```bash
 plan-enforcer-discuss [--title <title>] [--packet <path>] [--from-file <path>] [--interactive|--non-interactive] [--json] [ask text...]
 plan-enforcer discuss [args...]
 ```
 
 First-class discuss/clarify entrypoint for the authorship chain.
-Writes `.plan-enforcer/discuss.md` and a backward-compatible
-`.plan-enforcer/combobulate.md`.
+Writes `.plan-enforcer/discuss.md` and keeps
+`.plan-enforcer/combobulate.md` only as a legacy compatibility copy.
 
 Behavior:
 
@@ -65,53 +65,104 @@ Use this before drafting when:
 
 ---
 
+## plan-enforcer-import
+
+```bash
+plan-enforcer-import [plan-path] [--plan <path>] [--cwd <path>] [--tier advisory|structural|enforced] [--force]
+plan-enforcer import [args...]
+```
+
+Bring-your-own-plan entrypoint. Imports an existing markdown plan into
+`.plan-enforcer/ledger.md` and ensures `.plan-enforcer/config.md`
+exists.
+
+Supports the same plan shapes the detector already understands:
+
+- `### Task N:`
+- `## Task N:`
+- markdown checklist plans
+- supported `PLAN.md` / `docs/plans/*.md` / `.planning/*/PLAN.md`
+  auto-detect paths
+
+Typical use:
+
+```bash
+plan-enforcer import docs/plans/roadmap-fix.md
+plan-enforcer status
+claude
+```
+
+---
+
 ## plan-enforcer-status
 
-```
+```bash
 plan-enforcer-status [ledger-path]
 plan-enforcer status
 ```
 
-Prints the scoreboard (counts), current task, unverified rows, and
-blocked rows. When awareness is initialized, status also prints a
-compact awareness summary: live intents, linked intents, orphan count,
-and quote-provenance issue count. Zero args = active ledger at
-`.plan-enforcer/ledger.md`.
+Prints the scoreboard, current task, unverified rows, blocked rows,
+git worktree summary, awareness summary, executed-check summary, and
+recent phase-verify snapshot when present.
+
+Executed-check output now shows:
+
+- ok / failed / stale / missing / no-command counts
+- which rows need attention
+- the next operator move when no command source is configured
+
+---
 
 ## plan-enforcer-logs
 
-```
+```bash
 plan-enforcer-logs [ledger-path]
 plan-enforcer logs
 ```
 
-Full audit log for the active ledger — skipped tasks, drift events,
-reconciliation history, decision log. When awareness is initialized,
-logs also prints orphan-intent detail and quote-provenance findings.
+Full audit log for the active ledger: skipped tasks, drift events,
+decision log, reconciliation history, executed-check detail, and
+awareness detail.
+
+---
 
 ## plan-enforcer-report
 
-```
+```bash
 plan-enforcer-report
+plan-enforcer-report --active
+plan-enforcer-report --ledger .plan-enforcer/ledger.md --active
 plan-enforcer report
 ```
 
-End-of-session summary report. Intended for `session-end` hooks or
-manual session handoff.
+Summary report surface.
+
+- default: reads `.plan-enforcer/archive/`
+- `--active`: prints a live session report from the active ledger
+- if archive data is absent but an active ledger exists, report falls
+  back to the live session automatically
+
+Use this for operator handoff, closure review, and quick proof
+inspection.
+
+---
 
 ## plan-enforcer-review
 
-```
+```bash
 plan-enforcer-review <plan-file>
 plan-enforcer review <plan-file>
 ```
 
 Static review of a plan-file draft. Flags vague tasks, missing
-verification, unclear sequencing. Does not touch the ledger.
+verification, unclear sequencing, and packet-to-plan drift. Does not
+touch the ledger.
+
+---
 
 ## plan-enforcer-verify
 
-```
+```bash
 plan-enforcer-verify [--ledger <path>] [--plan <path>] [--with-awareness] [--awareness <path>] [--json]
 plan-enforcer verify
 ```
@@ -120,9 +171,9 @@ Goal-backward check. Reads `## Must-Haves` from the plan source,
 scores each must-have against the ledger (PASS / PARTIAL / UNKNOWN),
 exits 0 when every MH passes, 1 when any fails, 2 on config error.
 
-Must-haves are tagged `MH1`, `MH2`, …; verify searches task Evidence,
-Chain, and Notes, plus Decision Log scope / reason / evidence, for
-that tag.
+Must-haves are tagged `MH1`, `MH2`, ...; verify searches task
+Evidence, Chain, and Notes, plus Decision Log scope / reason /
+evidence, for that tag.
 
 `--with-awareness` adds two more checks:
 
@@ -132,12 +183,15 @@ that tag.
   must-have target or a valid task Chain target
 
 Finding codes added by awareness mode:
+
 - `MH_NO_INTENT_LINK`
 - `INTENT_NO_TARGET`
 
+---
+
 ## plan-enforcer-awareness
 
-```
+```bash
 plan-enforcer-awareness list [--all] [--json] [--cwd <path>] [--awareness <path>]
 plan-enforcer-awareness orphans [--json] [--cwd <path>] [--awareness <path>] [--ledger <path>]
 plan-enforcer-awareness task <Tn> [--json] [--cwd <path>] [--awareness <path>] [--ledger <path>]
@@ -154,8 +208,8 @@ user prompt as a new intent row, `add` appends a manual this-session
 intent row, and `link` appends `A:I<n>` / `A:R<n>` tokens to a task
 Chain cell.
 
-`capture-latest --if-empty` is the draft/combobulate-safe bootstrap:
-it only seeds awareness when the file has no existing intent rows.
+`capture-latest --if-empty` is the draft/discuss-safe bootstrap: it
+only seeds awareness when the file has no existing intent rows.
 Multi-line prompts are rejected instead of being normalized so the
 stored quote stays exactly verifiable against the captured prompt log.
 
@@ -165,24 +219,36 @@ verified-row evidence gate then verify that non-`manual`,
 non-`pre-capture` intent quotes are exact substrings of a captured
 prompt.
 
+---
+
 ## plan-enforcer-config
 
-```
+```bash
 plan-enforcer-config
 plan-enforcer-config [config-path] [--tier VALUE] [--reconcile-interval N]
-                      [--stale-threshold N] [--completion-gate soft|hard|audit]
+                     [--stale-threshold N] [--completion-gate soft|hard|audit]
+                     [--check-cmd CMD]
 plan-enforcer config --tier enforced
 ```
 
-No args = print current config. With flags = merge + persist updates.
+No args prints current config. With flags, it merges and persists
+updates.
 
-Values and their effects documented in [`docs/config.md`](config.md).
+`--check-cmd` is the explicit executed-verification override. Use it
+when auto-detection does not know which verification command should be
+run for `verified` rows:
+
+```bash
+plan-enforcer-config --check-cmd "pnpm test -- --runInBand"
+```
+
+Values and their effects are documented in [`docs/config.md`](config.md).
 
 ---
 
 ## plan-enforcer-chain
 
-```
+```bash
 plan-enforcer-chain <taskId> [--ledger <path>] [--cwd <path>] [--json]
 plan-enforcer chain T5
 ```
@@ -191,52 +257,32 @@ Full audit trail for a task. Prints:
 
 - the task row (status, evidence, notes)
 - Decision Log rows scoped to the task (by `Tn` mention or Chain D-ref)
-- Chain column tokens classified as decision / commit / verification / awareness / unknown
-- each chain-referenced commit resolved via `git log` (short SHA + date + subject)
+- Chain column tokens classified as decision / commit / verification /
+  awareness / unknown
+- each chain-referenced commit resolved via `git log`
 - Evidence cell signals (commit / file / test / session-log)
 
 Exit codes: 0 found, 1 task not found, 2 missing ledger.
 
-Example:
-
-```
-$ plan-enforcer chain T5
-Chain for T5: src/export-cli.js — versioned JSON ledger dump
-  status: verified
-  ledger: .plan-enforcer/ledger.md (schema v2)
-
-Evidence:
-  src/export-cli.js; smoke roundtrip parsed back 13 tasks
-    file: src/export-cli.js -> src/export-cli.js
-
-Chain refs:
-  commits: 42ce089
-
-Decisions:
-  (none — no D-row scopes this task and no D-ref in Chain)
-
-Commits:
-  42ce089  2026-04-12  P4 T5: src/export-cli.js — versioned JSON ledger dump
-```
+---
 
 ## plan-enforcer-why
 
-```
+```bash
 plan-enforcer-why <file-path> [--ledger <path>] [--cwd <path>] [--json]
 plan-enforcer why src/auth/middleware.js
 ```
 
 Reverse lookup. Scans Decision Log scope / reason / evidence and task
-row evidence / notes for any cell referencing the file (substring or
-basename match).
+row evidence / notes for any cell referencing the file.
 
 Exit codes: 0 hits, 1 clean no-hit, 2 missing ledger.
 
-Use when asking "why does this file look like this?"
+---
 
 ## plan-enforcer-audit
 
-```
+```bash
 plan-enforcer-audit [--ledger <path>] [--cwd <path>] [--strict] [--json]
 plan-enforcer audit --strict
 ```
@@ -249,28 +295,18 @@ Ledger integrity check. Structural checks include:
 4. Chain commit SHAs resolve via `git rev-parse --verify`
 5. verified rows carry evidence with at least one resolved signal
 6. awareness intent quotes resolve against `.user-messages.jsonl`
-   (unless `source: manual` or `source: pre-capture`)
 7. verified rows with awareness links that are missing or lexically weak
 8. done rows with resolvable evidence flagged for promote-to-verified
+9. executed verification sidecars are present / green / non-stale when
+   a command is known
 
-Warning codes: `SCHEMA_V1`, `UNRESOLVED_COMMIT`, `UNKNOWN_CHAIN_TOKEN`,
-`EVIDENCE_UNRESOLVED`, `AWARENESS_QUOTE_UNVERIFIED`,
-`AWARENESS_LINK_MISSING`, `AWARENESS_LINK_WEAK`, `DONE_WITH_REAL_EVIDENCE`.
-Error codes: `NO_LEDGER`, `DUPLICATE_TASK_ID`, `DUPLICATE_D_ID`,
-`DANGLING_D_REF`, `VERIFIED_WITHOUT_EVIDENCE`.
+Use `--strict` in CI.
 
-Exit codes: 0 clean / warnings-only in soft mode, 1 any error or
-(`--strict`) any finding, 2 missing ledger.
-
-CI snippet:
-
-```yaml
-- run: npx plan-enforcer audit --strict
-```
+---
 
 ## plan-enforcer-export
 
-```
+```bash
 plan-enforcer-export [--ledger <path>] [--cwd <path>] [--format=json] [--pretty]
 plan-enforcer export --pretty > ledger.json
 ```
@@ -279,55 +315,66 @@ Versioned JSON dump. Stable schema under `schemaVersion: 1`. Contains
 metadata, stats, tasks, decisions, reconciliations. `--pretty` indents;
 default is compact for `jq` pipelines.
 
-Exit codes: 0 success, 2 config error (bad format, missing ledger).
+---
 
 ## plan-enforcer-lint
 
-```
+```bash
 plan-enforcer-lint [--ledger <path>] [--cwd <path>] [--json]
 plan-enforcer lint
 ```
 
-Shape validator (not a semantics checker — that's audit). Verifies:
-
-- `<!-- schema: vN -->`, `source`, `tier` metadata comments present
-- `## Scoreboard`, `## Task Ledger`, `## Decision Log` sections exist
-- Task and Decision Log header rows match the schema version
-- Every task row has the expected cell count for the schema
-- Every D-row has the expected cell count
-- Non-`manual`, non-`pre-capture` awareness quotes appear verbatim in
-  `.plan-enforcer/.user-messages.jsonl`
-
-Exit codes: 0 well-formed, 1 any finding, 2 missing ledger.
-
-Finding codes include: `MISSING_SCHEMA_COMMENT`, `MISSING_SECTION`,
-`TASK_HEADER_MISMATCH`, `D_HEADER_MISMATCH`, `TASK_ROW_CELL_COUNT`,
-`D_ROW_CELL_COUNT`, `AWARENESS_QUOTE_UNVERIFIED`.
+Shape validator (not a semantics checker - audit owns semantics).
+Verifies schema comments, expected sections, table headers, cell counts,
+and quote-backed awareness rows.
 
 ---
 
 ## Typical workflows
 
-**After a task you suspect of drift:**
+**Bring your own plan**
 
 ```bash
-plan-enforcer chain T5        # what did T5 produce?
-plan-enforcer audit           # anything structurally off?
+plan-enforcer import docs/plans/external-plan.md
+plan-enforcer review docs/plans/external-plan.md
+claude
 ```
 
-**When a file surprises you:**
+**After a task you suspect of drift**
+
+```bash
+plan-enforcer chain T5
+plan-enforcer audit
+```
+
+**When a file surprises you**
 
 ```bash
 plan-enforcer why src/something.js
 ```
 
-**Before merging a PR:**
+**Before merging a PR**
 
 ```bash
-plan-enforcer lint && plan-enforcer audit --strict && plan-enforcer verify
+plan-enforcer lint
+plan-enforcer audit --strict
+plan-enforcer verify --with-awareness
 ```
 
-**Exporting the ledger for a dashboard:**
+**Make executed verification explicit**
+
+```bash
+plan-enforcer-config --check-cmd "npm test"
+plan-enforcer status
+```
+
+**Inspect live closure truth**
+
+```bash
+plan-enforcer report --active
+```
+
+**Export the ledger for a dashboard**
 
 ```bash
 plan-enforcer export --pretty > .artifacts/ledger.json

@@ -13,6 +13,7 @@ CLI.
 | `reconcile_interval`  | `25`          | positive integer (tool calls)                |
 | `stale_threshold`     | `10`          | positive integer (minutes)                   |
 | `completion_gate`     | `soft`        | `soft`, `hard`, `audit`                      |
+| `check_cmd`           | `(auto)`      | shell command string                         |
 | `ledger_path`         | `.plan-enforcer/ledger.md` | file path relative to project root |
 
 ## Tier semantics
@@ -92,8 +93,31 @@ The value is stored in `.plan-enforcer/config.md`, read by
   consumption. Session closes with exit 0.
 
 Gate mode is orthogonal to tier: advisory tier with `completion_gate:
-hard` is valid and useful — a team that wants light runtime
+hard` is valid and useful - a team that wants light runtime
 enforcement but strict end-of-session discipline.
+
+## Executed verification command
+
+`check_cmd` is the first-class override for executed verification.
+
+When a verified row should prove a real command ran and passed, Plan
+Enforcer resolves the command in this order:
+
+1. `check_cmd` from `.plan-enforcer/config.md`
+2. a command cited directly in the Evidence cell
+3. package/convention fallback (`npm test`, `pnpm verify`, `pytest`,
+   `cargo test`, `go test`, and related defaults)
+4. a recent matching verification command in `.session-log.jsonl`
+
+If auto-detection is not obvious enough for your repo, set it
+explicitly:
+
+```bash
+plan-enforcer-config --check-cmd "pnpm test -- --runInBand"
+```
+
+This makes status, logs, audit, and session-end output much clearer:
+the expected command is now explicit instead of inferred.
 
 ## Reading the current config
 
@@ -106,6 +130,7 @@ $ plan-enforcer-config
  reconcile_interval: 25
  stale_threshold: 10
  completion_gate: soft
+ check_cmd: (auto)
  ledger_path: .plan-enforcer/ledger.md
 ---------------------------------------------------
 ```
@@ -120,6 +145,7 @@ tier: structural
 reconcile_interval: 25
 stale_threshold: 10
 completion_gate: soft
+check_cmd: npm test
 ledger_path: .plan-enforcer/ledger.md
 ---
 ```

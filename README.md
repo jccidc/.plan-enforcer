@@ -56,6 +56,7 @@ Start here:
 
 - [Try it](docs/try-it.md)
 - [CLI guide](docs/cli.md)
+- [Examples](docs/examples/README.md)
 - [Public proof](docs/proof/public-proof.md)
 
 ---
@@ -138,6 +139,12 @@ Or bring a plan from anywhere:
 - Superpowers
 - a markdown checklist
 - your own planning workflow
+
+Fast path:
+
+```bash
+plan-enforcer import docs/plans/my-plan.md
+```
 
 Same ledger.  
 Same enforcement layer.  

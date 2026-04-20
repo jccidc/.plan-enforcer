@@ -1,51 +1,63 @@
 # Try It
 
-Want to see Plan Enforcer in action before using it on real work? After installing, open any project that has a plan file and start Claude Code:
+Want to see Plan Enforcer in action before using it on real work?
+After installing, open any project that has a plan file and start
+Claude Code:
 
 ```bash
 cd your-project/
 claude
 ```
 
-That's it. The SessionStart hook auto-detects your plan, generates the ledger, and injects the protocol. Just tell Claude to execute the plan:
+Then tell Claude:
 
-```
+```text
 Execute docs/plans/<plan-file>.md
 ```
 
-No special commands. No configuration. Plan Enforcer handles the rest -- you'll see the Plan Enforcer scoreboard appear after each task completes.
+That is enough for the normal path. SessionStart auto-detects the plan,
+generates the ledger, and injects the runtime protocol.
 
-## Don't have a plan file yet?
+## Fast start options
 
-Use the optional built-in planner or one of the included benchmarks to test drive.
+### 1. Bring your own plan
 
-### Planner flow
+If you already have a markdown plan from GSD, Superpowers, or your own
+workflow:
 
-Discuss the ask first when it is fuzzy, mixed, or likely to drift:
+```bash
+plan-enforcer import docs/plans/my-plan.md
+plan-enforcer review docs/plans/my-plan.md
+claude
+```
+
+Then tell Claude:
+
+```text
+Execute docs/plans/my-plan.md
+```
+
+### 2. Use the authored path
+
+Discuss first when the ask is fuzzy, mixed, or likely to drift:
 
 ```bash
 plan-enforcer discuss "Keep roadmap edits narrow and do not snap back to stale archived text"
 ```
 
-Draft a plan from a goal:
+Draft a plan from the goal:
 
 ```text
 Use the `plan-enforcer-draft` skill to create a plan for "<goal>" in docs/plans/
 ```
 
-If the goal is still ambiguous, the drafter should stop and send you
+If the goal is still ambiguous, the drafter should stop and route
 through `plan-enforcer discuss` first instead of silently guessing.
 
-Review the draft before execution:
-
-```text
-Use plan-enforcer-review on docs/plans/<generated-plan>.md
-```
-
-Or run the shared formatter directly:
+Review before execution:
 
 ```bash
-plan-enforcer-review docs/plans/<generated-plan>.md
+plan-enforcer review docs/plans/<generated-plan>.md
 ```
 
 Then execute the generated file:
@@ -54,18 +66,6 @@ Then execute the generated file:
 Execute docs/plans/<generated-plan>.md
 ```
 
-### Benchmark plan flow
-
-```bash
-# Copy a sample plan into any project
-cp path/to/plan-enforcer/benchmarks/plans/simple-8-tasks.md ./docs/plans/
-
-# Start Claude Code
-claude
-```
-
-Then tell it: `Execute docs/plans/simple-8-tasks.md`
-
 ## Shared CLI commands
 
 For active ledgers, the shared commands are:
@@ -73,6 +73,7 @@ For active ledgers, the shared commands are:
 ```bash
 plan-enforcer-status
 plan-enforcer-logs
+plan-enforcer-report --active
 plan-enforcer-config
 ```
 
@@ -80,4 +81,15 @@ To update config from the CLI:
 
 ```bash
 plan-enforcer-config --tier enforced --completion-gate hard
+plan-enforcer-config --check-cmd "npm test"
 ```
+
+## More examples
+
+See [docs/examples/README.md](examples/README.md) for:
+
+- full authored path
+- bring your own plan
+- composability
+- resume continuity
+- verify / audit / report flow
