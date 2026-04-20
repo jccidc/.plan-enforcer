@@ -1,0 +1,74 @@
+<svg width="1200" height="620" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Plan Enforcer problem and solution</title>
+  <desc id="desc">Two-card SVG showing the problem with prompt-layer agent work and the Plan Enforcer solution at the tool-call and truth layers.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="620" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="problemFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b1820"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="solutionFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16253d"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.38"/>
+    </filter>
+    <style>
+      .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
+      .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
+      .title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
+      .cardKick { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+      .cardTitle { font-size: 22px; font-weight: 700; fill: #e6edf3; }
+      .body { font-size: 13px; font-weight: 500; fill: #c9d1d9; }
+      .note { font-size: 12px; font-weight: 500; fill: #8b949e; }
+      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="620" fill="url(#bg)"/>
+
+  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Problem -> solution</text>
+  <text x="60" y="90" class="sans title">The problem is not bad vibes. The problem is no wall.</text>
+  <text x="60" y="118" class="sans subtitle">Prompt-layer systems can be reminded. They cannot be blocked. Plan Enforcer moves the control point to the tool-call and truth layers.</text>
+
+  <g transform="translate(40, 170)">
+    <rect width="540" height="360" rx="12" fill="url(#problemFill)" stroke="#db61a2" stroke-width="1.4" filter="url(#shadow)"/>
+    <text x="26" y="38" class="sans cardKick" fill="#db61a2">The problem</text>
+    <text x="26" y="70" class="sans cardTitle">Agent work keeps failing in the same ways.</text>
+    <line x1="26" y1="86" x2="514" y2="86" stroke="#db61a2" stroke-width="1" opacity="0.28"/>
+
+    <text x="26" y="122" class="sans body">Silent narrowing: the ask shrinks and nobody sees where.</text>
+    <text x="26" y="160" class="sans body">Fake completion: the agent says "done" before the repo agrees.</text>
+    <text x="26" y="198" class="sans body">Late mutation loss: a new requirement never survives into final code.</text>
+    <text x="26" y="236" class="sans body">Bad resume: the next session reads stale context and rebuilds the wrong thing.</text>
+    <text x="26" y="274" class="sans body">Cold-review failure: months later nobody can explain why a file changed.</text>
+
+    <rect x="26" y="300" width="488" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <text x="42" y="324" class="sans note">Real-world version: roadmap updated twice, model snapped backward to the same stale shape twice.</text>
+  </g>
+
+  <g transform="translate(620, 170)">
+    <rect width="540" height="360" rx="12" fill="url(#solutionFill)" stroke="#58a6ff" stroke-width="1.4" filter="url(#shadow)"/>
+    <text x="26" y="38" class="sans cardKick" fill="#58a6ff">The solution</text>
+    <text x="26" y="70" class="sans cardTitle">Move the controls to where work actually happens.</text>
+    <line x1="26" y1="86" x2="514" y2="86" stroke="#58a6ff" stroke-width="1" opacity="0.28"/>
+
+    <text x="26" y="122" class="sans body">Authorship layer: `discuss -> draft -> review` freezes intent before execution.</text>
+    <text x="26" y="160" class="sans body">Execution layer: phase-first runtime and a single on-disk ledger survive session death.</text>
+    <text x="26" y="198" class="sans body">Truth layer: verify, audit, report, ask-fidelity, carryover, and closure all land on disk.</text>
+    <text x="26" y="236" class="sans body">Hook wall: unplanned edits and untyped deviations can be blocked instead of politely discouraged.</text>
+    <text x="26" y="274" class="sans body">Chain of custody: every meaningful change traces back to a plan row or a typed decision.</text>
+
+    <rect x="26" y="300" width="488" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <text x="42" y="324" class="sans note">Keep your planner if you want. What changes is that "done" now has proof.</text>
+  </g>
+
+  <text x="60" y="590" class="sans footer">Public launch story should start here, not with tables.</text>
+</svg>
