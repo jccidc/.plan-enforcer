@@ -4,15 +4,15 @@
 [![Works with Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code-orange.svg)](https://claude.ai/code)
 [![Node.js >=18](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
 
-**Chain-of-custody enforcement for AI coding.**
+**Chain-of-custody control for AI coding.**
 
-Plan Enforcer is the layer that sits beneath AI-assisted implementation and turns vague claims of "done" into repo-local proof.
+Plan Enforcer is the control and accountability layer beneath AI-assisted implementation.
 
-It captures intent before execution, drives work through a machine-readable ledger during execution, and preserves enough evidence for final closure, audit, and reconstruction after the fact.
+It gives drifting agent work a real ledger, a real decision trail, and a real chain of custody from original ask to landed repo state.
 
 Keep your planner. Keep your IDE. Keep your workflow.
 
-Plan Enforcer exists to make agent work **fidelity-preserving, auditable, and cold-reviewable**.
+Plan Enforcer exists to make agent work **fidelity-preserving, accountable, and cold-reviewable**.
 
 [![Problem and solution](docs/assets/problem-solution.svg)](docs/proof/public-proof.md)
 
@@ -49,6 +49,8 @@ cd .plan-enforcer
 ```
 
 **Requires [Claude Code](https://claude.ai/code) and Node.js >= 18.**
+
+Installs Claude Code hooks and skills. Default tier is `structural`.
 
 Start here:
 
