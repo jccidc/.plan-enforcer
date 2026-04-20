@@ -1,175 +1,154 @@
-<svg width="1200" height="720" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="1200" height="760" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Plan Enforcer benchmark summary</title>
-  <desc id="desc">Benchmark summary: execution credible, planning competitive, carryover is the repeated moat. Carryover ladder H through N shown below.</desc>
+  <desc id="desc">Visual benchmark summary showing phased parity, large trust runtime, planning ambiguity score, and carryover totals.</desc>
 
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="720" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="760" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#0d1117"/>
       <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
+    <linearGradient id="blueFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182842"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="amberFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2010"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="greenFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#112a18"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="purpleFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f1732"/>
+      <stop offset="1" stop-color="#1c2128"/>
+    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.38"/>
     </filter>
     <style>
       .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
       .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
       .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
-      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
       .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .card-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
-      .card-h { font-size: 17px; font-weight: 700; fill: #e6edf3; }
-      .card-sub { font-size: 12px; font-weight: 500; fill: #8b949e; }
-      .metric { font-size: 26px; font-weight: 700; font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; fill: #e6edf3; }
-      .metric-label { font-size: 11px; font-weight: 500; fill: #8b949e; }
-      .card-blue { fill: #1c2128; stroke: #58a6ff; stroke-width: 1.5; }
-      .card-amber { fill: #1c2128; stroke: #d29922; stroke-width: 1.5; }
-      .card-green { fill: #1c2128; stroke: #3fb950; stroke-width: 1.5; }
-      .card-purple { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
-      .card-frame { fill: #161b22; stroke: #30363d; stroke-width: 1; }
-      .card-ladder { fill: #1c2128; stroke: #30363d; stroke-width: 1.2; }
-      .ladder-label { font-size: 21px; font-weight: 700; fill: #3fb950; font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
-      .ladder-score { font-size: 13px; font-weight: 600; fill: #8b949e; font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
-      .ladder-note { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .cardKick { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+      .cardTitle { font-size: 19px; font-weight: 700; fill: #e6edf3; }
+      .label { font-size: 12px; font-weight: 600; fill: #c9d1d9; }
+      .small { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .value { font-size: 12px; font-weight: 700; fill: #e6edf3; }
+      .big { font-size: 26px; font-weight: 700; fill: #e6edf3; }
       .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
     </style>
   </defs>
 
-  <rect width="1200" height="720" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#bg)"/>
 
-  <!-- Header -->
-  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Benchmark summary / 2026-04-18</text>
-  <text x="60" y="88" class="sans title">What the benchmark actually says.</text>
-  <text x="60" y="114" class="sans subtitle">Execution is credible. Planning is competitive. Carryover + chain of custody is the clearest repeated moat.</text>
+  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Benchmark summary</text>
+  <text x="60" y="90" class="sans title">What the benchmark actually says.</text>
+  <text x="60" y="118" class="sans subtitle">Execution is credible. Planning is competitive. Carryover is the repeated moat.</text>
 
-  <!-- Top row: 4 summary cards. w=272, h=180, gap=20. x: 40, 332, 624, 916. y=160. -->
+  <!-- Top row -->
+  <g transform="translate(40, 170)">
+    <rect width="540" height="230" rx="12" fill="url(#blueFill)" stroke="#58a6ff" stroke-width="1.4" filter="url(#shadow)"/>
+    <text x="24" y="36" class="sans cardKick" fill="#58a6ff">Execution parity</text>
+    <text x="24" y="64" class="sans cardTitle">Bounded work is not the problem.</text>
 
-  <!-- Execution -->
-  <g transform="translate(40, 160)">
-    <rect width="272" height="180" rx="10" class="card-blue" filter="url(#shadow)"/>
-    <text x="22" y="34" class="sans card-eyebrow" fill="#58a6ff">Execution</text>
-    <text x="22" y="62" class="sans card-h">Phase-first works</text>
-    <line x1="22" y1="76" x2="250" y2="76" stroke="#30363d" stroke-width="1"/>
-    <text x="22" y="108" class="metric">24 / 24</text>
-    <text x="130" y="108" class="sans metric-label">phased-small native</text>
-    <text x="22" y="140" class="metric">98 / 98</text>
-    <text x="130" y="140" class="sans metric-label">large trust native</text>
-    <text x="22" y="166" class="sans card-sub">Old collapse is no longer the story.</text>
+    <text x="24" y="104" class="sans label">Plan Enforcer</text>
+    <rect x="150" y="92" width="330" height="18" rx="9" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="150" y="92" width="330" height="18" rx="9" fill="#58a6ff"/>
+    <text x="492" y="106" class="sans value" text-anchor="end">24 / 24</text>
+
+    <text x="24" y="136" class="sans label">GSD</text>
+    <rect x="150" y="124" width="330" height="18" rx="9" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="150" y="124" width="330" height="18" rx="9" fill="#79c0ff"/>
+    <text x="492" y="138" class="sans value" text-anchor="end">24 / 24</text>
+
+    <text x="24" y="168" class="sans label">Superpowers</text>
+    <rect x="150" y="156" width="330" height="18" rx="9" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="150" y="156" width="330" height="18" rx="9" fill="#a5d6ff"/>
+    <text x="492" y="170" class="sans value" text-anchor="end">24 / 24</text>
+
+    <text x="24" y="208" class="sans small">Small phased benchmark: all three finish bounded work.</text>
+    <text x="24" y="226" class="sans small">PE has to be credible here, not magical here.</text>
   </g>
 
-  <!-- Planning -->
-  <g transform="translate(332, 160)">
-    <rect width="272" height="180" rx="10" class="card-amber" filter="url(#shadow)"/>
-    <text x="22" y="34" class="sans card-eyebrow" fill="#d29922">Planning</text>
-    <text x="22" y="62" class="sans card-h">Competitive</text>
-    <line x1="22" y1="76" x2="250" y2="76" stroke="#30363d" stroke-width="1"/>
-    <text x="22" y="104" class="sans card-sub">Scenario B: native pass,</text>
-    <text x="22" y="122" class="sans card-sub">GSD fail, Superpowers fail.</text>
-    <text x="22" y="148" class="sans card-sub">Later traps rebalance to</text>
-    <text x="22" y="166" class="sans card-sub">native pass + GSD pass.</text>
+  <g transform="translate(620, 170)">
+    <rect width="540" height="230" rx="12" fill="url(#greenFill)" stroke="#3fb950" stroke-width="1.4" filter="url(#shadow)"/>
+    <text x="24" y="36" class="sans cardKick" fill="#3fb950">Carryover moat</text>
+    <text x="24" y="64" class="sans cardTitle">Repaired-contract preservation is the separator.</text>
+
+    <text x="24" y="104" class="sans label">Plan Enforcer</text>
+    <rect x="180" y="92" width="300" height="22" rx="11" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="180" y="92" width="300" height="22" rx="11" fill="#3fb950"/>
+    <text x="492" y="108" class="sans value" text-anchor="end">172 / 172</text>
+
+    <text x="24" y="140" class="sans label">GSD</text>
+    <rect x="180" y="128" width="300" height="22" rx="11" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="180" y="128" width="213" height="22" rx="11" fill="#58a6ff"/>
+    <text x="492" y="144" class="sans value" text-anchor="end">122 / 172</text>
+
+    <text x="24" y="176" class="sans label">Superpowers</text>
+    <rect x="180" y="164" width="300" height="22" rx="11" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="180" y="164" width="218" height="22" rx="11" fill="#d29922"/>
+    <text x="492" y="180" class="sans value" text-anchor="end">125 / 172</text>
+
+    <text x="24" y="208" class="sans small">Scenarios H through L and resume pressure. Same visible ask, harder carryover truth.</text>
   </g>
 
-  <!-- Carryover -->
-  <g transform="translate(624, 160)">
-    <rect width="272" height="180" rx="10" class="card-green" filter="url(#shadow)"/>
-    <text x="22" y="34" class="sans card-eyebrow" fill="#3fb950">Carryover</text>
-    <text x="22" y="62" class="sans card-h">Repeated moat</text>
-    <line x1="22" y1="76" x2="250" y2="76" stroke="#30363d" stroke-width="1"/>
-    <text x="22" y="102" class="mono card-sub" fill="#e6edf3" font-size="12">H 16/16   I 24/24</text>
-    <text x="22" y="124" class="mono card-sub" fill="#e6edf3" font-size="12">J 28/28   K 32/32</text>
-    <text x="22" y="146" class="mono card-sub" fill="#e6edf3" font-size="12">K+ 32/32  L 40/40</text>
-    <text x="22" y="168" class="mono card-sub" fill="#e6edf3" font-size="12">M 48/48   N 56/56</text>
+  <!-- Bottom row -->
+  <g transform="translate(40, 440)">
+    <rect width="540" height="240" rx="12" fill="url(#amberFill)" stroke="#d29922" stroke-width="1.4" filter="url(#shadow)"/>
+    <text x="24" y="36" class="sans cardKick" fill="#d29922">Planning ambiguity</text>
+    <text x="24" y="64" class="sans cardTitle">Competitive, not blanket best.</text>
+
+    <text x="40" y="110" class="sans label">Scenario B stage score</text>
+
+    <rect x="60" y="138" width="96" height="116" rx="10" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="84" y="172" width="48" height="58" rx="8" fill="#3fb950"/>
+    <text x="108" y="164" class="sans value" text-anchor="middle">3 / 3</text>
+    <text x="108" y="274" class="sans small" text-anchor="middle">PE</text>
+
+    <rect x="188" y="138" width="96" height="116" rx="10" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="212" y="191" width="48" height="39" rx="8" fill="#58a6ff"/>
+    <text x="236" y="183" class="sans value" text-anchor="middle">2 / 3</text>
+    <text x="236" y="274" class="sans small" text-anchor="middle">GSD</text>
+
+    <rect x="316" y="138" width="96" height="116" rx="10" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="340" y="191" width="48" height="39" rx="8" fill="#d29922"/>
+    <text x="364" y="183" class="sans value" text-anchor="middle">2 / 3</text>
+    <text x="364" y="274" class="sans small" text-anchor="middle">SP</text>
+
+    <text x="40" y="314" class="sans small">Interpretation, plan, review under an ambiguity trap.</text>
+    <text x="40" y="332" class="sans small">Fair claim: competitive authorship chain, not universal planning win.</text>
   </g>
 
-  <!-- Honest claim -->
-  <g transform="translate(916, 160)">
-    <rect width="244" height="180" rx="10" class="card-purple" filter="url(#shadow)"/>
-    <text x="22" y="34" class="sans card-eyebrow" fill="#8957e5">Honest claim</text>
-    <text x="22" y="62" class="sans card-h">Narrow and strong</text>
-    <line x1="22" y1="76" x2="222" y2="76" stroke="#30363d" stroke-width="1"/>
-    <text x="22" y="104" class="sans card-sub">Not blanket superiority.</text>
-    <text x="22" y="124" class="sans card-sub">Not fastest runtime.</text>
-    <text x="22" y="152" class="sans card-sub">Yes on repaired-contract</text>
-    <text x="22" y="170" class="sans card-sub">carryover + final closure.</text>
+  <g transform="translate(620, 440)">
+    <rect width="540" height="240" rx="12" fill="url(#purpleFill)" stroke="#8957e5" stroke-width="1.4" filter="url(#shadow)"/>
+    <text x="24" y="36" class="sans cardKick" fill="#8957e5">Large trust runtime</text>
+    <text x="24" y="64" class="sans cardTitle">Large phased work stays respectable.</text>
+
+    <text x="24" y="108" class="sans label">Lower is better</text>
+
+    <text x="24" y="144" class="sans label">Plan Enforcer</text>
+    <rect x="170" y="132" width="300" height="18" rx="9" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="170" y="132" width="223" height="18" rx="9" fill="#3fb950"/>
+    <text x="486" y="146" class="sans value" text-anchor="end">92m 52s</text>
+
+    <text x="24" y="176" class="sans label">GSD</text>
+    <rect x="170" y="164" width="300" height="18" rx="9" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="170" y="164" width="280" height="18" rx="9" fill="#58a6ff"/>
+    <text x="486" y="178" class="sans value" text-anchor="end">116m 49s</text>
+
+    <text x="24" y="208" class="sans label">Superpowers</text>
+    <rect x="170" y="196" width="300" height="18" rx="9" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="170" y="196" width="300" height="18" rx="9" fill="#d29922"/>
+    <text x="486" y="210" class="sans value" text-anchor="end">125m 06s</text>
+
+    <text x="24" y="246" class="sans big">98 / 98</text>
+    <text x="140" y="246" class="sans small">for all three on the 14-phase trust pack</text>
+    <text x="24" y="278" class="sans small">Large scale proves PE can run. Carryover proves why it matters.</text>
   </g>
 
-  <!-- Carryover ladder frame -->
-  <g transform="translate(40, 380)">
-    <rect width="1120" height="280" rx="10" class="card-green" filter="url(#shadow)"/>
-    <text x="24" y="36" class="sans card-eyebrow" fill="#3fb950">Carryover ladder</text>
-    <text x="24" y="64" class="sans card-h">Repaired contract survives every mutation.</text>
-  </g>
-
-  <!-- 8 ladder cells inside the green frame. Inner padding 24. Frame x=40..1160 w=1120.
-       Positions: 64, 197, 330, 463, 596, 729, 862, 995. Cell w=125, gap=8. -->
-
-  <g transform="translate(64, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">H</text>
-    <text x="50" y="42" class="ladder-score">16 / 16</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">first carryover</text>
-    <text x="18" y="104" class="sans ladder-note">separator</text>
-  </g>
-
-  <g transform="translate(197, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">I</text>
-    <text x="50" y="42" class="ladder-score">24 / 24</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">medium repeat</text>
-  </g>
-
-  <g transform="translate(330, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">J</text>
-    <text x="50" y="42" class="ladder-score">28 / 28</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">late mutation</text>
-  </g>
-
-  <g transform="translate(463, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">K</text>
-    <text x="50" y="42" class="ladder-score">32 / 32</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">double mutation</text>
-  </g>
-
-  <g transform="translate(596, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">K+</text>
-    <text x="66" y="42" class="ladder-score">32 / 32</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">resume pressure</text>
-  </g>
-
-  <g transform="translate(729, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">L</text>
-    <text x="50" y="42" class="ladder-score">40 / 40</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">third mutation</text>
-    <text x="18" y="104" class="sans ladder-note">after resume</text>
-  </g>
-
-  <g transform="translate(862, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">M</text>
-    <text x="50" y="42" class="ladder-score">48 / 48</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">fourth mutation</text>
-    <text x="18" y="104" class="sans ladder-note">after resume</text>
-  </g>
-
-  <g transform="translate(995, 480)">
-    <rect width="125" height="150" rx="8" class="card-ladder"/>
-    <text x="18" y="42" class="ladder-label">N</text>
-    <text x="50" y="42" class="ladder-score">56 / 56</text>
-    <line x1="18" y1="60" x2="107" y2="60" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="86" class="sans ladder-note">fifth mutation</text>
-    <text x="18" y="104" class="sans ladder-note">after resume</text>
-  </g>
-
-  <!-- Footer -->
-  <text x="60" y="702" class="sans footer">Every cell is a contract-repair scenario; the score is tasks the repaired contract still covers.</text>
+  <text x="60" y="726" class="sans footer">Read the proof docs for details. The README should only show the shape of the truth.</text>
 </svg>
