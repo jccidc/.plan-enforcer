@@ -4,6 +4,26 @@ This is the canonical launch-stage to-do list for `Plan Enforcer`.
 
 Use this instead of scattered notes when deciding what matters next.
 
+## 2026-04-19 landed since the first launch pass
+
+- executed verification is now a first-class product surface:
+  - explicit `check_cmd`
+  - status / logs / report visibility
+  - active report path
+- bring-your-own-plan is now first-class:
+  - `plan-enforcer import`
+  - launch-safe BYO examples
+- public examples now exist for:
+  - authored path
+  - BYO plan
+  - composability
+  - resume continuity
+  - verify / audit / report
+
+That means the remaining list is narrower than when this file was first
+written. The main open work is now repetition, polish, and continued
+runtime hardening.
+
 ## Rule
 
 - If a task does not make the product more **trustworthy**, more

@@ -25,7 +25,8 @@ Look for:
 - migration/integration work without explicit dependencies
 - missing guardrails such as assumptions, constraints, or out-of-scope notes
 - docs/examples that look like plan tasks but are not meant to execute
-- drift from `.plan-enforcer/combobulate.md` when an intent packet exists:
+- drift from `.plan-enforcer/discuss.md` (or legacy
+  `.plan-enforcer/combobulate.md`) when an intent packet exists:
   - dropped non-negotiables
   - missing proof requirements
   - forbidden narrowings adopted by the plan
@@ -63,9 +64,10 @@ Suggested repair block:
 - If the user provides a path, read that plan.
 - If the user provides inline plan text, review it directly.
 - If the installed CLI is available, prefer running `node ~/.claude/skills/plan-enforcer/src/review-cli.js <plan-path>` so the verdict, findings, and repair block match the shared formatter exactly.
-- When reviewing a file path, also look for `.plan-enforcer/combobulate.md`
-  near the repo root and treat packet-to-plan drift as a first-class
-  review finding.
+- When reviewing a file path, first look for
+  `.plan-enforcer/discuss.md`, then fall back to the legacy
+  `.plan-enforcer/combobulate.md` near the repo root, and treat
+  packet-to-plan drift as a first-class review finding.
 - If the plan is weak or unsafe, propose the minimum repair needed.
 - Prefer specific replacement text over abstract advice when you can.
 - If one or two tasks are broken, rewrite just those tasks.

@@ -27,10 +27,10 @@ when possible.
 | 8 | Blocks deletions structurally | No `[G7]` | No `[S7]` | Yes `[N7]` | Yes `[H5]` | Yes `[H5]` |
 | 9 | Gates completion on unfinished work | No `[G8]` | No `[S8]` | Yes `[N8]` | Yes `[H5]` | Yes `[H5]` |
 | 10 | Gates verification on evidence quality | No `[G9]` | No `[S9]` | Partial `[N9]` | Partial `[H5]` | Partial `[H5]` |
-| 11 | Executes and validates verification commands | No | No | Partial `[N10]` | Partial `[H5]` | Partial `[H5]` |
+| 11 | Executes and validates verification commands | No | No | Yes `[N10]` | Yes `[H5]` | Yes `[H5]` |
 | 12 | Audit trail reconstructible from repo artifacts alone | Partial `[G10]` | Partial `[S10]` | Yes `[N11]` | Yes `[H6]` | Yes `[H6]` |
 | 13 | Tier-aware enforcement (advisory / structural / enforced) | No `[G11]` | No `[S11]` | Yes `[N12]` | Yes `[H7]` | Yes `[H7]` |
-| 14 | Supports imported external plans | Partial `[G12]` | Partial `[S12]` | Partial `[N13]` | Partial `[H10]` | Partial `[H10]` |
+| 14 | Supports imported external plans | Partial `[G12]` | Partial `[S12]` | Yes `[N13]` | Yes `[H10]` | Yes `[H10]` |
 | 15 | Exposes audit / query CLI surface | No `[G13]` | No `[S13]` | Yes `[N14]` | Yes `[H8]` | Yes `[H8]` |
 | 16 | Can act as additive enforcement layer over another workflow | No `[G14]` | No `[S14]` | Yes `[N15]` | Yes `[H9]` | Yes `[H9]` |
 
@@ -38,13 +38,13 @@ when possible.
 
 ## Reading the matrix
 
-- Plan Enforcer native has `Yes` on every enforcement-layer row (7-13, 15-16) and `Partial` on evidence execution (10-11) and plan import (14). Every other system has `No` on those rows, because they rely on prompt-level discipline rather than hook-level enforcement.
+- Plan Enforcer native has `Yes` on every enforcement-layer row (7-16) except row 10, which remains a narrower evidence-quality gate. Every other system has `No` on those rows, because they rely on prompt-level discipline rather than hook-level enforcement.
 - GSD and Superpowers have `Yes` on planning + tracking + persistence rows (1-4) because that is their core product area.
 - The hybrid columns (GSD + Plan Enforcer, Superpowers + Plan
   Enforcer) are no longer design-only. Scenario H composability runs
   now exist for both and prove the additive stack works on a live
   carryover cell. What remains unproven is breadth, not first proof.
-- Row 11 (**executes and validates verification commands**) is now `Partial` for Plan Enforcer Native. The evidence gate can execute a detected verification command on `verified` transitions and block red results, and session-end now consumes missing/red/stale executed-check truth in hard/audit modes. It remains `Partial` because command detection coverage is still not universal.
+- Row 11 (**executes and validates verification commands**) is now `Yes` for Plan Enforcer Native. The product has a first-class explicit path (`check_cmd`) plus evidence/package/session-log detection, blocks red results on verified transitions, and surfaces missing/stale/no-command truth in status/logs/report/audit/session-end instead of leaving it implicit.
 
 ## What this matrix is not
 
@@ -79,11 +79,11 @@ Each reference is a concrete file, CLI binary, or skill that implements or demon
 - **[N7]** `hooks/delete-guard.js` — fires on PreToolUse for Bash (rm, git rm, git clean), Edit (empty new_string), MultiEdit (bulk deletions). Blocks without a typed `delete` D-row. Tests: `tests/delete-guard.test.js`.
 - **[N8]** `hooks/session-end.js` — completion-gate assertion. `src/config.js` VALID_GATES = {`soft`, `hard`, `audit`}. `hard` mode blocks session end with open rows. Tests: `tests/session-end.test.js`. **Caveat (2026-04-13 rerun):** gating detection works — `hard` mode reliably blocks false completion emissions. But in practice, native frequently hits this gate, triggers a recovery loop, and only then converges to a terminal ledger. The `Yes` on this row reflects correct *detection* of false completion; first-pass deterministic completion (the model reaching terminal state before the gate fires) is the open gap tracked as moat-todo §9.
 - **[N9]** `hooks/evidence-gate.js` — fires on row transitions to `verified` status. `src/evidence.js` exports `VERIFY_WITHOUT_METHOD` + `VERIFY_VAGUE` regex families that require evidence strings to name concrete artifacts (commit SHA, test file, tool output). Tests: `tests/evidence.test.js`, `tests/evidence-edge.test.js`, `tests/evidence-gate.test.js`. **Partial** because it validates the shape of the string, not the execution of the command it describes — see §N10.
-- **[N10]** `hooks/evidence-gate.js` now executes a detected verification command on `verified` transitions via `src/executed-verification.js`. Detection order: `check_cmd` config override, evidence-cited command, package/convention fallback, then recent matching session-log verification command. Red result blocks the verification transition and writes `.plan-enforcer/checks/*.log` + `.json` sidecars. `hooks/session-end.js` now refuses hard/audit close when a verified row requires a check but the latest executed verification is missing, red, or stale. **Partial** because detection is still not universal when no command source can be inferred.
+- **[N10]** `hooks/evidence-gate.js` executes a resolved verification command on `verified` transitions via `src/executed-verification.js`. Resolution order: explicit `check_cmd` override, evidence-cited command, package/convention fallback, then recent matching session-log verification command. Red result blocks the verification transition and writes `.plan-enforcer/checks/*.log` + `.json` sidecars. `hooks/session-end.js` refuses hard/audit close when the latest executed verification is missing, red, or stale. `src/status-cli.js`, `src/logs-cli.js`, and `src/report-cli.js --active` surface check state and tell the operator when to set `check_cmd`, making the command path first-class instead of best-effort.
 - **[N11]** `Chain` column on every ledger row carries `C:<commit-sha>` or `C:harness <source>` tokens linking evidence to authorship. `src/chain-cli.js` (`plan-enforcer-chain`) + `src/why-cli.js` (`plan-enforcer-why`) + `src/audit-cli.js` (`plan-enforcer-audit`) query the trail; `src/export-cli.js` (`plan-enforcer-export`) dumps as JSON for external tooling.
 - **[N12]** `src/tier.js:28` `TIERS = ['advisory', 'structural', 'enforced']`. Each hook reads `readTier()` and calls `shouldBlock(action)` → tier-specific behavior. `src/config-cli.js` exposes `plan-enforcer-config --tier advisory|structural|enforced`. Tests: `tests/tier.test.js`, `tests/config.test.js`.
-- **[N13]** `benchmarks/framework-comparison/scripts/seed-native-enforcer.js` demonstrates importing a markdown plan into canonical ledger form via `generateLedger()`. CLI `plan-enforcer-import` is not a separate binary; the functionality lives inside the draft/analyzer flow. **Partial** pending dedicated CLI wrapper + documentation.
-- **[N14]** `package.json` bin field declares 14 binaries: `plan-enforcer`, `plan-enforcer-awareness`, `plan-enforcer-audit`, `plan-enforcer-chain`, `plan-enforcer-config`, `plan-enforcer-export`, `plan-enforcer-lint`, `plan-enforcer-logs`, `plan-enforcer-phase-verify`, `plan-enforcer-report`, `plan-enforcer-review`, `plan-enforcer-status`, `plan-enforcer-verify`, `plan-enforcer-why`. Each wraps a `src/*-cli.js` entry point.
+- **[N13]** `src/import-cli.js` ships as `plan-enforcer-import` / `plan-enforcer import`. It imports supported markdown plan shapes into `.plan-enforcer/ledger.md`, writes `.plan-enforcer/config.md`, and makes bring-your-own-plan a first-class documented path (`docs/examples/bring-your-own-plan.md`, `docs/cli.md`).
+- **[N14]** `package.json` bin field declares 16 binaries: `plan-enforcer`, `plan-enforcer-awareness`, `plan-enforcer-audit`, `plan-enforcer-chain`, `plan-enforcer-config`, `plan-enforcer-discuss`, `plan-enforcer-export`, `plan-enforcer-import`, `plan-enforcer-lint`, `plan-enforcer-logs`, `plan-enforcer-phase-verify`, `plan-enforcer-report`, `plan-enforcer-review`, `plan-enforcer-status`, `plan-enforcer-verify`, `plan-enforcer-why`. Each wraps a `src/*-cli.js` entry point.
 - **[N15]** Hooks in `hooks/*.js` fire on any Claude Code session whose `.claude/settings.json` points at them, regardless of which planner drafted the plan. `benchmarks/framework-comparison/scripts/run-comparison.sh` now drives live `gsd-pe` and `superpowers-pe` cells, converting this from design intent into exercised plumbing.
 
 ### Hybrid columns (H-series — live-verified composability)
@@ -97,7 +97,7 @@ Each reference is a concrete file, CLI binary, or skill that implements or demon
 - **[H7]** Tier-aware behavior is a property of Plan Enforcer's hooks and config; hybrid cells seed the same structural tier and therefore inherit it.
 - **[H8]** The 13 CLI binaries query the Plan Enforcer ledger/truth surfaces and are therefore available against hybrid-produced PE artifacts as well.
 - **[H9]** `Plan Enforcer` can act as an additive enforcement layer over another workflow. Verified 2026-04-19 by `COMPOSABILITY-SCENARIO-H-COMPARISON.md`.
-- **[H10]** Imported/external-plan support remains `Partial` even in hybrid mode: the path works in practice, but a dedicated first-class import CLI/documented shape is still missing.
+- **[H10]** Imported/external-plan support is `Yes` in hybrid mode as well because `plan-enforcer-import` is now a first-class product surface. Hybrid planners can hand Plan Enforcer a markdown plan and land in the same ledger/runtime path.
 
 ### GSD (G-series — external, documented or inferred)
 
@@ -151,6 +151,6 @@ GSD and Superpowers are **prompt-level** workflow plugins: all behavior is instr
 
 ## Next actions this matrix unblocks
 
-1. **Strengthen row 11 (executed verification) from Partial to Yes.** Keep broadening command detection, wire the same behavior cleanly into hybrid cells, and make the inference feel routine rather than best-effort.
-2. **Close row 14 (imported plans) ambiguity.** Either wire a dedicated `plan-enforcer-import` CLI + document the supported input shapes, or document the current draft/analyzer flow explicitly as the import path.
+1. **Broaden executed-verification coverage further.** The first-class path is now closed, but more command families and repo conventions can still be added over time.
+2. **Deepen first-class examples.** Keep BYO-plan, authored-path, resume, and proof-surface examples aligned with the shipped runtime.
 3. **Optional wider hybrid coverage.** Scenario H proved first composability. Only add more hybrid scenarios if we need deeper GTM proof.

@@ -11,7 +11,7 @@ assumptions about a codebase that doesn't match reality. This skill
 spends a few minutes inspecting the actual code and writes down what
 it finds, so the drafter has real context to work from.
 
-Distinct from `plan-enforcer:combobulate`: combobulate captures
+Distinct from `plan-enforcer-discuss`: discuss captures
 **user intent** (what the user wants). This skill captures **repo
 reality** (what exists, what conventions apply, what's in the way).
 Both inputs feed `plan-enforcer-draft`. Each is optional; both
@@ -121,4 +121,4 @@ After writing the brief:
 - Tell the user the path (`.plan-enforcer/research.md`).
 - Summarize the decisions captured in one line per section.
 - Offer next step: "want me to draft the plan against this research
-  (and the combobulate brief, if present)?" and wait.
+  (and the discuss packet, if present)?" and wait.

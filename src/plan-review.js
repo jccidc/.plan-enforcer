@@ -315,7 +315,7 @@ function packetDriftFindings(content, packetContent) {
     findings.push({
       severity: 'warning',
       code: 'packet_goal_drift',
-      message: 'Plan header/body does not clearly preserve the combobulate normalized goal.',
+      message: 'Plan header/body does not clearly preserve the intent packet normalized goal.',
       suggestion: 'Mirror the packet Normalized Goal in the plan header and keep later tasks aligned to that wording.'
     });
   }
