@@ -7,68 +7,70 @@
       <stop offset="0" stop-color="#0d1117"/>
       <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
-    <linearGradient id="problemFill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2b1820"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="solutionFill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#16253d"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.38"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
     </filter>
     <style>
       .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
       .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
       .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
-      .title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
       .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .cardKick { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-      .cardTitle { font-size: 22px; font-weight: 700; fill: #e6edf3; }
-      .body { font-size: 13px; font-weight: 500; fill: #c9d1d9; }
-      .note { font-size: 12px; font-weight: 500; fill: #8b949e; }
+      .step-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; fill: #8957e5; text-transform: uppercase; }
+      .card-title { font-size: 18px; font-weight: 700; fill: #e6edf3; }
+      .body { font-size: 12px; font-weight: 500; fill: #c9d1d9; }
+      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
+      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
       .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
     </style>
   </defs>
 
   <rect width="1200" height="620" fill="url(#bg)"/>
 
-  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Problem -> solution</text>
-  <text x="60" y="90" class="sans title">The problem is not bad vibes. The problem is no wall.</text>
-  <text x="60" y="118" class="sans subtitle">Prompt-layer systems can be reminded. They cannot be blocked. Plan Enforcer moves the control point to the tool-call and truth layers.</text>
+  <text x="60" y="54" class="sans eyebrow">Problem &#8594; solution</text>
+  <text x="60" y="84" class="sans title">The problem is not bad vibes. The problem is no wall.</text>
+  <text x="60" y="108" class="sans subtitle">Prompt-layer systems can be reminded. They cannot be blocked.</text>
 
-  <g transform="translate(40, 170)">
-    <rect width="540" height="360" rx="12" fill="url(#problemFill)" stroke="#db61a2" stroke-width="1.4" filter="url(#shadow)"/>
-    <text x="26" y="38" class="sans cardKick" fill="#db61a2">The problem</text>
-    <text x="26" y="70" class="sans cardTitle">Agent work keeps failing in the same ways.</text>
-    <line x1="26" y1="86" x2="514" y2="86" stroke="#db61a2" stroke-width="1" opacity="0.28"/>
+  <g transform="translate(40, 160)">
+    <rect width="540" height="380" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">The problem</text>
+    <text x="22" y="62" class="sans card-title">Agent work keeps failing in</text>
+    <text x="22" y="82" class="sans card-title">the same ways.</text>
+    <line x1="22" y1="96" x2="518" y2="96" stroke="#30363d" stroke-width="1"/>
 
-    <text x="26" y="122" class="sans body">Silent narrowing: the ask shrinks and nobody sees where.</text>
-    <text x="26" y="160" class="sans body">Fake completion: the agent says "done" before the repo agrees.</text>
-    <text x="26" y="198" class="sans body">Late mutation loss: a new requirement never survives into final code.</text>
-    <text x="26" y="236" class="sans body">Bad resume: the next session reads stale context and rebuilds the wrong thing.</text>
-    <text x="26" y="274" class="sans body">Cold-review failure: months later nobody can explain why a file changed.</text>
+    <text x="22" y="126" class="sans body">&#8226; Silent narrowing: the ask shrinks and nobody sees where.</text>
+    <text x="22" y="156" class="sans body">&#8226; Fake completion: the agent says "done" before the repo agrees.</text>
+    <text x="22" y="186" class="sans body">&#8226; Late mutation loss: a new requirement never survives into</text>
+    <text x="22" y="204" class="sans body">&#160;&#160;final code.</text>
+    <text x="22" y="234" class="sans body">&#8226; Bad resume: the next session reads stale context and rebuilds</text>
+    <text x="22" y="252" class="sans body">&#160;&#160;the wrong thing.</text>
+    <text x="22" y="282" class="sans body">&#8226; Cold-review failure: months later nobody can explain why a</text>
+    <text x="22" y="300" class="sans body">&#160;&#160;file changed.</text>
 
-    <rect x="26" y="300" width="488" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
-    <text x="42" y="324" class="sans note">Real-world version: roadmap updated twice, model snapped backward to the same stale shape twice.</text>
+    <rect x="22" y="322" width="496" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <text x="38" y="347" class="sans body">Real-world version: roadmap updated twice, model snapped back twice.</text>
   </g>
 
-  <g transform="translate(620, 170)">
-    <rect width="540" height="360" rx="12" fill="url(#solutionFill)" stroke="#58a6ff" stroke-width="1.4" filter="url(#shadow)"/>
-    <text x="26" y="38" class="sans cardKick" fill="#58a6ff">The solution</text>
-    <text x="26" y="70" class="sans cardTitle">Move the controls to where work actually happens.</text>
-    <line x1="26" y1="86" x2="514" y2="86" stroke="#58a6ff" stroke-width="1" opacity="0.28"/>
+  <g transform="translate(620, 160)">
+    <rect width="540" height="380" rx="10" class="card-active" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">The solution</text>
+    <text x="22" y="62" class="sans card-title">Move the controls to where</text>
+    <text x="22" y="82" class="sans card-title">work actually happens.</text>
+    <line x1="22" y1="96" x2="518" y2="96" stroke="#8957e5" stroke-width="1" opacity="0.35"/>
 
-    <text x="26" y="122" class="sans body">Authorship layer: `discuss -> draft -> review` freezes intent before execution.</text>
-    <text x="26" y="160" class="sans body">Execution layer: phase-first runtime and a single on-disk ledger survive session death.</text>
-    <text x="26" y="198" class="sans body">Truth layer: verify, audit, report, ask-fidelity, carryover, and closure all land on disk.</text>
-    <text x="26" y="236" class="sans body">Hook wall: unplanned edits and untyped deviations can be blocked instead of politely discouraged.</text>
-    <text x="26" y="274" class="sans body">Chain of custody: every meaningful change traces back to a plan row or a typed decision.</text>
+    <text x="22" y="126" class="sans body">&#8226; Authorship: <tspan class="mono step-cmd">discuss &#8594; draft &#8594; review</tspan> freezes intent</text>
+    <text x="22" y="144" class="sans body">&#160;&#160;before execution.</text>
+    <text x="22" y="174" class="sans body">&#8226; Execution: phase-first runtime and a single on-disk ledger</text>
+    <text x="22" y="192" class="sans body">&#160;&#160;survive session death.</text>
+    <text x="22" y="222" class="sans body">&#8226; Truth: verify, audit, report, ask-fidelity, carryover, and</text>
+    <text x="22" y="240" class="sans body">&#160;&#160;closure all land on disk.</text>
+    <text x="22" y="270" class="sans body">&#8226; Hook wall: unplanned edits and untyped deviations get blocked,</text>
+    <text x="22" y="288" class="sans body">&#160;&#160;not politely discouraged.</text>
 
-    <rect x="26" y="300" width="488" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
-    <text x="42" y="324" class="sans note">Keep your planner if you want. What changes is that "done" now has proof.</text>
+    <rect x="22" y="322" width="496" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <text x="38" y="347" class="sans body">Keep your planner if you want. "Done" now has proof.</text>
   </g>
 
-  <text x="60" y="590" class="sans footer">Public launch story should start here, not with tables.</text>
+  <text x="60" y="598" class="sans footer">Prompts are advice. Hooks are walls.</text>
 </svg>

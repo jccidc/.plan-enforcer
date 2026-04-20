@@ -1,70 +1,104 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
-  <style>
-    .box { fill: #0d1117; stroke: #30363d; stroke-width: 1.5; }
-    .box-planner { fill: #161b22; stroke: #30363d; }
-    .box-native { fill: #161b22; stroke: #8957e5; stroke-width: 1.5; }
-    .box-pe { fill: #1f2937; stroke: #8957e5; stroke-width: 2; }
-    .box-output { fill: #0d1117; stroke: #3fb950; stroke-width: 2; }
-    .title { fill: #c9d1d9; font-size: 15px; font-weight: 600; }
-    .title-native { fill: #d2a8ff; font-size: 15px; font-weight: 600; }
-    .sub { fill: #8b949e; font-size: 11px; }
-    .pe-title { fill: #d2a8ff; font-size: 16px; font-weight: 700; }
-    .pe-sub { fill: #8b949e; font-size: 11px; }
-    .arrow { stroke: #484f58; stroke-width: 1.5; fill: none; }
-    .arrow-main { stroke: #8957e5; stroke-width: 2; fill: none; }
-    .caption { fill: #6e7681; font-size: 11px; font-style: italic; }
-    .hdr { fill: #58a6ff; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; }
-  </style>
+<svg width="1200" height="620" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Plan Enforcer stack</title>
+  <desc id="desc">Stack diagram showing plan sources feeding the Plan Enforcer enforcement layer into an audited output.</desc>
 
-  <!-- Header labels -->
-  <text x="50" y="30" class="hdr">PLAN SOURCE</text>
-  <text x="50" y="200" class="hdr">ENFORCEMENT LAYER</text>
-  <text x="50" y="370" class="hdr">OUTPUT</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="620" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <style>
+      .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
+      .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
+      .lane { font-size: 11px; font-weight: 700; fill: #8957e5; letter-spacing: 0.14em; text-transform: uppercase; }
+      .step-title { font-size: 14px; font-weight: 700; fill: #e6edf3; }
+      .step-sub { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
+      .pe-title { font-size: 18px; font-weight: 700; fill: #e6edf3; }
+      .pe-sub { font-size: 12px; font-weight: 500; fill: #8b949e; }
+      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #30363d; stroke-width: 2; }
+      .arrowhead { fill: #30363d; }
+      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
+    </style>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/>
+    </marker>
+  </defs>
 
-  <!-- Top row: four plan sources -->
-  <rect x="50" y="50" width="185" height="90" rx="6" class="box-native"/>
-  <text x="142" y="85" text-anchor="middle" class="title-native">Plan Enforcer drafter</text>
-  <text x="142" y="105" text-anchor="middle" class="sub">plan-enforcer-draft</text>
-  <text x="142" y="122" text-anchor="middle" class="sub">+ review + Discuss</text>
+  <rect width="1200" height="620" fill="url(#bg)"/>
 
-  <rect x="255" y="50" width="185" height="90" rx="6" class="box-planner"/>
-  <text x="347" y="85" text-anchor="middle" class="title">GSD</text>
-  <text x="347" y="105" text-anchor="middle" class="sub">phase-based planning</text>
-  <text x="347" y="122" text-anchor="middle" class="sub">.planning/ artifacts</text>
+  <text x="60" y="54" class="sans eyebrow">Stack</text>
+  <text x="60" y="84" class="sans title">Keep your planner. Enforcement is additive.</text>
+  <text x="60" y="108" class="sans subtitle">Any plan source feeds the same enforcement layer. Output is audited either way.</text>
 
-  <rect x="460" y="50" width="185" height="90" rx="6" class="box-planner"/>
-  <text x="552" y="85" text-anchor="middle" class="title">Superpowers</text>
-  <text x="552" y="105" text-anchor="middle" class="sub">writing-plans skill</text>
-  <text x="552" y="122" text-anchor="middle" class="sub">executing-plans skill</text>
+  <text x="60" y="150" class="sans lane">Plan source</text>
 
-  <rect x="665" y="50" width="185" height="90" rx="6" class="box-planner"/>
-  <text x="757" y="85" text-anchor="middle" class="title">Your own plan</text>
-  <text x="757" y="105" text-anchor="middle" class="sub">markdown / checklist</text>
-  <text x="757" y="122" text-anchor="middle" class="sub">whiteboard transcript</text>
+  <g transform="translate(40, 168)">
+    <rect width="270" height="110" rx="10" class="card-active" filter="url(#shadow)"/>
+    <text x="20" y="34" class="sans step-title">Plan Enforcer drafter</text>
+    <text x="20" y="56" class="sans step-sub">Discuss, draft, review</text>
+    <text x="20" y="74" class="sans step-sub">Native authorship chain</text>
+    <text x="20" y="96" class="mono step-cmd">plan-enforcer-draft</text>
+  </g>
 
-  <!-- Arrows from planners to PE -->
-  <path d="M 142 140 L 142 170 L 450 170 L 450 210" class="arrow"/>
-  <path d="M 347 140 L 347 170 L 450 170 L 450 210" class="arrow"/>
-  <path d="M 552 140 L 552 170 L 450 170 L 450 210" class="arrow"/>
-  <path d="M 757 140 L 757 170 L 450 170 L 450 210" class="arrow"/>
+  <g transform="translate(330, 168)">
+    <rect width="270" height="110" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="34" class="sans step-title">GSD</text>
+    <text x="20" y="56" class="sans step-sub">Phase-based planning</text>
+    <text x="20" y="74" class="sans step-sub">.planning artifacts</text>
+    <text x="20" y="96" class="mono step-cmd">docs/plans/*.md</text>
+  </g>
 
-  <!-- Middle: Plan Enforcer -->
-  <rect x="50" y="210" width="800" height="110" rx="8" class="box-pe"/>
-  <text x="450" y="238" text-anchor="middle" class="pe-title">Plan Enforcer</text>
-  <text x="450" y="258" text-anchor="middle" class="pe-sub">Claude Code hooks + single-file ledger + typed Decision Log</text>
-  <text x="160" y="288" text-anchor="middle" class="pe-sub">chain-guard</text>
-  <text x="290" y="288" text-anchor="middle" class="pe-sub">delete-guard</text>
-  <text x="420" y="288" text-anchor="middle" class="pe-sub">evidence-gate</text>
-  <text x="560" y="288" text-anchor="middle" class="pe-sub">completion-gate</text>
-  <text x="710" y="288" text-anchor="middle" class="pe-sub">audit CLIs</text>
-  <text x="450" y="308" text-anchor="middle" class="caption">catches drift at the tool-call level — not advice the agent can ignore</text>
+  <g transform="translate(620, 168)">
+    <rect width="270" height="110" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="34" class="sans step-title">Superpowers</text>
+    <text x="20" y="56" class="sans step-sub">writing-plans skill</text>
+    <text x="20" y="74" class="sans step-sub">executing-plans skill</text>
+    <text x="20" y="96" class="mono step-cmd">docs/plans/*.md</text>
+  </g>
 
-  <!-- Arrow to output -->
-  <path d="M 450 320 L 450 350" class="arrow-main"/>
-  <polygon points="445,350 455,350 450,360" fill="#8957e5"/>
+  <g transform="translate(910, 168)">
+    <rect width="250" height="110" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="34" class="sans step-title">Your own plan</text>
+    <text x="20" y="56" class="sans step-sub">Markdown checklist</text>
+    <text x="20" y="74" class="sans step-sub">Whiteboard transcript</text>
+    <text x="20" y="96" class="mono step-cmd">docs/plans/*.md</text>
+  </g>
 
-  <!-- Bottom: output -->
-  <rect x="250" y="360" width="400" height="60" rx="6" class="box-output"/>
-  <text x="450" y="388" text-anchor="middle" class="title">Audited output</text>
-  <text x="450" y="406" text-anchor="middle" class="sub">every edit traced to a plan row or a typed Decision Log entry</text>
+  <path d="M 175 282 L 175 318 L 600 318 L 600 352" class="arrow" marker-end="url(#arrow-end)"/>
+  <path d="M 465 282 L 465 318 L 600 318" class="arrow"/>
+  <path d="M 755 282 L 755 318 L 600 318" class="arrow"/>
+  <path d="M 1035 282 L 1035 318 L 600 318" class="arrow"/>
+
+  <text x="60" y="370" class="sans lane">Enforcement layer</text>
+
+  <g transform="translate(40, 388)">
+    <rect width="1120" height="120" rx="10" class="card-active" filter="url(#shadow)"/>
+    <text x="24" y="36" class="sans pe-title">Plan Enforcer</text>
+    <text x="24" y="56" class="sans pe-sub">Claude Code hooks + single-file ledger + typed Decision Log</text>
+    <line x1="24" y1="70" x2="1096" y2="70" stroke="#30363d" stroke-width="1"/>
+    <text x="100" y="94" class="mono step-cmd" text-anchor="middle">chain-guard</text>
+    <text x="300" y="94" class="mono step-cmd" text-anchor="middle">delete-guard</text>
+    <text x="500" y="94" class="mono step-cmd" text-anchor="middle">evidence-gate</text>
+    <text x="720" y="94" class="mono step-cmd" text-anchor="middle">completion-gate</text>
+    <text x="960" y="94" class="mono step-cmd" text-anchor="middle">audit CLIs</text>
+  </g>
+
+  <path d="M 600 512 L 600 548" class="arrow" marker-end="url(#arrow-end)"/>
+
+  <text x="60" y="538" class="sans lane">Output</text>
+
+  <g transform="translate(330, 550)">
+    <rect width="540" height="50" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="22" class="sans step-title">Audited output</text>
+    <text x="20" y="40" class="sans step-sub">Every edit traced to a plan row or typed Decision Log entry</text>
+  </g>
 </svg>

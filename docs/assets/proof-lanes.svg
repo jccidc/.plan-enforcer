@@ -1,57 +1,13 @@
 <svg width="1200" height="650" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Plan Enforcer public proof lanes</title>
-  <desc id="desc">Public benchmark and proof frames: execution, authorship, carryover, composability, dogfood, and roadmap regression.</desc>
+  <desc id="desc">Public proof frames: execution, authorship, carryover, composability, dogfood, and roadmap regression.</desc>
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="650" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#0d1117"/>
       <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
-    <linearGradient id="card-blue-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1a2840"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="card-amber-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2a2010"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="card-green-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#112a18"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="card-purple-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1e1630"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="card-pink-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2a1220"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
-    <linearGradient id="card-slate-fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1e2128"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#58a6ff" flood-opacity="0.2"/>
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-amber" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#d29922" flood-opacity="0.2"/>
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#3fb950" flood-opacity="0.2"/>
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-purple" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#8957e5" flood-opacity="0.2"/>
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow-pink" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#db61a2" flood-opacity="0.2"/>
       <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
     </filter>
     <style>
@@ -60,95 +16,86 @@
       .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
       .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
       .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .card-kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-      .card-title { font-size: 18px; font-weight: 700; fill: #e6edf3; }
-      .card-body { font-size: 12px; font-weight: 500; fill: #8b949e; }
-      .card-mono { font-size: 11px; font-weight: 600; fill: #8b949e; }
-      .footer-text { font-size: 11px; font-weight: 500; fill: #6e7681; }
+      .step-num { font-size: 11px; font-weight: 700; fill: #8957e5; letter-spacing: 0.12em; text-transform: uppercase; }
+      .step-title { font-size: 17px; font-weight: 700; fill: #e6edf3; }
+      .step-sub { font-size: 12px; font-weight: 500; fill: #8b949e; }
+      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
+      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
+      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
     </style>
   </defs>
 
   <rect width="1200" height="650" fill="url(#bg)"/>
 
-  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Public proof lanes</text>
-  <text x="60" y="88" class="sans title">What we can say in public, and why.</text>
-  <text x="60" y="114" class="sans subtitle">Six proof frames, each with a different job: credibility, wedge, composability, and operator trust.</text>
+  <text x="60" y="54" class="sans eyebrow">Public proof lanes</text>
+  <text x="60" y="84" class="sans title">What we can say in public, and why.</text>
+  <text x="60" y="108" class="sans subtitle">Six proof frames, each with a different job: credibility, wedge, composability, and operator trust.</text>
 
-  <!-- Row 1: y=158, card height=170 -->
-
-  <!-- Execution (blue) -->
-  <g transform="translate(40, 158)">
-    <rect width="350" height="170" rx="10" fill="url(#card-blue-fill)" stroke="#58a6ff" stroke-width="1.3" filter="url(#glow-blue)"/>
-    <text x="22" y="34" class="sans card-kicker" fill="#58a6ff">Execution</text>
-    <text x="22" y="62" class="sans card-title">PE is execution-credible</text>
-    <line x1="22" y1="75" x2="328" y2="75" stroke="#58a6ff" stroke-width="1" opacity="0.25"/>
-    <text x="22" y="97" class="sans card-body">Use phased-small and phased-large to prove</text>
-    <text x="22" y="115" class="sans card-body">the system is not just an audit wrapper.</text>
-    <text x="22" y="142" class="mono card-mono">24 / 24 small  |  98 / 98 large trust</text>
+  <g transform="translate(40, 150)">
+    <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">Execution</text>
+    <text x="22" y="62" class="sans step-title">PE is execution-credible</text>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <text x="22" y="100" class="sans step-sub">Phased-small and phased-large prove the</text>
+    <text x="22" y="118" class="sans step-sub">system is not just an audit wrapper.</text>
+    <text x="22" y="156" class="mono step-cmd">24 / 24 small  |  98 / 98 large trust</text>
   </g>
 
-  <!-- Authorship (amber) -->
-  <g transform="translate(425, 158)">
-    <rect width="350" height="170" rx="10" fill="url(#card-amber-fill)" stroke="#d29922" stroke-width="1.3" filter="url(#glow-amber)"/>
-    <text x="22" y="34" class="sans card-kicker" fill="#d29922">Authorship</text>
-    <text x="22" y="62" class="sans card-title">Discuss — draft — review</text>
-    <line x1="22" y1="75" x2="328" y2="75" stroke="#d29922" stroke-width="1" opacity="0.25"/>
-    <text x="22" y="97" class="sans card-body">Public chain exists, but do not overclaim</text>
-    <text x="22" y="115" class="sans card-body">isolated discuss superiority. Fair claim is</text>
-    <text x="22" y="133" class="sans card-body">competitive authorship.</text>
+  <g transform="translate(420, 150)">
+    <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">Authorship</text>
+    <text x="22" y="62" class="sans step-title">Discuss, draft, review</text>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <text x="22" y="100" class="sans step-sub">Public chain exists, but do not overclaim</text>
+    <text x="22" y="118" class="sans step-sub">isolated discuss superiority. Fair claim</text>
+    <text x="22" y="136" class="sans step-sub">is competitive authorship.</text>
   </g>
 
-  <!-- Carryover (green) -->
-  <g transform="translate(810, 158)">
-    <rect width="350" height="170" rx="10" fill="url(#card-green-fill)" stroke="#3fb950" stroke-width="1.3" filter="url(#glow-green)"/>
-    <text x="22" y="34" class="sans card-kicker" fill="#3fb950">Carryover</text>
-    <text x="22" y="62" class="sans card-title">This is the moat wedge</text>
-    <line x1="22" y1="75" x2="328" y2="75" stroke="#3fb950" stroke-width="1" opacity="0.25"/>
-    <text x="22" y="97" class="sans card-body">H–N repeat the same result: repaired-contract</text>
-    <text x="22" y="115" class="sans card-body">truth survives mutation, interruption, and</text>
-    <text x="22" y="133" class="sans card-body">closure better than the alternatives.</text>
+  <g transform="translate(800, 150)">
+    <rect width="360" height="180" rx="10" class="card-active" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">Carryover</text>
+    <text x="22" y="62" class="sans step-title">The moat wedge</text>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <text x="22" y="100" class="sans step-sub">H through N repeat the same result:</text>
+    <text x="22" y="118" class="sans step-sub">repaired-contract truth survives mutation,</text>
+    <text x="22" y="136" class="sans step-sub">interruption, and closure.</text>
   </g>
 
-  <!-- Row 2: y=368, card height=170 -->
-
-  <!-- Composability (purple) -->
-  <g transform="translate(40, 368)">
-    <rect width="350" height="170" rx="10" fill="url(#card-purple-fill)" stroke="#8957e5" stroke-width="1.3" filter="url(#glow-purple)"/>
-    <text x="22" y="34" class="sans card-kicker" fill="#8957e5">Composability</text>
-    <text x="22" y="62" class="sans card-title">Keep your planner</text>
-    <line x1="22" y1="75" x2="328" y2="75" stroke="#8957e5" stroke-width="1" opacity="0.25"/>
-    <text x="22" y="97" class="sans card-body">Public proof that PE sits under GSD or</text>
-    <text x="22" y="115" class="sans card-body">Superpowers as an additive enforcement</text>
-    <text x="22" y="133" class="sans card-body">and truth layer.</text>
-    <text x="22" y="155" class="mono card-mono">GSD + PE 16 / 16  |  SP + PE 16 / 16</text>
+  <g transform="translate(40, 350)">
+    <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">Composability</text>
+    <text x="22" y="62" class="sans step-title">Keep your planner</text>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <text x="22" y="100" class="sans step-sub">Public proof that PE sits under GSD or</text>
+    <text x="22" y="118" class="sans step-sub">Superpowers as additive enforcement</text>
+    <text x="22" y="136" class="sans step-sub">and truth.</text>
+    <text x="22" y="162" class="mono step-cmd">GSD + PE 16 / 16  |  SP + PE 16 / 16</text>
   </g>
 
-  <!-- Dogfood (pink) -->
-  <g transform="translate(425, 368)">
-    <rect width="350" height="170" rx="10" fill="url(#card-pink-fill)" stroke="#db61a2" stroke-width="1.3" filter="url(#glow-pink)"/>
-    <text x="22" y="34" class="sans card-kicker" fill="#db61a2">Dogfood</text>
-    <text x="22" y="62" class="sans card-title">We live in it ourselves</text>
-    <line x1="22" y1="75" x2="328" y2="75" stroke="#db61a2" stroke-width="1" opacity="0.25"/>
-    <text x="22" y="97" class="sans card-body">Proves operator usability and has found real</text>
-    <text x="22" y="115" class="sans card-body">bugs in live repo work. Good for credibility,</text>
-    <text x="22" y="133" class="sans card-body">not for competitor scoring.</text>
+  <g transform="translate(420, 350)">
+    <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">Dogfood</text>
+    <text x="22" y="62" class="sans step-title">We live in it ourselves</text>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <text x="22" y="100" class="sans step-sub">Proves operator usability and has found</text>
+    <text x="22" y="118" class="sans step-sub">real bugs in live repo work. Credibility</text>
+    <text x="22" y="136" class="sans step-sub">lane, not competitor scoring.</text>
   </g>
 
-  <!-- Roadmap regression (slate) -->
-  <g transform="translate(810, 368)">
-    <rect width="350" height="170" rx="10" fill="url(#card-slate-fill)" stroke="#8b949e" stroke-width="1.3" filter="url(#shadow)"/>
-    <text x="22" y="34" class="sans card-kicker" fill="#8b949e">Roadmap regression</text>
-    <text x="22" y="62" class="sans card-title">Real pain, not current moat</text>
-    <line x1="22" y1="75" x2="328" y2="75" stroke="#8b949e" stroke-width="1" opacity="0.25"/>
-    <text x="22" y="97" class="sans card-body">Keep this lane public and maintained, but do</text>
-    <text x="22" y="115" class="sans card-body">not pitch it as the current separator. It is</text>
-    <text x="22" y="133" class="sans card-body">a credibility lane, not the wedge.</text>
+  <g transform="translate(800, 350)">
+    <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="22" y="34" class="sans step-num">Roadmap regression</text>
+    <text x="22" y="62" class="sans step-title">Real pain, not current moat</text>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <text x="22" y="100" class="sans step-sub">Keep this lane public and maintained, but</text>
+    <text x="22" y="118" class="sans step-sub">do not pitch it as the current separator.</text>
+    <text x="22" y="136" class="sans step-sub">Credibility lane, not the wedge.</text>
   </g>
 
-  <!-- Footer -->
-  <g transform="translate(40, 572)">
-    <rect width="1120" height="54" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2"/>
-    <text x="24" y="22" class="sans footer-text">Public launch story: center on execution credibility, authorship reality, carryover moat, composability, and dogfood.</text>
-    <text x="24" y="40" class="sans footer-text">Roadmap regression stays in the proof pack — not the main wedge.</text>
+  <g transform="translate(40, 568)">
+    <rect width="1120" height="54" rx="10" class="card"/>
+    <text x="24" y="22" class="sans footer">Public launch story: execution credibility, authorship reality, carryover moat, composability, dogfood.</text>
+    <text x="24" y="40" class="sans footer">Roadmap regression stays in the proof pack, not the main wedge.</text>
   </g>
 </svg>

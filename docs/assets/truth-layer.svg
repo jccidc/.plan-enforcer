@@ -1,77 +1,93 @@
-<svg width="1200" height="520" viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="1200" height="480" viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Plan Enforcer truth layer</title>
-  <desc id="desc">Truth layer showing verify, audit, report, chain of custody, ask-fidelity, carryover, and final closure.</desc>
+  <desc id="desc">Truth layer showing verify, audit, report, and chain of custody.</desc>
 
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="520" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="480" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#0d1117"/>
       <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
-    <linearGradient id="cardFill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#112a18"/>
-      <stop offset="1" stop-color="#1c2128"/>
-    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.38"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
     </filter>
     <style>
       .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
+      .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
       .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
-      .title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
       .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .kick { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; fill: #3fb950; }
-      .cardTitle { font-size: 19px; font-weight: 700; fill: #e6edf3; }
-      .body { font-size: 12px; font-weight: 500; fill: #c9d1d9; }
-      .small { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .step-num { font-size: 11px; font-weight: 700; fill: #8957e5; letter-spacing: 0.1em; text-transform: uppercase; }
+      .step-title { font-size: 15px; font-weight: 700; fill: #e6edf3; }
+      .step-sub { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
+      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
+      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #30363d; stroke-width: 2; }
+      .arrowhead { fill: #30363d; }
       .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
     </style>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/>
+    </marker>
   </defs>
 
-  <rect width="1200" height="520" fill="url(#bg)"/>
+  <rect width="1200" height="480" fill="url(#bg)"/>
 
-  <text x="60" y="54" class="sans eyebrow">Plan Enforcer / Truth layer</text>
-  <text x="60" y="90" class="sans title">This is where "done" stops being self-report.</text>
-  <text x="60" y="118" class="sans subtitle">Verify, audit, and report turn the ledger into cold-reviewable proof. Ask-fidelity, carryover, lineage, and final closure all live in the same lane.</text>
+  <text x="60" y="54" class="sans eyebrow">Truth layer</text>
+  <text x="60" y="84" class="sans title">"Done" stops being self-report.</text>
+  <text x="60" y="108" class="sans subtitle">Verify, audit, and report turn the ledger into cold-reviewable proof.</text>
 
-  <g transform="translate(40, 184)">
-    <rect width="250" height="220" rx="12" fill="url(#cardFill)" stroke="#3fb950" stroke-width="1.4" filter="url(#shadow)"/>
-    <text x="22" y="36" class="sans kick">Verify</text>
-    <text x="22" y="64" class="sans cardTitle">Proof before closure</text>
-    <text x="22" y="96" class="sans body">Verified rows must point at real</text>
-    <text x="22" y="114" class="sans body">checks, not just optimistic notes.</text>
-    <text x="22" y="132" class="sans body">Ask-fidelity pressure starts here.</text>
+  <g transform="translate(40, 150)">
+    <rect width="250" height="210" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="32" class="sans step-num">Verify</text>
+    <text x="20" y="58" class="sans step-title">Proof before closure</text>
+    <text x="20" y="78" class="sans step-title">Evidence gate</text>
+    <line x1="20" y1="92" x2="230" y2="92" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="116" class="sans step-sub">Verified rows must point</text>
+    <text x="20" y="134" class="sans step-sub">at real checks. Ask-fidelity</text>
+    <text x="20" y="152" class="sans step-sub">pressure starts here.</text>
+    <text x="20" y="190" class="mono step-cmd">plan-enforcer-verify</text>
   </g>
 
-  <g transform="translate(330, 184)">
-    <rect width="250" height="220" rx="12" fill="url(#cardFill)" stroke="#3fb950" stroke-width="1.4" filter="url(#shadow)"/>
-    <text x="22" y="36" class="sans kick">Audit</text>
-    <text x="22" y="64" class="sans cardTitle">Interrogate the run</text>
-    <text x="22" y="96" class="sans body">Trace tasks, files, deviations,</text>
-    <text x="22" y="114" class="sans body">orphan edits, and missing proof</text>
-    <text x="22" y="132" class="sans body">without trusting the agent summary.</text>
+  <g transform="translate(330, 150)">
+    <rect width="250" height="210" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="32" class="sans step-num">Audit</text>
+    <text x="20" y="58" class="sans step-title">Interrogate the run</text>
+    <text x="20" y="78" class="sans step-title">Trace every edit</text>
+    <line x1="20" y1="92" x2="230" y2="92" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="116" class="sans step-sub">Tasks, files, deviations,</text>
+    <text x="20" y="134" class="sans step-sub">orphan edits, missing proof.</text>
+    <text x="20" y="152" class="sans step-sub">No agent summary required.</text>
+    <text x="20" y="190" class="mono step-cmd">plan-enforcer-audit</text>
   </g>
 
-  <g transform="translate(620, 184)">
-    <rect width="250" height="220" rx="12" fill="url(#cardFill)" stroke="#3fb950" stroke-width="1.4" filter="url(#shadow)"/>
-    <text x="22" y="36" class="sans kick">Report</text>
-    <text x="22" y="64" class="sans cardTitle">Make the truth readable</text>
-    <text x="22" y="96" class="sans body">Phase reports, lineage, dossier,</text>
-    <text x="22" y="114" class="sans body">closure manifest, and final-truth</text>
-    <text x="22" y="132" class="sans body">summary are product surfaces.</text>
+  <g transform="translate(620, 150)">
+    <rect width="250" height="210" rx="10" class="card" filter="url(#shadow)"/>
+    <text x="20" y="32" class="sans step-num">Report</text>
+    <text x="20" y="58" class="sans step-title">Make truth readable</text>
+    <text x="20" y="78" class="sans step-title">Lineage, dossier, closure</text>
+    <line x1="20" y1="92" x2="230" y2="92" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="116" class="sans step-sub">Phase reports, dossier,</text>
+    <text x="20" y="134" class="sans step-sub">closure manifest, final-truth</text>
+    <text x="20" y="152" class="sans step-sub">summary.</text>
+    <text x="20" y="190" class="mono step-cmd">plan-enforcer-report</text>
   </g>
 
-  <g transform="translate(910, 184)">
-    <rect width="250" height="220" rx="12" fill="url(#cardFill)" stroke="#3fb950" stroke-width="1.4" filter="url(#shadow)"/>
-    <text x="22" y="36" class="sans kick">Chain of custody</text>
-    <text x="22" y="64" class="sans cardTitle">Cold-reviewable closure</text>
-    <text x="22" y="96" class="sans body">Every meaningful change traces to</text>
-    <text x="22" y="114" class="sans body">a task row or typed decision row.</text>
-    <text x="22" y="132" class="sans body">That is the moat under carryover.</text>
+  <g transform="translate(910, 150)">
+    <rect width="250" height="210" rx="10" class="card-active" filter="url(#shadow)"/>
+    <text x="20" y="32" class="sans step-num">Chain of custody</text>
+    <text x="20" y="58" class="sans step-title">Cold-reviewable closure</text>
+    <text x="20" y="78" class="sans step-title">Every edit has a parent</text>
+    <line x1="20" y1="92" x2="230" y2="92" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="116" class="sans step-sub">Every meaningful change</text>
+    <text x="20" y="134" class="sans step-sub">traces to a task row or</text>
+    <text x="20" y="152" class="sans step-sub">typed decision row.</text>
+    <text x="20" y="190" class="mono step-cmd">plan-enforcer-chain T5</text>
   </g>
 
-  <path d="M290 294 H330" stroke="#3fb950" stroke-width="2" stroke-linecap="round"/>
-  <path d="M580 294 H620" stroke="#3fb950" stroke-width="2" stroke-linecap="round"/>
-  <path d="M870 294 H910" stroke="#3fb950" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 292 255 L 328 255" class="arrow" marker-end="url(#arrow-end)"/>
+  <path d="M 582 255 L 618 255" class="arrow" marker-end="url(#arrow-end)"/>
+  <path d="M 872 255 L 908 255" class="arrow" marker-end="url(#arrow-end)"/>
 
-  <text x="60" y="486" class="sans footer">Public benchmark language should map back to this layer: ask-fidelity, carryover, lineage, and final truth.</text>
+  <text x="60" y="450" class="sans footer">Ask-fidelity, carryover, lineage, final truth &#8212; all live here.</text>
 </svg>
