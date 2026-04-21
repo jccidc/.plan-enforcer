@@ -51,7 +51,7 @@ function formatActiveReport(ledgerPath) {
   const unverified = rows.filter((row) => row.status === 'done' && !row.evidence);
   const enforcerDir = path.dirname(ledgerPath);
   const lines = [
-    '---Plan Enforcer Active Report -----------------------',
+    '---🛡 Plan Enforcer Active Report --------------------',
     ` Source: ${meta.source}`,
     ` Tier: ${meta.tier}  |  Started: ${meta.created}`,
     ` Tasks: ${stats.doneCount}/${stats.total} done  |  Verified: ${stats.counts.verified}  |  Remaining: ${stats.remaining}`,

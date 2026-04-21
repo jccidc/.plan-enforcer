@@ -211,7 +211,7 @@ function formatStatusReport(ledger) {
   const blocked = rows.filter((row) => row.status === 'blocked');
 
   const lines = [
-    '---Plan Enforcer Status ------------------------------',
+    '---🛡 Plan Enforcer Status ---------------------------',
     ` ${stats.doneCount}/${stats.total} tasks  |  ${stats.counts.verified} verified  |  ${stats.counts.skipped + stats.counts.superseded} skipped  |  ${stats.counts.blocked} blocked`,
     ` Tier: ${meta.tier}  |  Drift: ${stats.drift}  |  Current: ${current ? current.id : 'none'}`,
     '-----------------------------------------------------'
@@ -250,7 +250,7 @@ function formatLogsReport(ledger) {
     entry.type === 'unplanned' || /\b(drift|unplanned)\b/i.test(entry.reason || '')
   );
 
-  const lines = ['---Plan Enforcer Logs --------------------------------'];
+  const lines = ['---🛡 Plan Enforcer Logs -----------------------------'];
 
   if (skipped.length > 0) {
     lines.push('', 'SKIPPED TASKS:');
