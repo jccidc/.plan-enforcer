@@ -136,7 +136,7 @@ function lintLedger(opts) {
   const taskLines = ledger.split(/\r?\n/);
   for (let i = 0; i < taskLines.length; i++) {
     const line = taskLines[i];
-    if (/^\|\s*T\d+\s*\|/.test(line)) {
+    if (/^\|\s*T\d+[A-Za-z0-9]*\s*\|/.test(line)) {
       const cells = splitRow(line);
       if (cells.length !== expectedTaskCells) {
         addFinding(findings, 'TASK_ROW_CELL_COUNT',

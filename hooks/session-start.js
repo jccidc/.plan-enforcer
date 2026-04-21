@@ -248,7 +248,7 @@ function buildActivationOutput(planFile, format, tasks, tier, ledgerContent, com
 }
 
 function parseResumeSnapshot(resumeText) {
-  const nextMatch = resumeText.match(/^- Next row:\s*(T\d+)\s*\[([^\]]+)\]\s*(.+)$/m);
+  const nextMatch = resumeText.match(/^- Next row:\s*(T\d+[A-Za-z0-9]*)\s*\[([^\]]+)\]\s*(.+)$/m);
   const openMatch = resumeText.match(/^- Open rows:\s*(.+)$/m);
   const openRows = openMatch
     ? openMatch[1].split(/\s*;\s*/).map((row) => row.trim()).filter(Boolean)

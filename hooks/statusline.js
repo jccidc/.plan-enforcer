@@ -41,24 +41,6 @@ function looksLikePlanEnforcerWrapper(filePath) {
   }
 }
 
-function extractScriptPath(command) {
-  const quoted = String(command || '').match(/"([^"]+\.js)"/);
-  if (quoted && quoted[1]) return quoted[1];
-  const bare = String(command || '').match(/(?:^|\s)([^\s"]+\.js)(?:\s|$)/);
-  return bare && bare[1] ? bare[1] : '';
-}
-
-function baseCommandOwnsEnforcer(command) {
-  const scriptPath = extractScriptPath(command);
-  if (!scriptPath) return false;
-  try {
-    const content = fs.readFileSync(scriptPath, 'utf8');
-    return /statusline-state\.json|readEnforcerState|PLAN_ENFORCER_STATUSLINE_CHAINED/i.test(content);
-  } catch (_error) {
-    return false;
-  }
-}
-
 function discoverBaseCommand() {
   const claudeDir = resolveClaudeDir();
   if (!claudeDir) return '';
@@ -83,7 +65,7 @@ function runBaseCommand(command, rawInput, opts = {}) {
   if (/plan-enforcer[\\/]+hooks[\\/]+statusline\.js/i.test(command)) return '';
   try {
     const env = { ...process.env };
-    if (!opts.allowBaseEnforcer) {
+    if (opts.chainEnforcer) {
       env.PLAN_ENFORCER_STATUSLINE_CHAINED = '1';
     }
     const result = spawnSync(command, {
@@ -134,8 +116,21 @@ function mergeOutputs(segment, baseOutput) {
   return lines.join('\n');
 }
 
+function enforcerLabel(state) {
+  if (!state || !state.label) return '';
+  return `[ENFORCER: ${String(state.label).toUpperCase()}]`;
+}
+
 function outputHasEnforcerSegment(text) {
   return /\[ENFORCER:\s*[^\]]+\]/i.test(String(text || '').replace(/\x1b\[[0-9;]*m/g, ''));
+}
+
+function replaceEnforcerSegment(baseOutput, state) {
+  const label = enforcerLabel(state);
+  if (!label) return baseOutput || '';
+  const pattern = /((?:\x1b\[[0-9;]*m)*)\[ENFORCER:\s*[^\]]+\]((?:\x1b\[[0-9;]*m)*)/i;
+  if (!pattern.test(String(baseOutput || ''))) return '';
+  return String(baseOutput).replace(pattern, `$1${label}$2`);
 }
 
 function main() {
@@ -158,12 +153,10 @@ function main() {
   const baseCommand = process.env.PLAN_ENFORCER_STATUSLINE_CHAINED === '1'
     ? ''
     : (readBaseCommand() || discoverBaseCommand());
-  const baseOwnsEnforcer = baseCommandOwnsEnforcer(baseCommand);
-  const baseOutput = runBaseCommand(baseCommand, rawInput, {
-    allowBaseEnforcer: baseOwnsEnforcer
-  });
-  if (baseOwnsEnforcer && outputHasEnforcerSegment(baseOutput)) {
-    process.stdout.write(baseOutput);
+  const baseOutput = runBaseCommand(baseCommand, rawInput);
+  const replaced = replaceEnforcerSegment(baseOutput, state);
+  if (replaced) {
+    process.stdout.write(replaced);
     return;
   }
   const merged = mergeOutputs(segment, baseOutput);

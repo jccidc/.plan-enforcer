@@ -9,7 +9,7 @@
 // Pure module. No filesystem. Consumed by hooks/ledger-schema-guard.js.
 // See docs/strategy/gaps/ledger-task-count-tampering.md for motivation.
 
-const T_ROW_RE = /^\|\s*(T\d+)\s*\|/gm;
+const T_ROW_RE = /^\|\s*(T\d+[A-Za-z0-9]*)\s*\|/gm;
 const D_ROW_RE = /^\|\s*D\d+\s*\|([^|]*)\|([^|]*)\|/gm;
 const INIT_MARKER_RE = /<!--\s*created:/;
 

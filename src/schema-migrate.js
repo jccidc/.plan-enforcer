@@ -107,7 +107,7 @@ function migrateTaskLedger(content) {
       seenSeparator = true;
       continue;
     }
-    if (seenHeader && seenSeparator && /^\|\s*T\d+\s*\|/.test(line)) {
+    if (seenHeader && seenSeparator && /^\|\s*T\d+[A-Za-z0-9]*\s*\|/.test(line)) {
       // Task row
       result.push(insertColumnBeforeNotes(line, ''));
       continue;

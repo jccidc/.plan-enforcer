@@ -60,6 +60,20 @@ const V1_LEDGER = `# Plan Enforcer Ledger
 | D2 | T2       | Removed middleware| Replaced by new auth per T2 spec    |
 `;
 
+const SUFFIX_LEDGER = `# Plan Enforcer Ledger
+<!-- schema: v2 -->
+<!-- source: docs/plans/suffix.md -->
+<!-- tier: structural -->
+
+## Task Ledger
+
+| ID   | Task        | Status      | Evidence | Chain | Notes |
+|------|-------------|-------------|----------|-------|-------|
+| T1   | one         | verified    | yes      |       |       |
+| T11a | split alpha | in-progress |          |       |       |
+| T11b | split beta  | pending     |          |       |       |
+`;
+
 describe('splitRow', () => {
   it('strips leading and trailing empty cells', () => {
     assert.deepEqual(splitRow('| a | b | c |'), ['a', 'b', 'c']);
@@ -110,6 +124,22 @@ describe('parseTaskRows on v1 (backward compat)', () => {
     assert.deepEqual(rows[0].chain, []);
     assert.equal(rows[0].evidence, 'done it');
     assert.equal(rows[0].notes, 'hi');
+  });
+});
+
+describe('suffixed task IDs', () => {
+  it('parses split task rows like T11a/T11b', () => {
+    const rows = parseTaskRows(SUFFIX_LEDGER);
+    assert.deepEqual(rows.map((row) => row.id), ['T1', 'T11a', 'T11b']);
+    assert.equal(rows[1].status, 'in-progress');
+    assert.equal(rows[2].status, 'pending');
+  });
+
+  it('counts suffixed task rows in ledger stats', () => {
+    const stats = parseLedger(SUFFIX_LEDGER);
+    assert.equal(stats.total, 3);
+    assert.equal(stats.doneCount, 1);
+    assert.equal(stats.remaining, 2);
   });
 });
 

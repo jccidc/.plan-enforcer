@@ -184,18 +184,18 @@ function getLedgerStats(ledger) {
   const skippedCount = (ledger.match(/\|\s*(skipped|superseded)\s*\|/gi) || []).length;
   const blockedCount = (ledger.match(/\|\s*blocked\s*\|/gi) || []).length;
   const remaining = pendingCount + inProgressCount;
-  const totalTasks = (ledger.match(/^\|\s*T\d+/gm) || []).length;
+  const totalTasks = (ledger.match(/^\|\s*T\d+[A-Za-z0-9]*/gm) || []).length;
   return { pendingCount, inProgressCount, doneCount, verifiedCount, skippedCount, blockedCount, remaining, totalTasks };
 }
 
 // Extract in-progress task IDs so we can flag stuck ones
 function getInProgressTaskIds(ledger) {
-  const matches = [...ledger.matchAll(/^\|\s*(T\d+)\s*\|[^|]+\|\s*in-progress\s*\|/gim)];
+  const matches = [...ledger.matchAll(/^\|\s*(T\d+[A-Za-z0-9]*)\s*\|[^|]+\|\s*in-progress\s*\|/gim)];
   return matches.map((m) => m[1]);
 }
 
 function getNextTaskSummary(ledger) {
-  const match = ledger.match(/^\|\s*(T\d+)\s*\|\s*([^|]+?)\s*\|\s*(pending|in-progress)\s*\|/im);
+  const match = ledger.match(/^\|\s*(T\d+[A-Za-z0-9]*)\s*\|\s*([^|]+?)\s*\|\s*(pending|in-progress)\s*\|/im);
   if (!match) return null;
   return { id: match[1], name: match[2].trim(), status: match[3].trim().toLowerCase() };
 }
@@ -571,7 +571,7 @@ if (remaining === 0 && totalTasks > 0) {
     });
   }
 
-  const skippedLines = ledger.match(/^\|\s*T\d+\s*\|[^|]*\|\s*(skipped|superseded)\s*\|.+$/gm);
+  const skippedLines = ledger.match(/^\|\s*T\d+[A-Za-z0-9]*\s*\|[^|]*\|\s*(skipped|superseded)\s*\|.+$/gm);
   if (skippedLines && skippedLines.length > 0) {
     output.push('');
     output.push(' SKIPPED/SUPERSEDED:');
@@ -591,7 +591,7 @@ if (remaining === 0 && totalTasks > 0) {
     });
   }
 
-  const unverifiedLines = ledger.match(/^\|\s*T\d+\s*\|[^|]*\|\s*done\s*\|.+$/gm);
+  const unverifiedLines = ledger.match(/^\|\s*T\d+[A-Za-z0-9]*\s*\|[^|]*\|\s*done\s*\|.+$/gm);
   if (unverifiedLines && unverifiedLines.length > 0) {
     output.push('');
     output.push(' UNVERIFIED (done without evidence):');

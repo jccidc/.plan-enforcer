@@ -6,6 +6,7 @@
 // Reason); v2 are 5-cell (ID, Type, Scope, Reason, Evidence).
 
 const VALID_D_TYPES = new Set(['deviation', 'unplanned', 'delete', 'pivot', 'override']);
+const TASK_ID_PATTERN = 'T\\d+[A-Za-z0-9]*';
 
 /**
  * Split a pipe-table row into its content cells. Strips leading/trailing empty
@@ -29,7 +30,7 @@ function parseLedger(ledger) {
   const counts = { pending: 0, 'in-progress': 0, done: 0, verified: 0, skipped: 0, blocked: 0, superseded: 0 };
   // Status is column 3 in both v1 and v2 (ID, Task, Status, ...). Match that
   // column regardless of how many trailing cells exist.
-  const re = /^\|\s*T\d+\s*\|[^|]+\|\s*(\w[\w-]*)\s*\|/gm;
+  const re = new RegExp(`^\\|\\s*${TASK_ID_PATTERN}\\s*\\|[^|]+\\|\\s*(\\w[\\w-]*)\\s*\\|`, 'gm');
   let m;
   while ((m = re.exec(ledger)) !== null) {
     const s = m[1].trim().toLowerCase();
@@ -62,7 +63,7 @@ function parseLedger(ledger) {
  */
 function parseTaskRows(ledger) {
   const rows = [];
-  const taskLines = (ledger.match(/^\|\s*T\d+\s*\|.+$/gm) || []);
+  const taskLines = (ledger.match(new RegExp(`^\\|\\s*${TASK_ID_PATTERN}\\s*\\|.+$`, 'gm')) || []);
   for (const line of taskLines) {
     const cells = splitRow(line);
     // v1: [id, name, status, evidence, notes]

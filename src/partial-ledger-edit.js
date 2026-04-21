@@ -38,7 +38,7 @@ function extractEdits(toolContext) {
 // and returns { id, status, evidence } or null if it doesn't match.
 function parseTaskRow(line) {
   const trimmed = line.trim();
-  if (!/^\|\s*T\d+\s*\|/.test(trimmed)) return null;
+  if (!/^\|\s*T\d+[A-Za-z0-9]*\s*\|/.test(trimmed)) return null;
   const cells = trimmed.split('|').map((c) => c.trim());
   // cells[0] = '', cells[1] = id, cells[2] = task name, cells[3] = status,
   // cells[4] = evidence, cells[5] = chain, cells[6] = notes, cells[7] = ''
