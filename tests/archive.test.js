@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const {
+  buildArchiveTruthManifest,
   buildArchiveFilename,
   buildFrontmatter,
   archiveLedger,
@@ -12,7 +13,8 @@ const {
   listArchiveReports,
   parseArchiveFile,
   parseArchiveFrontmatter,
-  summarizeArchiveReports
+  summarizeArchiveReports,
+  writeArchiveTruthManifest
 } = require('../src/archive');
 
 describe('buildArchiveFilename', () => {
@@ -267,18 +269,23 @@ describe('archive parsing and reports', () => {
       '| D1 | T2 | drift | Deferred for later |'
     ].join('\n'));
     fs.writeFileSync(`${archivePath}.verdict.md`, '# Phase Verify Report\n');
+    writeArchiveTruthManifest(archivePath);
 
     try {
       const dirReport = formatArchiveReport(archiveDir);
       const fileReport = formatArchiveReport(archivePath);
       assert.match(dirReport, /Runs: 1/);
       assert.match(dirReport, /Final truth:/);
+      assert.match(dirReport, /final truth manifest: .*2026-04-12-run\.md\.final-truth\.json/);
       assert.match(dirReport, /Lineage roots:/);
+      assert.match(dirReport, /Dossier bundle:/);
       assert.match(dirReport, /Archived runs:/);
       assert.match(dirReport, /\n  2026-04-12-run\.md  has_unverified  1\/2 done  drift=1  source=docs\/plans\/run\.md/);
       assert.match(fileReport, /Source: docs\/plans\/run.md/);
       assert.match(fileReport, /Final truth:/);
+      assert.match(fileReport, /final truth manifest: .*2026-04-12-run\.md\.final-truth\.json/);
       assert.match(fileReport, /Lineage roots:/);
+      assert.match(fileReport, /Dossier bundle:/);
       assert.match(fileReport, /Skipped\/superseded:/);
       assert.match(fileReport, /Decision log:/);
     } finally {
@@ -334,7 +341,78 @@ describe('archive parsing and reports', () => {
     try {
       const dirReport = formatArchiveReport(archiveDir);
       assert.match(dirReport, /archive: .*2026-04-20-alpha\.md/);
+      assert.match(dirReport, /final truth manifest: .*2026-04-20-alpha\.md\.final-truth\.json \(not written yet\)/);
       assert.match(dirReport, /source plan: docs\/plans\/newer\.md/);
+      assert.match(dirReport, /Dossier bundle:/);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it('writes a machine-readable final-truth manifest beside the archive', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-archive-truth-manifest-'));
+    const enforcerDir = path.join(tmpDir, '.plan-enforcer');
+    const archiveDir = path.join(enforcerDir, 'archive');
+    fs.mkdirSync(archiveDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'awareness.md'), '# Awareness\n');
+    fs.mkdirSync(path.join(enforcerDir, 'checks'), { recursive: true });
+    const archivePath = path.join(archiveDir, '2026-04-20-run.md');
+
+    fs.writeFileSync(archivePath, [
+      '---',
+      'plan: docs/plans/run.md',
+      'tier: enforced',
+      'tasks: 2',
+      'verified: 2',
+      'done_unverified: 0',
+      'skipped: 0',
+      'blocked: 0',
+      'decisions: 1',
+      'reconciliations: 1',
+      'started: 2026-04-20T10:00:00Z',
+      'completed: 2026-04-20T11:00:00Z',
+      'result: clean',
+      '---',
+      '',
+      '<!-- source: docs/plans/run.md -->',
+      '<!-- tier: enforced -->',
+      '<!-- created: 2026-04-20T10:00:00Z -->',
+      '',
+      '| T1 | One | verified | yes | |',
+      '| T2 | Two | verified | yes | |',
+      '| D1 | T2 | drift | Tightened closeout |',
+      '| R1 | T1-T2 | 0 | All clear |'
+    ].join('\n'));
+    fs.writeFileSync(`${archivePath}.verdict.json`, JSON.stringify({
+      pass: true,
+      totals: { verified: 2, total_tasks: 2, unfinished: 0 },
+      warnings: []
+    }, null, 2));
+    fs.writeFileSync(`${archivePath}.verdict.md`, '# Phase Verify Report\n');
+
+    try {
+      const preview = buildArchiveTruthManifest(archivePath);
+      assert.equal(preview.truth_surfaces.archive_markdown, '.plan-enforcer/archive/2026-04-20-run.md');
+      assert.equal(preview.truth_surfaces.final_truth_manifest, '.plan-enforcer/archive/2026-04-20-run.md.final-truth.json');
+      assert.equal(preview.truth_surfaces.phase_verdict_report, '.plan-enforcer/archive/2026-04-20-run.md.verdict.md');
+      assert.equal(preview.truth_surfaces.checks_root, '.plan-enforcer/checks');
+      assert.equal(preview.lineage_roots.discuss_packet, '.plan-enforcer/discuss.md');
+      assert.equal(preview.lineage_roots.awareness, '.plan-enforcer/awareness.md');
+      assert.equal(preview.dossier_bundle.discuss_packet, '.plan-enforcer/discuss.md');
+      assert.equal(preview.closure_snapshot.tasks.length, 2);
+      assert.equal(preview.closure_snapshot.decision_log.length, 1);
+      assert.equal(preview.closure_snapshot.reconciliations.length, 1);
+
+      const written = writeArchiveTruthManifest(archivePath);
+      assert.ok(fs.existsSync(written.manifestPath));
+      const manifest = JSON.parse(fs.readFileSync(written.manifestPath, 'utf8'));
+      assert.equal(manifest.schema, 'v2');
+      assert.equal(manifest.result, 'clean');
+      assert.equal(manifest.counts.verified, 2);
+      assert.equal(manifest.truth_surfaces.phase_verdict_json, '.plan-enforcer/archive/2026-04-20-run.md.verdict.json');
+      assert.equal(manifest.lineage_roots.source_plan, 'docs/plans/run.md');
+      assert.equal(manifest.dossier_bundle.final_truth_manifest, '.plan-enforcer/archive/2026-04-20-run.md.final-truth.json');
+      assert.equal(manifest.closure_snapshot.tasks[0].id, 'T1');
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

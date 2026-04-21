@@ -47,6 +47,7 @@ describe('report-cli', () => {
     assert.match(result.stdout, /phase report: .*phase-report\.md \(not written yet\)/);
     assert.match(result.stdout, /Lineage roots:/);
     assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
+    assert.match(result.stdout, /discuss packet: .*\.plan-enforcer\/discuss\.md \(missing\)/);
     assert.match(result.stdout, /Executed Verification: 1 gap/);
     assert.match(result.stdout, /rerun T1: npm test/);
   });
@@ -189,7 +190,23 @@ describe('report-cli', () => {
       },
       lineage_roots: {
         source_plan: 'docs/plans/run.md',
+        discuss_packet: '.plan-enforcer/discuss.md',
         awareness: '.plan-enforcer/awareness.md'
+      },
+      dossier_bundle: {
+        source_plan: 'docs/plans/run.md',
+        discuss_packet: '.plan-enforcer/discuss.md',
+        awareness: '.plan-enforcer/awareness.md',
+        archive_markdown: '.plan-enforcer/archive/2026-04-12-run.md',
+        final_truth_manifest: '.plan-enforcer/archive/2026-04-12-run.md.final-truth.json',
+        phase_verdict_report: '.plan-enforcer/archive/2026-04-12-run.md.verdict.md',
+        phase_verdict_json: null,
+        checks_root: '.plan-enforcer/checks'
+      },
+      closure_snapshot: {
+        tasks: [{ id: 'T1', name: 'One', status: 'verified', evidence: 'yes', chain: [], notes: '' }],
+        decision_log: [],
+        reconciliations: []
       }
     }, null, 2));
 
@@ -205,6 +222,9 @@ describe('report-cli', () => {
     assert.match(result.stdout, /phase verify report:/);
     assert.match(result.stdout, /Lineage roots:/);
     assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
+    assert.match(result.stdout, /discuss packet: \.plan-enforcer\/discuss\.md/);
+    assert.match(result.stdout, /Dossier bundle:/);
+    assert.match(result.stdout, /closure snapshot: tasks=1 decisions=0 reconciliations=0/);
     assert.match(result.stdout, /Archived runs:/);
     assert.match(result.stdout, /\n  2026-04-12-run\.md  clean  1\/1 done  drift=0  source=docs\/plans\/run\.md/);
   });
@@ -243,7 +263,7 @@ describe('report-cli', () => {
     }, null, 2));
     fs.writeFileSync(`${archivePath}.verdict.md`, '# Phase Verify Report\n');
     fs.writeFileSync(`${archivePath}.final-truth.json`, JSON.stringify({
-      schema: 'v1',
+      schema: 'v2',
       archived_at: '2026-04-12T12:00:00Z',
       source_plan: 'docs/plans/run.md',
       tier: 'enforced',
@@ -257,7 +277,28 @@ describe('report-cli', () => {
       },
       lineage_roots: {
         source_plan: 'docs/plans/run.md',
+        discuss_packet: '2026-04-12-run.md.discuss.md',
         awareness: null
+      },
+      dossier_bundle: {
+        source_plan: 'docs/plans/run.md',
+        discuss_packet: '2026-04-12-run.md.discuss.md',
+        awareness: null,
+        archive_markdown: '2026-04-12-run.md',
+        final_truth_manifest: '2026-04-12-run.md.final-truth.json',
+        phase_verdict_report: '2026-04-12-run.md.verdict.md',
+        phase_verdict_json: '2026-04-12-run.md.verdict.json',
+        checks_root: null
+      },
+      closure_snapshot: {
+        tasks: [
+          { id: 'T1', name: 'One', status: 'verified', evidence: 'yes', chain: [], notes: '' },
+          { id: 'T2', name: 'Two', status: 'done', evidence: '', chain: [], notes: '' }
+        ],
+        decision_log: [
+          { id: 'D1', type: 'deviation', scope: 'T2', reason: 'Added extra proof step', evidence: '' }
+        ],
+        reconciliations: []
       }
     }, null, 2));
 
@@ -273,6 +314,9 @@ describe('report-cli', () => {
     assert.match(result.stdout, /phase verify report:/);
     assert.match(result.stdout, /Lineage roots:/);
     assert.match(result.stdout, /source plan: docs\/plans\/run\.md/);
+    assert.match(result.stdout, /discuss packet: 2026-04-12-run\.md\.discuss\.md/);
+    assert.match(result.stdout, /Dossier bundle:/);
+    assert.match(result.stdout, /closure snapshot: tasks=2 decisions=1 reconciliations=0/);
     assert.match(result.stdout, /Done but unverified:/);
     assert.match(result.stdout, /Phase verify:/);
     assert.match(result.stdout, /warning: phase proof note missing/);

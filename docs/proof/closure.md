@@ -3,14 +3,23 @@
 Closure is where Plan Enforcer stops being workflow advice and becomes
 final repo truth.
 
-Current closeout band:
+Current close-out band:
 
 - `plan-enforcer status`
 - `plan-enforcer verify --with-awareness`
 - `plan-enforcer audit --strict`
 - `plan-enforcer report`
 
-If that band is clean, the run is ready to archive as final truth.
+If that band is clean, the run can archive as final truth.
+
+`plan-enforcer report` now surfaces the same close-out bundle directly:
+
+- latest clean archive or active ledger
+- retained final-truth manifest path
+- phase-verify report path when present
+- checks root for executed-command truth
+- source plan, discuss packet, and awareness roots for lineage context
+- dossier bundle / closure snapshot for colder review
 
 ## What each surface answers
 
@@ -18,17 +27,19 @@ If that band is clean, the run is ready to archive as final truth.
 - `verify --with-awareness`: did must-haves and intent links pass
 - `audit --strict`: is the ledger structurally honest
 - `report`: what should a handoff or cold reviewer read first
-- archive file: what final state actually closed
+- archive file: what final state was actually closed
 
 ## Why this matters
 
-The product claim gets stronger when closeout reads like evidence work,
-not confidence theater.
+Public launch docs should make the close-out band easy to understand
+without depending on lab-only retained artifact paths.
+
+In a live installed repo, `report` and the archive surfaces point at the
+retained manifest, archive markdown, and verification sidecars directly.
 
 ## Read next
 
-- [Final truth](final-truth.md)
-- [Lineage surface](lineage.md)
-- [Dossier surface](dossier.md)
-- [Verify, audit, report example](../examples/verify-audit-report.md)
-- [CLI guide](../cli.md)
+- CLI details: [`../cli.md`](../cli.md)
+- final truth: [final-truth.md](final-truth.md)
+- lineage surface: [lineage.md](lineage.md)
+- dossier surface: [dossier.md](dossier.md)

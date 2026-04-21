@@ -205,7 +205,7 @@ function inspectInstall(cwd = process.cwd()) {
       status: hasConfig ? 'ok' : 'warn',
       detail: hasConfig
         ? `${tier} ${formatPath(configPath, cwd)}`
-        : `missing ${formatPath(configPath, cwd)}`
+        : `missing ${formatPath(configPath, cwd)} (bootstraps on first discuss/import)`
     }
   };
 
@@ -216,8 +216,9 @@ function inspectInstall(cwd = process.cwd()) {
     next.push('rerun ./install.sh from the repo root');
     next.push('then rerun: plan-enforcer doctor');
   } else if (!hasConfig) {
-    next.push('run ./install.sh from the repo root to seed .plan-enforcer/config.md');
-    next.push('then start with discuss: plan-enforcer discuss "your ask"');
+    next.push('start with discuss: plan-enforcer discuss "your ask"');
+    next.push('or seed existing plan: plan-enforcer import docs/plans/<plan-file>.md');
+    next.push('optional local config: rerun ./install.sh from the repo root');
   } else if (fs.existsSync(activeLedgerPath)) {
     next.push('inspect live state: plan-enforcer status');
     next.push('report surface: plan-enforcer report --active');

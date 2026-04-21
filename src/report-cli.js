@@ -76,6 +76,7 @@ function formatActiveReport(ledgerPath) {
   const phaseReportPath = path.join(enforcerDir, 'phase-report.md');
   const phaseReport = summarizePhaseReport(phaseReportPath);
   const awarenessPath = path.join(enforcerDir, 'awareness.md');
+  const discussPath = path.join(enforcerDir, 'discuss.md');
   const checksDir = path.join(enforcerDir, 'checks');
   const archiveDir = path.join(enforcerDir, 'archive');
   const truth = [
@@ -88,6 +89,7 @@ function formatActiveReport(ledgerPath) {
     '',
     'Lineage roots:',
     `  source plan: ${meta.source}`,
+    `  discuss packet: ${formatDisplayPath(discussPath)}${fs.existsSync(discussPath) ? '' : ' (missing)'}`,
     `  awareness: ${formatDisplayPath(awarenessPath)}${fs.existsSync(awarenessPath) ? '' : ' (missing)'}`
   ].join('\n');
   return `${lines.join('\n')}${truth}${next}${executed}${git}${awareness}${phaseReport}\n-----------------------------------------------------`;

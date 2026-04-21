@@ -3,37 +3,41 @@
 Final truth is the smallest cold-review bundle that answers:
 
 - what actually closed
-- what verification said
+- what phase verify said
 - what command evidence exists
-- which lineage roots produced that state
+- which plan and lineage roots produced that state
 
 ## What makes up final truth
 
 For a clean Plan Enforcer run, inspect these in order:
 
 1. `plan-enforcer report`
-2. the archived closeout file in `.plan-enforcer/archive/`
-3. phase-verify sidecars when present
-4. executed-check sidecars in `.plan-enforcer/checks/`
-5. the source plan and awareness roots for lineage context
+2. archived `*.final-truth.json` manifest beside the archive
+3. archive file in `.plan-enforcer/archive/`
+4. phase-verify report sidecar when present
+5. executed-check sidecars in `.plan-enforcer/checks/`
 
-The runtime report surface now points at that bundle directly instead of
-only listing archive files.
+The runtime now surfaces that bundle directly instead of leaving a cold
+reviewer to translate raw archive lists by hand.
+
+That manifest now retains:
+
+- closure snapshot: task rows, decision log, reconciliation summary
+- dossier bundle refs: archive, manifest, phase verify, checks root
+- lineage roots: source plan, discuss packet, awareness
 
 ## Why this matters
 
-Launch-facing proof should not force a reviewer to reconstruct final
-truth from scattered notes.
+Launch-facing proof should not require a reviewer to infer final truth
+from internal-only retained artifact paths.
 
-The narrower and stronger claim is this:
+The honest product claim is narrower and stronger:
 
 > Plan Enforcer leaves a cold-reviewable final-truth bundle on disk and
-> now surfaces the main entry points directly in report output.
+> now surfaces the main entry points directly in runtime report output.
 
 ## Read next
 
-- [Closure surface](closure.md)
-- [Lineage surface](lineage.md)
-- [Dossier surface](dossier.md)
-- [Verify, audit, report example](../examples/verify-audit-report.md)
-- [CLI guide](../cli.md)
+- closure surface: [closure.md](closure.md)
+- lineage surface: [lineage.md](lineage.md)
+- dossier surface: [dossier.md](dossier.md)

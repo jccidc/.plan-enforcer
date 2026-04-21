@@ -1,31 +1,55 @@
 # Lineage Surface
 
-Lineage is the answer to "how did this repo state happen?"
+Lineage is the answer to `why is this code here` after the original chat
+is gone.
 
-Plan Enforcer keeps lineage visible across:
+Current honest read:
 
-- original ask and clarify stage
-- drafted and reviewed plan
-- execution rows in `.plan-enforcer/ledger.md`
-- decision log scope and reasons
-- verification and final closeout
+- typed decisions, task rows, awareness links, verification artifacts,
+  and archives already make lineage reconstructible from repo artifacts
+- the substrate is real
+- `plan-enforcer report` now surfaces the source plan and awareness
+  roots directly so the lineage trail is easier to start from
+- archived `*.final-truth.json` now retains a compact lineage/closure
+  snapshot instead of pointing only at live mutable roots
 
-That is what makes a cold review possible after the model is done
-talking.
+## What makes up lineage
 
-## What a reviewer should be able to follow
+Plan Enforcer's lineage chain is:
 
-1. the ask that shaped the work
-2. the plan that constrained execution
-3. the decisions that changed scope or tradeoffs
-4. the verification evidence
-5. the archived closeout bundle
+1. user intent and awareness rows
+2. plan source
+3. task row in `.plan-enforcer/ledger.md`
+4. typed Decision Log entries when scope changes
+5. verification evidence and executed-check sidecars
+6. archived `*.final-truth.json` snapshot after close
+7. archive markdown beside that manifest
+
+Useful operator queries:
+
+- `plan-enforcer chain T5`
+- `plan-enforcer why src/file.js`
+- `plan-enforcer audit`
+- `plan-enforcer report`
+
+Reference doc:
+
+- CLI surface: [`../cli.md`](../cli.md)
+
+## What this page is not claiming
+
+This is not a promise that every repo already has a single polished
+`lineage.md` markdown output file.
+
+The truthful claim is narrower:
+
+> the lineage substrate is already on disk and queryable, and archived
+> final-truth manifests now retain one compact machine-readable lineage
+> anchor instead of leaving cold review to live roots alone
 
 ## Read next
 
-- [Final truth](final-truth.md)
-- [Dossier surface](dossier.md)
-- [Bring your own plan example](../examples/bring-your-own-plan.md)
-- [Workflow SVG](../assets/workflow.svg)
-- [Authorship chain SVG](../assets/authorship-chain.svg)
-- [Chain of custody SVG](../assets/chain-of-custody.svg)
+- closure surface: [closure.md](closure.md)
+- final truth: [final-truth.md](final-truth.md)
+- public proof map: [public-proof.md](public-proof.md)
+- dossier surface: [dossier.md](dossier.md)

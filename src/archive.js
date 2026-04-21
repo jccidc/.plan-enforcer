@@ -227,9 +227,22 @@ function buildArchiveTruthManifest(archivePath) {
   const enforcerDir = resolveEnforcerDirFromArchiveTarget(archivePath);
   const checksRoot = enforcerDir ? path.join(enforcerDir, 'checks') : null;
   const awarenessPath = enforcerDir ? path.join(enforcerDir, 'awareness.md') : null;
+  const discussPath = enforcerDir ? path.join(enforcerDir, 'discuss.md') : null;
+  const manifestPath = `${archivePath}.final-truth.json`;
+  const archiveRef = enforcerDir ? toProjectRelativeRef(report.path, enforcerDir) : report.name;
+  const manifestRef = enforcerDir ? toProjectRelativeRef(manifestPath, enforcerDir) : path.basename(manifestPath);
+  const verdictJsonRef = report.verdictJsonPath
+    ? (enforcerDir ? toProjectRelativeRef(report.verdictJsonPath, enforcerDir) : path.basename(report.verdictJsonPath))
+    : null;
+  const verdictReportRef = report.verdictReportPath
+    ? (enforcerDir ? toProjectRelativeRef(report.verdictReportPath, enforcerDir) : path.basename(report.verdictReportPath))
+    : null;
+  const checksRootRef = checksRoot ? toProjectRelativeRef(checksRoot, enforcerDir) : null;
+  const awarenessRef = awarenessPath ? toProjectRelativeRef(awarenessPath, enforcerDir) : null;
+  const discussRef = discussPath ? toProjectRelativeRef(discussPath, enforcerDir) : null;
 
   return {
-    schema: 'v1',
+    schema: 'v2',
     archived_at: report.completed,
     source_plan: report.source,
     tier: report.tier,
@@ -244,14 +257,49 @@ function buildArchiveTruthManifest(archivePath) {
       reconciliations: report.reconciliations.length
     },
     truth_surfaces: {
-      archive_markdown: enforcerDir ? toProjectRelativeRef(report.path, enforcerDir) : report.name,
-      phase_verdict_json: report.verdictJsonPath ? (enforcerDir ? toProjectRelativeRef(report.verdictJsonPath, enforcerDir) : path.basename(report.verdictJsonPath)) : null,
-      phase_verdict_report: report.verdictReportPath ? (enforcerDir ? toProjectRelativeRef(report.verdictReportPath, enforcerDir) : path.basename(report.verdictReportPath)) : null,
-      checks_root: checksRoot ? toProjectRelativeRef(checksRoot, enforcerDir) : null
+      archive_markdown: archiveRef,
+      final_truth_manifest: manifestRef,
+      phase_verdict_json: verdictJsonRef,
+      phase_verdict_report: verdictReportRef,
+      checks_root: checksRootRef
     },
     lineage_roots: {
       source_plan: report.source,
-      awareness: awarenessPath ? toProjectRelativeRef(awarenessPath, enforcerDir) : null
+      discuss_packet: discussRef,
+      awareness: awarenessRef
+    },
+    dossier_bundle: {
+      source_plan: report.source,
+      discuss_packet: discussRef,
+      awareness: awarenessRef,
+      archive_markdown: archiveRef,
+      final_truth_manifest: manifestRef,
+      phase_verdict_report: verdictReportRef,
+      phase_verdict_json: verdictJsonRef,
+      checks_root: checksRootRef
+    },
+    closure_snapshot: {
+      tasks: report.tasks.map((task) => ({
+        id: task.id,
+        name: task.name,
+        status: task.status,
+        evidence: task.evidence,
+        chain: task.chain,
+        notes: task.notes
+      })),
+      decision_log: report.decisions.map((entry) => ({
+        id: entry.id,
+        type: entry.type,
+        scope: entry.scope,
+        reason: entry.reason,
+        evidence: entry.evidence
+      })),
+      reconciliations: report.reconciliations.map((entry) => ({
+        id: entry.id,
+        tasks_checked: (entry.cols[1] || '').trim(),
+        gaps_found: (entry.cols[2] || '').trim(),
+        action_taken: (entry.cols[3] || '').trim()
+      }))
     }
   };
 }
@@ -270,32 +318,67 @@ function formatStoredRef(ref) {
 function buildArchiveTruthSections(targetPath, focusReport) {
   if (!focusReport) return [];
 
+  const enforcerDir = resolveEnforcerDirFromArchiveTarget(targetPath);
+  const truthSurfaces = focusReport.truthManifest && focusReport.truthManifest.truth_surfaces
+    ? focusReport.truthManifest.truth_surfaces
+    : {};
+  const lineageRoots = focusReport.truthManifest && focusReport.truthManifest.lineage_roots
+    ? focusReport.truthManifest.lineage_roots
+    : {};
+  const dossierBundle = focusReport.truthManifest && focusReport.truthManifest.dossier_bundle
+    ? focusReport.truthManifest.dossier_bundle
+    : {};
+  const closureSnapshot = focusReport.truthManifest && focusReport.truthManifest.closure_snapshot
+    ? focusReport.truthManifest.closure_snapshot
+    : null;
   const lines = ['', 'Final truth:'];
   lines.push(`  archive: ${formatDisplayPath(focusReport.path)}`);
   const truthManifestPath = focusReport.truthManifestPath || focusReport.expectedTruthManifestPath;
-  lines.push(`  final truth manifest: ${formatDisplayPath(truthManifestPath)}${focusReport.truthManifestPath ? '' : ' (not written yet)'}`);
+  const storedManifestRef = truthSurfaces.final_truth_manifest || null;
+  lines.push(`  final truth manifest: ${storedManifestRef ? formatStoredRef(storedManifestRef) : formatDisplayPath(truthManifestPath)}${focusReport.truthManifestPath ? '' : ' (not written yet)'}`);
   lines.push(`  phase verify report: ${focusReport.verdictReportPath ? formatDisplayPath(focusReport.verdictReportPath) : 'none yet'}`);
-
-  const enforcerDir = resolveEnforcerDirFromArchiveTarget(targetPath);
-  const checksRoot = focusReport.truthManifest && focusReport.truthManifest.truth_surfaces
-    ? focusReport.truthManifest.truth_surfaces.checks_root
-    : null;
+  const checksRoot = truthSurfaces.checks_root || null;
   if (enforcerDir) {
     const checksDir = path.join(enforcerDir, 'checks');
     lines.push(`  checks root: ${checksRoot ? formatStoredRef(checksRoot) : `${formatDisplayPath(checksDir)}${fs.existsSync(checksDir) ? '' : ' (none yet)'}`}`);
   }
 
   lines.push('', 'Lineage roots:');
-  const sourcePlan = focusReport.truthManifest && focusReport.truthManifest.lineage_roots
-    ? focusReport.truthManifest.lineage_roots.source_plan
-    : focusReport.source;
+  const sourcePlan = lineageRoots.source_plan || focusReport.source;
   lines.push(`  source plan: ${sourcePlan}`);
-  const awarenessRef = focusReport.truthManifest && focusReport.truthManifest.lineage_roots
-    ? focusReport.truthManifest.lineage_roots.awareness
-    : null;
+  const discussRef = lineageRoots.discuss_packet || dossierBundle.discuss_packet || null;
+  if (enforcerDir) {
+    const discussPath = path.join(enforcerDir, 'discuss.md');
+    lines.push(`  discuss packet: ${discussRef ? formatStoredRef(discussRef) : `${formatDisplayPath(discussPath)}${fs.existsSync(discussPath) ? '' : ' (missing)'}`}`);
+  } else if (discussRef) {
+    lines.push(`  discuss packet: ${formatStoredRef(discussRef)}`);
+  }
+  const awarenessRef = lineageRoots.awareness || dossierBundle.awareness || null;
   if (enforcerDir) {
     const awarenessPath = path.join(enforcerDir, 'awareness.md');
     lines.push(`  awareness: ${awarenessRef ? formatStoredRef(awarenessRef) : `${formatDisplayPath(awarenessPath)}${fs.existsSync(awarenessPath) ? '' : ' (missing)'}`}`);
+  } else if (awarenessRef) {
+    lines.push(`  awareness: ${formatStoredRef(awarenessRef)}`);
+  }
+
+  lines.push('', 'Dossier bundle:');
+  lines.push(`  final truth manifest: ${storedManifestRef ? formatStoredRef(storedManifestRef) : formatDisplayPath(truthManifestPath)}`);
+  lines.push(`  archive: ${dossierBundle.archive_markdown ? formatStoredRef(dossierBundle.archive_markdown) : formatDisplayPath(focusReport.path)}`);
+  lines.push(`  source plan: ${dossierBundle.source_plan || sourcePlan}`);
+  if (discussRef) {
+    lines.push(`  discuss packet: ${formatStoredRef(discussRef)}`);
+  }
+  if (awarenessRef) {
+    lines.push(`  awareness: ${formatStoredRef(awarenessRef)}`);
+  }
+  if (dossierBundle.phase_verdict_report || focusReport.verdictReportPath) {
+    lines.push(`  phase verify report: ${dossierBundle.phase_verdict_report ? formatStoredRef(dossierBundle.phase_verdict_report) : formatDisplayPath(focusReport.verdictReportPath)}`);
+  }
+  if (checksRoot) {
+    lines.push(`  checks root: ${formatStoredRef(checksRoot)}`);
+  }
+  if (closureSnapshot) {
+    lines.push(`  closure snapshot: tasks=${closureSnapshot.tasks.length} decisions=${closureSnapshot.decision_log.length} reconciliations=${closureSnapshot.reconciliations.length}`);
   }
   return lines;
 }

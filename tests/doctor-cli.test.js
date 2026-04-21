@@ -145,4 +145,35 @@ describe('doctor-cli', () => {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+
+  it('treats missing local config as onboarding, not install failure', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-doctor-no-config-'));
+    const homeDir = path.join(tempDir, 'home');
+    const projectDir = path.join(tempDir, 'project');
+    fs.mkdirSync(homeDir, { recursive: true });
+    fs.mkdirSync(projectDir, { recursive: true });
+    seedInstalledSurface(homeDir);
+    writeProjectSettings(projectDir, {
+      SessionStart: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/session-start.js' }] }],
+      UserPromptSubmit: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/user-message.js' }] }]
+    });
+
+    try {
+      const result = spawnSync(process.execPath, [doctorBin, '--json'], {
+        cwd: projectDir,
+        env: { ...process.env, HOME: homeDir, USERPROFILE: homeDir },
+        encoding: 'utf8'
+      });
+
+      assert.equal(result.status, 0);
+      const payload = JSON.parse(result.stdout);
+      assert.equal(payload.checks.config.status, 'warn');
+      assert.match(payload.checks.config.detail, /bootstraps on first discuss\/import/);
+      assert.match(payload.next[0], /start with discuss/);
+      assert.match(payload.next[1], /plan-enforcer import/);
+      assert.match(payload.next[2], /optional local config/);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
 });

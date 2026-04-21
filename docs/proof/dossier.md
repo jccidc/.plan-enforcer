@@ -1,28 +1,44 @@
 # Dossier Surface
 
-A dossier is the reviewer bundle for one piece of work.
+`Dossier` here means cold-review bundle: the smallest set of pages and
+artifacts a new reviewer needs to reconstruct what happened.
 
-It should answer, quickly:
+Current honest read:
 
-- what changed
-- why it changed
-- what was verified
-- what the next reviewer should inspect first
+- the bundle exists today
+- archived `*.final-truth.json` is now the machine-readable anchor for
+  that bundle
+- the bundle is still assembled from repo artifacts, not one giant
+  prose file in every run
+- public docs should point at that bundle directly
 
-Plan Enforcer builds that bundle from the same runtime artifacts it uses
-for enforcement and closure.
+## Minimal cold-review bundle
 
-## What belongs in the dossier
+Read in this order:
 
-- report output
-- archive closeout
-- relevant decision rows
-- verification sidecars and checks
-- lineage roots back to the plan
+1. [`public-proof.md`](public-proof.md)
+2. archived `*.final-truth.json`
+3. one archive file from `../../.plan-enforcer/archive/`
+4. matching phase-verify report sidecar when present
+5. [`final-truth.md`](final-truth.md)
+6. [`benchmark-summary.md`](benchmark-summary.md)
+7. [`carryover-proof.md`](carryover-proof.md)
+8. [`closure.md`](closure.md)
+
+## Why this matters
+
+Launch todo explicitly called out:
+
+- dossier / closure / final-truth artifacts should be obvious in docs
+  and examples
+- public story should point at them without extra translation
+
+This page is that translation layer around the retained manifest and
+archive bundle, not a claim that each run emits one giant prose dossier.
 
 ## Read next
 
-- [Final truth](final-truth.md)
-- [Closure surface](closure.md)
-- [Public proof map](public-proof.md)
-- [CLI guide](../cli.md)
+- public proof map: [public-proof.md](public-proof.md)
+- final truth: [final-truth.md](final-truth.md)
+- examples: [`../examples/README.md`](../examples/README.md)
+- lineage surface: [lineage.md](lineage.md)

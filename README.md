@@ -52,6 +52,16 @@ cd .plan-enforcer
 
 Installs Claude Code hooks and skills. Default tier is `structural`.
 
+Sanity-check the install before first use:
+
+```bash
+plan-enforcer doctor
+```
+
+If `doctor` says project config is missing, that is now onboarding
+state, not a broken install: first `discuss` or `import` bootstraps the
+repo-local `.plan-enforcer/` state.
+
 Start here:
 
 - [Try it](docs/try-it.md)
