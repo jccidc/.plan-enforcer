@@ -62,13 +62,13 @@ If `doctor` says project config is missing, that is now onboarding
 state, not a broken install: first `discuss` or `import` bootstraps the
 repo-local `.plan-enforcer/` state.
 
-Start here:
+Common entry paths:
 
-- [Try it](docs/try-it.md)
-- [CLI guide](docs/cli.md)
-- [Examples](docs/examples/README.md)
-- [Public proof](docs/proof/public-proof.md)
-- [Proof pack](docs/proof/README.md)
+- Have a GSD plan file already? `plan-enforcer import path/to/plan.md`
+- Have a markdown plan from somewhere else? `plan-enforcer import path/to/plan.md`
+- No good plan yet? say `Let's make a plan for ...` in Claude, or run `plan-enforcer discuss "your ask"`
+- Want PE to sanity-check a draft before execution? `plan-enforcer review path/to/plan.md`
+- Need the live state after bootstrap? `plan-enforcer status` or `plan-enforcer report --active`
 
 ---
 
