@@ -35,12 +35,13 @@
   }
 
   .app {
+    --sidebar-size: 430px;
     display: grid;
-    grid-template-columns: 430px 1fr;
+    grid-template-columns: var(--sidebar-size) 10px 1fr;
     grid-template-rows: 54px 1fr;
     grid-template-areas:
-      "header header"
-      "sidebar main";
+      "header header header"
+      "sidebar sidebar-resizer main";
     height: 100vh;
   }
 
@@ -110,19 +111,44 @@
 
   .sidebar {
     grid-area: sidebar;
-    border-right: 1px solid var(--border);
     background: var(--panel);
     overflow-y: auto;
     padding: 14px;
   }
 
-  .sidebar h2,
-  .asset-pane h2 {
+  .sidebar h2 {
     margin: 0 0 8px;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--text-dim);
+  }
+
+  .sidebar-resizer {
+    grid-area: sidebar-resizer;
+    position: relative;
+    cursor: col-resize;
+    background: var(--panel);
+    border-left: 1px solid var(--border-soft);
+    border-right: 1px solid var(--border-soft);
+    touch-action: none;
+  }
+
+  .sidebar-resizer::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 56px;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background: var(--border);
+  }
+
+  .sidebar-resizer:hover::before,
+  .sidebar-resizer.is-dragging::before {
+    background: var(--accent);
   }
 
   .group {
@@ -256,51 +282,17 @@
 
   .main {
     grid-area: main;
-    display: grid;
-    --asset-pane-size: 340px;
-    grid-template-rows: minmax(0, 1fr) 10px minmax(220px, var(--asset-pane-size));
     min-height: 0;
   }
 
-  .preview-pane,
-  .asset-pane {
+  .preview-pane {
     min-height: 0;
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 
-  .preview-pane { grid-row: 1; }
-  .asset-pane { grid-row: 3; }
-
-  .pane-resizer {
-    grid-row: 2;
-    position: relative;
-    cursor: row-resize;
-    background: var(--panel);
-    border-top: 1px solid var(--border-soft);
-    border-bottom: 1px solid var(--border-soft);
-    touch-action: none;
-  }
-
-  .pane-resizer::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 54px;
-    height: 4px;
-    transform: translate(-50%, -50%);
-    border-radius: 999px;
-    background: var(--border);
-  }
-
-  .pane-resizer:hover::before,
-  .pane-resizer.is-dragging::before {
-    background: var(--accent);
-  }
-
-  .preview-head,
-  .asset-head {
+  .preview-head {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -427,60 +419,12 @@
     border-radius: 4px;
   }
 
-  .asset-pane {
-    border-top: 1px solid var(--border);
-    background: var(--panel);
-  }
-
-  .asset-body {
-    display: grid;
-    grid-template-columns: 310px 1fr;
-    gap: 0;
-    min-height: 0;
-    flex: 1;
-  }
-
-  .asset-controls {
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    padding: 12px;
-  }
-
-  .asset-preview-wrap {
-    display: grid;
-    grid-template-rows: 1fr 170px;
-    min-height: 0;
-  }
-
-  .asset-preview {
-    overflow: auto;
-    background: var(--bg);
-    padding: 20px;
-  }
-
-  .asset-preview-inner {
-    min-height: 100%;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-soft);
-    border-radius: 12px;
-    padding: 14px;
-  }
-
-  .asset-preview-inner svg {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
   .asset-raw {
-    border-top: 1px solid var(--border);
-    background: var(--panel);
-    padding: 10px 12px;
     min-height: 0;
   }
 
   .asset-raw .row { margin-bottom: 8px; }
-  .asset-raw textarea { min-height: 100px; height: 100%; }
+  .asset-raw textarea { min-height: 220px; }
 
   .palette-list {
     display: flex;
@@ -542,14 +486,10 @@
     }
 
     .sidebar {
-      border-right: none;
       border-bottom: 1px solid var(--border);
     }
 
-    .main {
-      --asset-pane-size: 420px;
-      grid-template-rows: minmax(280px, 1fr) 10px minmax(240px, var(--asset-pane-size));
-    }
+    .sidebar-resizer { display: none; }
   }
 </style>
 </head>
@@ -577,9 +517,65 @@
       <div class="hint">Drag cards to change section order. Expand any card to edit that section's raw markdown. Save writes live to <code>README.md</code>.</div>
     </div>
 
+    <h2>SVG studio</h2>
+    <div class="group">
+      <div class="row wrap">
+        <select id="asset-select" style="flex:1; min-width:0;"></select>
+        <button class="ghost" id="btn-reload-asset">Reload</button>
+        <button class="primary" id="btn-save-asset">Save SVG</button>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <span class="meta" id="asset-meta">select asset</span>
+        <div class="spacer"></div>
+        <button class="sm" id="btn-copy-asset">Copy SVG</button>
+      </div>
+      <div class="hint">Palette and raw SVG edits write to disk and update the README preview live. Separate SVG preview removed to free canvas.</div>
+    </div>
+
+    <div class="group" id="asset-template-group">
+      <h2>Chart template</h2>
+      <div class="row">
+        <label style="flex:1;">
+          <div class="hint">Chart type</div>
+          <select id="chart-type">
+            <option value="bars">bars</option>
+            <option value="lollipops">lollipops</option>
+            <option value="dots">dots</option>
+          </select>
+        </label>
+      </div>
+      <div class="palette-list" id="template-palette-list"></div>
+      <div class="row" style="margin-top:10px;">
+        <button id="btn-rebuild-template">Rebuild preview</button>
+      </div>
+    </div>
+
+    <div class="group" id="asset-palette-group">
+      <h2>Global palette</h2>
+      <div class="hint">These colors are gathered from all SVGs in <code>docs/assets</code>. Changing them updates the selected preview and powers bulk apply across the whole set.</div>
+      <div class="palette-list" id="asset-palette-list"></div>
+    </div>
+
+    <div class="group">
+      <h2>Palette actions</h2>
+      <div class="warn">Apply the global palette mapping to every SVG in <code>docs/assets</code>. This writes matching hex remaps to disk across the full set.</div>
+      <div class="row" style="margin-top:10px;">
+        <button id="btn-apply-palette-all">Apply palette to all SVGs</button>
+      </div>
+    </div>
+
+    <div class="group asset-raw">
+      <div class="row">
+        <span class="meta" id="asset-size"></span>
+      </div>
+      <textarea id="asset-raw-input" spellcheck="false"></textarea>
+    </div>
+
     <h2>Sections</h2>
     <div class="section-list" id="section-list"></div>
   </aside>
+
+  <div class="sidebar-resizer" id="sidebar-resizer" title="Drag to resize controls"></div>
 
   <main class="main">
     <section class="preview-pane">
@@ -595,74 +591,6 @@
       <div class="preview-body">
         <div class="md-preview" id="readme-preview"></div>
         <pre class="raw-preview" id="readme-raw"></pre>
-      </div>
-    </section>
-
-    <div class="pane-resizer" id="asset-resizer" title="Drag to resize SVG studio"></div>
-
-    <section class="asset-pane">
-      <div class="asset-head">
-        <h2 style="margin:0;">SVG studio</h2>
-        <span class="meta" id="asset-meta">select asset</span>
-        <div class="spacer"></div>
-        <select id="asset-select"></select>
-        <button class="ghost" id="btn-reload-asset">Reload asset</button>
-        <button class="primary" id="btn-save-asset">Save SVG</button>
-      </div>
-      <div class="asset-body">
-        <div class="asset-controls">
-          <div class="group">
-            <div class="row wrap">
-              <div>
-                <div style="font-weight:700;">What this does</div>
-                <div class="hint">Any SVG can get live palette edits and raw-source edits. <code>benchmark-summary.svg</code> also gets chart-type rebuild controls.</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="group" id="asset-template-group">
-            <h2>Chart template</h2>
-            <div class="row">
-              <label style="flex:1;">
-                <div class="hint">Chart type</div>
-                <select id="chart-type">
-                  <option value="bars">bars</option>
-                  <option value="lollipops">lollipops</option>
-                  <option value="dots">dots</option>
-                </select>
-              </label>
-            </div>
-            <div class="palette-list" id="template-palette-list"></div>
-            <div class="row" style="margin-top:10px;">
-              <button id="btn-rebuild-template">Rebuild preview</button>
-            </div>
-          </div>
-
-          <div class="group" id="asset-palette-group">
-            <h2>Palette remap</h2>
-            <div class="hint">These colors are read from current SVG. Changing them rewrites preview against disk version of that asset.</div>
-            <div class="palette-list" id="asset-palette-list"></div>
-          </div>
-
-          <div class="group">
-            <h2>Notes</h2>
-            <div class="warn">Generic chart-type swaps for every arbitrary SVG are not realistic without a template per asset. First pass wires real chart rebuilds for <code>benchmark-summary.svg</code>; other assets still get live palette and raw SVG editing.</div>
-          </div>
-        </div>
-
-        <div class="asset-preview-wrap">
-          <div class="asset-preview">
-            <div class="asset-preview-inner" id="asset-preview"></div>
-          </div>
-          <div class="asset-raw">
-            <div class="row">
-              <span class="meta" id="asset-size"></span>
-              <div class="spacer"></div>
-              <button class="sm" id="btn-copy-asset">Copy SVG</button>
-            </div>
-            <textarea id="asset-raw-input" spellcheck="false"></textarea>
-          </div>
-        </div>
       </div>
     </section>
   </main>
@@ -688,6 +616,30 @@ const DEFAULT_TEMPLATE_PALETTE = {
   sp: "#d29922"
 };
 
+const THEME_SLOT_DEFS = [
+  { id: "bg", label: "Background" },
+  { id: "muted", label: "Muted" },
+  { id: "ink", label: "Ink" },
+  { id: "panel", label: "Panel" },
+  { id: "accent", label: "Accent" }
+];
+
+const ASSET_THEME_ORDERS = {
+  "authorship-chain.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "authorship-layer.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "benchmark-summary.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "carryover-ladder.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "chain-of-custody.svg": ["bg", "muted", "ink", "panel", "accent"],
+  "execution-layer.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "problem-solution.svg": ["bg", "muted", "ink", "panel", "accent"],
+  "proof-lanes.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "stack.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "three-layers.svg": ["bg", "ink", "muted", "panel", "accent"],
+  "truth-layer.svg": ["bg", "panel", "ink", "muted", "accent"],
+  "what-it-catches.svg": ["bg", "muted", "panel", "accent", "ink"],
+  "workflow.svg": ["bg", "muted", "ink", "panel", "accent"]
+};
+
 const state = {
   sections: [],
   includeDividers: true,
@@ -697,6 +649,7 @@ const state = {
   asset: {
     selected: "",
     diskContent: "",
+    previewBaseContent: "",
     workingContent: "",
     previewUrls: {},
     colors: [],
@@ -704,10 +657,12 @@ const state = {
     templatePalette: { ...DEFAULT_TEMPLATE_PALETTE },
     chartType: "bars"
   },
+  globalPalette: [],
+  svgContentCache: {},
   resize: {
     active: false,
-    startY: 0,
-    startSize: 340
+    startX: 0,
+    startSize: 430
   }
 };
 
@@ -788,6 +743,76 @@ function isHexColor(value) {
   return /^#[0-9a-f]{6}$/i.test(String(value || ""));
 }
 
+function extractHexColors(svgContent) {
+  const matches = String(svgContent || "").match(/#[0-9a-fA-F]{6}\b/g) || [];
+  const seen = new Set();
+  const ordered = [];
+  matches.forEach((color) => {
+    const normalized = color.toLowerCase();
+    if (!seen.has(normalized)) {
+      seen.add(normalized);
+      ordered.push(normalized);
+    }
+  });
+  return ordered;
+}
+
+function themeOrderForAsset(assetName) {
+  return ASSET_THEME_ORDERS[assetName] || ["bg", "panel", "ink", "muted", "accent"];
+}
+
+function extractThemeFromAssetContent(assetName, content) {
+  const colors = extractHexColors(content);
+  const order = themeOrderForAsset(assetName);
+  const values = {};
+  order.forEach((slot, index) => {
+    if (colors[index]) values[slot] = colors[index];
+  });
+  return values;
+}
+
+function getThemeValueMap() {
+  const values = {};
+  (state.globalPalette || []).forEach((entry) => {
+    if (entry && entry.slot && isHexColor(entry.value)) values[entry.slot] = entry.value.toLowerCase();
+  });
+  return values;
+}
+
+function initializeThemeFromAsset(assetName, content) {
+  const seeded = extractThemeFromAssetContent(assetName, content);
+  state.globalPalette = THEME_SLOT_DEFS.map((slot) => ({
+    slot: slot.id,
+    label: slot.label,
+    value: seeded[slot.id] || "#000000"
+  }));
+}
+
+function syncThemeFromSelectedAsset() {
+  if (!state.asset.selected || !state.asset.previewBaseContent) return;
+  const seeded = extractThemeFromAssetContent(state.asset.selected, state.asset.previewBaseContent);
+  state.globalPalette = THEME_SLOT_DEFS.map((slot) => {
+    const prior = (state.globalPalette || []).find((entry) => entry.slot === slot.id);
+    return {
+      slot: slot.id,
+      label: slot.label,
+      value: seeded[slot.id] || (prior ? prior.value : "#000000")
+    };
+  });
+}
+
+function buildThemeOverridesForAsset(assetName, content) {
+  const sourceValues = extractThemeFromAssetContent(assetName, content);
+  const themeValues = getThemeValueMap();
+  const overrides = {};
+  THEME_SLOT_DEFS.forEach((slot) => {
+    if (sourceValues[slot.id] && themeValues[slot.id]) {
+      overrides[sourceValues[slot.id]] = themeValues[slot.id];
+    }
+  });
+  return overrides;
+}
+
 function applyColorOverrides(svgContent, overrides) {
   let output = String(svgContent || "");
   const entries = Object.entries(overrides || {})
@@ -829,9 +854,21 @@ function clearAssetPreviewOverrides() {
   state.asset.previewUrls = {};
 }
 
-function syncSelectedAssetPreviewOverride() {
-  if (!state.asset.selected || !state.asset.workingContent) return;
-  setAssetPreviewOverride(state.asset.selected, state.asset.workingContent);
+function syncPreviewOverridesFromGlobalPalette() {
+  clearAssetPreviewOverrides();
+  Object.entries(state.svgContentCache || {}).forEach(([assetName, content]) => {
+    const base = assetName === state.asset.selected
+      ? (state.asset.previewBaseContent || content)
+      : content;
+    setAssetPreviewOverride(assetName, applyColorOverrides(base, buildThemeOverridesForAsset(assetName, base)));
+  });
+}
+
+function applyGlobalPaletteToPreview() {
+  const base = state.asset.previewBaseContent || state.asset.diskContent || "";
+  state.asset.workingContent = applyColorOverrides(base, buildThemeOverridesForAsset(state.asset.selected, base));
+  syncPreviewOverridesFromGlobalPalette();
+  renderAssetPreview();
 }
 
 function mdToHtml(markdown) {
@@ -1090,41 +1127,48 @@ function renderAssetMeta() {
 }
 
 function renderAssetPreview() {
-  syncSelectedAssetPreviewOverride();
-  document.getElementById("asset-preview").innerHTML = state.asset.workingContent || "<div class='hint'>No SVG loaded.</div>";
   document.getElementById("asset-raw-input").value = state.asset.workingContent;
   renderAssetMeta();
   renderReadme();
 }
 
-function renderGenericPaletteControls() {
+function collectGlobalPaletteOverrides() {
+  return getThemeValueMap();
+}
+
+function renderGlobalPaletteControls() {
   const list = document.getElementById("asset-palette-list");
-  const rows = state.asset.colors.map((color) => `
+  const rows = state.globalPalette.map((entry) => `
     <div class="palette-row">
-      <code>${escapeHtml(color)}</code>
-      <input type="color" value="${escapeAttr(color)}" data-color-source="${escapeAttr(color)}" />
-      <input type="text" value="${escapeAttr(color)}" data-color-text="${escapeAttr(color)}" />
+      <code>${escapeHtml(entry.label)}</code>
+      <input type="color" value="${escapeAttr(entry.value)}" data-global-color-source="${escapeAttr(entry.slot)}" />
+      <input type="text" value="${escapeAttr(entry.value)}" data-global-color-text="${escapeAttr(entry.slot)}" />
     </div>
   `).join("");
-  list.innerHTML = rows || "<div class='hint'>No hex palette found in this SVG.</div>";
+  list.innerHTML = rows || "<div class='hint'>No theme palette available.</div>";
 
-  list.querySelectorAll("[data-color-source]").forEach((input) => {
+  list.querySelectorAll("[data-global-color-source]").forEach((input) => {
     input.addEventListener("input", () => {
-      const key = input.dataset.colorSource;
-      const textInput = list.querySelector(`[data-color-text="${CSS.escape(key)}"]`);
-      if (textInput) textInput.value = input.value.toLowerCase();
-      applyGenericPalette();
+      const key = input.dataset.globalColorSource;
+      const value = input.value.toLowerCase();
+      const entry = state.globalPalette.find((item) => item.slot === key);
+      if (entry) entry.value = value;
+      const textInput = list.querySelector(`[data-global-color-text="${CSS.escape(key)}"]`);
+      if (textInput) textInput.value = value;
+      applyGlobalPaletteToPreview();
     });
   });
 
-  list.querySelectorAll("[data-color-text]").forEach((input) => {
+  list.querySelectorAll("[data-global-color-text]").forEach((input) => {
     input.addEventListener("change", () => {
-      const key = input.dataset.colorText;
-      const value = isHexColor(input.value) ? input.value.toLowerCase() : key;
+      const key = input.dataset.globalColorText;
+      const entry = state.globalPalette.find((item) => item.slot === key);
+      const value = isHexColor(input.value) ? input.value.toLowerCase() : (entry ? entry.value : key);
+      if (entry) entry.value = value;
       input.value = value;
-      const colorInput = list.querySelector(`[data-color-source="${CSS.escape(key)}"]`);
+      const colorInput = list.querySelector(`[data-global-color-source="${CSS.escape(key)}"]`);
       if (colorInput) colorInput.value = value;
-      applyGenericPalette();
+      applyGlobalPaletteToPreview();
     });
   });
 }
@@ -1163,32 +1207,61 @@ function renderTemplatePaletteControls() {
 function renderAssetControls() {
   const templateGroup = document.getElementById("asset-template-group");
   templateGroup.classList.toggle("hidden", !state.asset.supportsTemplate);
-  document.getElementById("asset-palette-group").classList.toggle("hidden", state.asset.supportsTemplate);
   document.getElementById("chart-type").value = state.asset.chartType;
   if (state.asset.supportsTemplate) renderTemplatePaletteControls();
-  else renderGenericPaletteControls();
+  renderGlobalPaletteControls();
 }
 
-function applyGenericPalette() {
+function collectTemplatePaletteOverrides() {
   const overrides = {};
-  document.querySelectorAll("[data-color-text]").forEach((input) => {
-    if (isHexColor(input.value)) overrides[input.dataset.colorText] = input.value.toLowerCase();
+  Object.entries(state.asset.templatePalette || {}).forEach(([key, value]) => {
+    const source = DEFAULT_TEMPLATE_PALETTE[key];
+    if (isHexColor(source) && isHexColor(value)) overrides[source.toLowerCase()] = value.toLowerCase();
   });
-  state.asset.workingContent = applyColorOverrides(state.asset.diskContent, overrides);
-  renderAssetPreview();
+  return overrides;
+}
+
+function collectPaletteOverridesForAll() {
+  return collectGlobalPaletteOverrides();
+}
+
+async function loadGlobalPalette() {
+  const priorValues = new Map((state.globalPalette || []).map((entry) => [entry.slot, entry.value]));
+  const payloads = await Promise.all(
+    (state.svgFiles || []).map((assetName) => api(`/api/svg/${encodeURIComponent(assetName)}`))
+  );
+  state.svgContentCache = {};
+
+  payloads.forEach((payload) => {
+    state.svgContentCache[payload.name] = payload.content;
+  });
+
+  if (state.globalPalette.length === 0) {
+    const seedName = state.asset.selected || state.svgFiles[0];
+    initializeThemeFromAsset(seedName, state.svgContentCache[seedName] || "");
+  } else {
+    state.globalPalette = THEME_SLOT_DEFS.map((slot) => ({
+      slot: slot.id,
+      label: slot.label,
+      value: isHexColor(priorValues.get(slot.id)) ? priorValues.get(slot.id).toLowerCase() : "#000000"
+    }));
+  }
 }
 
 async function loadAsset(name) {
   const payload = await api(`/api/svg/${encodeURIComponent(name)}`);
   state.asset.selected = payload.name;
   state.asset.diskContent = payload.content;
-  state.asset.workingContent = payload.content;
+  state.asset.previewBaseContent = payload.content;
+  state.svgContentCache[payload.name] = payload.content;
+  state.asset.workingContent = applyColorOverrides(payload.content, buildThemeOverridesForAsset(payload.name, payload.content));
   state.asset.colors = payload.colors || [];
   state.asset.supportsTemplate = Boolean(payload.supportsTemplate);
   state.asset.chartType = "bars";
   state.asset.templatePalette = { ...DEFAULT_TEMPLATE_PALETTE };
   renderAssetSelect();
   renderAssetControls();
+  syncPreviewOverridesFromGlobalPalette();
   renderAssetPreview();
 }
 
@@ -1200,6 +1273,7 @@ async function loadRepoState() {
     enabled: section.enabled !== false
   }));
   state.svgFiles = payload.svgFiles || [];
+  await loadGlobalPalette();
   renderSections();
   renderReadme();
   renderAssetSelect();
@@ -1232,10 +1306,11 @@ async function saveAsset() {
     body: JSON.stringify({ content: state.asset.workingContent })
   });
   state.asset.diskContent = state.asset.workingContent;
-  if (!state.asset.supportsTemplate) {
-    state.asset.colors = [...new Set((state.asset.workingContent.match(/#[0-9a-fA-F]{6}\b/g) || []).map((value) => value.toLowerCase()))];
-    renderAssetControls();
-  }
+  state.asset.previewBaseContent = state.asset.workingContent;
+  state.svgContentCache[state.asset.selected] = state.asset.workingContent;
+  syncThemeFromSelectedAsset();
+  renderAssetControls();
+  syncPreviewOverridesFromGlobalPalette();
   renderAssetPreview();
   showToast(`${state.asset.selected} saved`);
 }
@@ -1248,9 +1323,47 @@ async function rebuildTemplateAsset() {
       palette: state.asset.templatePalette
     })
   });
-  state.asset.workingContent = payload.content;
+  state.asset.previewBaseContent = payload.content;
+  state.asset.workingContent = applyColorOverrides(payload.content, buildThemeOverridesForAsset(state.asset.selected, payload.content));
+  syncPreviewOverridesFromGlobalPalette();
   renderAssetPreview();
   showToast("template rebuilt");
+}
+
+async function applyPaletteToAllSvgs() {
+  const overrides = collectPaletteOverridesForAll();
+  const changedEntries = Object.entries(overrides).filter(([from, to]) => from !== to);
+  if (changedEntries.length === 0) {
+    showToast("no palette changes to apply");
+    return;
+  }
+
+  const confirmed = window.confirm(`Apply current palette mapping to all ${state.svgFiles.length} SVG files in docs/assets?`);
+  if (!confirmed) return;
+
+  const button = document.getElementById("btn-apply-palette-all");
+  const priorLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = "Applying...";
+
+  try {
+    let changed = 0;
+    for (const assetName of state.svgFiles) {
+      const payload = await api(`/api/svg/${encodeURIComponent(assetName)}`);
+      const nextContent = applyColorOverrides(payload.content, buildThemeOverridesForAsset(assetName, payload.content));
+      if (nextContent === payload.content) continue;
+      await api(`/api/svg/${encodeURIComponent(assetName)}`, {
+        method: "POST",
+        body: JSON.stringify({ content: nextContent })
+      });
+      changed += 1;
+    }
+    await loadRepoState();
+    showToast(`applied palette to ${changed} SVGs`);
+  } finally {
+    button.disabled = false;
+    button.textContent = priorLabel;
+  }
 }
 
 async function copyText(text, message) {
@@ -1307,7 +1420,11 @@ document.getElementById("btn-rebuild-template").addEventListener("click", async 
 });
 
 document.getElementById("asset-raw-input").addEventListener("input", (event) => {
-  state.asset.workingContent = event.target.value;
+  state.asset.previewBaseContent = event.target.value;
+  syncThemeFromSelectedAsset();
+  renderAssetControls();
+  state.asset.workingContent = applyColorOverrides(event.target.value, buildThemeOverridesForAsset(state.asset.selected, event.target.value));
+  syncPreviewOverridesFromGlobalPalette();
   renderAssetPreview();
 });
 
@@ -1315,40 +1432,48 @@ document.getElementById("btn-copy-asset").addEventListener("click", async () => 
   await copyText(state.asset.workingContent, "SVG copied");
 });
 
-function getMainPane() {
-  return document.querySelector(".main");
+document.getElementById("btn-apply-palette-all").addEventListener("click", async () => {
+  await applyPaletteToAllSvgs();
+});
+
+function getAppShell() {
+  return document.querySelector(".app");
 }
 
-function clampAssetPaneSize(size) {
-  const main = getMainPane();
-  const max = Math.max(260, main.getBoundingClientRect().height - 240);
-  return Math.max(220, Math.min(size, max));
+function clampSidebarSize(size) {
+  const max = Math.max(300, window.innerWidth - 420);
+  return Math.max(260, Math.min(size, max));
 }
 
-function setAssetPaneSize(size) {
-  getMainPane().style.setProperty("--asset-pane-size", `${clampAssetPaneSize(size)}px`);
+function setSidebarSize(size) {
+  getAppShell().style.setProperty("--sidebar-size", `${clampSidebarSize(size)}px`);
 }
 
 function stopResize() {
   state.resize.active = false;
   document.body.style.cursor = "";
   document.body.style.userSelect = "";
-  document.getElementById("asset-resizer").classList.remove("is-dragging");
+  document.getElementById("sidebar-resizer").classList.remove("is-dragging");
 }
 
-document.getElementById("asset-resizer").addEventListener("pointerdown", (event) => {
+document.getElementById("sidebar-resizer").addEventListener("pointerdown", (event) => {
   state.resize.active = true;
-  state.resize.startY = event.clientY;
-  state.resize.startSize = document.querySelector(".asset-pane").getBoundingClientRect().height;
-  document.body.style.cursor = "row-resize";
+  state.resize.startX = event.clientX;
+  state.resize.startSize = document.querySelector(".sidebar").getBoundingClientRect().width;
+  document.body.style.cursor = "col-resize";
   document.body.style.userSelect = "none";
   event.currentTarget.classList.add("is-dragging");
 });
 
 window.addEventListener("pointermove", (event) => {
   if (!state.resize.active) return;
-  const delta = event.clientY - state.resize.startY;
-  setAssetPaneSize(state.resize.startSize - delta);
+  const delta = event.clientX - state.resize.startX;
+  setSidebarSize(state.resize.startSize + delta);
+});
+
+window.addEventListener("resize", () => {
+  const current = document.querySelector(".sidebar").getBoundingClientRect().width;
+  setSidebarSize(current);
 });
 
 window.addEventListener("pointerup", stopResize);
