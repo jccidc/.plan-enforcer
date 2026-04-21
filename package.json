@@ -31,7 +31,8 @@
     "plan-enforcer-why": "src/why-cli.js"
   },
   "scripts": {
-    "test": "node scripts/run-tests.js"
+    "test": "node scripts/run-tests.js",
+    "playground:readme": "node scripts/readme-playground-server.js"
   },
   "repository": {
     "type": "git",
