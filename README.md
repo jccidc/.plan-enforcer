@@ -12,9 +12,9 @@ Plan Enforcer is ledger, decision trail, and chain of custody underneath AI-assi
 `FILED 2026-04-21`  
 `CUSTODIAN jccidc/.plan-enforcer`
 
-[![Problem and solution](docs/assets/problem-solution.svg)](docs/proof/public-proof.md)
+[![Drift compounds without receipts; Plan Enforcer anchors every stage to a file on disk](docs/assets/problem-solution.svg)](docs/proof/public-proof.md)
 
-> FIG.01 Drift compounds by default. Plan Enforcer makes chain explicit.
+> FIG. 01 — Without: four failure moments, none with receipts. With: six stages, each one a file on disk.
 
 ---
 
@@ -34,6 +34,10 @@ plan-enforcer discuss "..."
 
 If `doctor` reports missing project config, that is onboarding state, not broken install. First `discuss` or `import` bootstraps repo-local `.plan-enforcer/` state.
 
+![install.sh wires exactly four surfaces: hooks, skills, bin, state directory](docs/assets/install-manifest.svg)
+
+> FIG. 02 — `install.sh` wires exactly four surfaces. Nothing hidden, nothing outside the repo.
+
 | Without | With Plan Enforcer |
 | --- | --- |
 | scope silently narrows | `ask -> plan -> exec -> verify -> land` |
@@ -46,15 +50,11 @@ If `doctor` reports missing project config, that is onboarding state, not broken
 
 Plan Enforcer is built for moments where AI coding gets slippery: ask narrowing, mid-flight plan mutation, stale-context resumes, and "done" declared before repo truth catches up.
 
-Those failure modes stop being invisible. They become reviewable.
+Those failure modes stop being invisible. Each one has a file you can open.
 
-| Surface | What stays reconstructible |
-| --- | --- |
-| Ask fidelity | original ask -> landed work |
-| Lineage | plan -> implementation -> closure |
-| Decisions | scope changes and tradeoffs |
-| Resume | continuity across sessions |
-| Closure | tied to repo state |
+![Five surfaces, five evidence receipts in a case folder](docs/assets/provable-surfaces.svg)
+
+> FIG. 03 — Five surfaces, five files. Every one readable, replayable, reviewable.
 
 ---
 
@@ -62,19 +62,19 @@ Those failure modes stop being invisible. They become reviewable.
 
 `ASK -> PLAN -> EXEC -> DECIDE -> VERIFY -> LAND`
 
-[![Chain of custody](docs/assets/chain-of-custody.svg)](docs/assets/chain-of-custody.svg)
+![Three layers, each owning a phase of custody, with commands and produced files](docs/assets/three-layers.svg)
 
-Layer view:
-
-[![Three layers](docs/assets/three-layers.svg)](docs/assets/three-layers.svg)
+> FIG. 04 — Each layer owns a guarantee. Each guarantee lives in named files. One chain links them.
 
 ---
 
 ## 04 / What It Catches
 
-These are the failure modes the ledger is built to surface and preserve.
+These are the failure modes the ledger is built to surface and preserve. Each one has a before-state and a caught-state. Each caught-state is a real file path.
 
-[![What it catches](docs/assets/what-it-catches.svg)](docs/assets/what-it-catches.svg)
+![Four failure modes with without/with states and receipt file paths](docs/assets/what-it-catches.svg)
+
+> FIG. 05 — Four failure modes, four tiles, four receipts.
 
 ---
 
@@ -95,7 +95,9 @@ Bring plans from:
 plan-enforcer import docs/plans/my-plan.md
 ```
 
-[![Workflow](docs/assets/workflow.svg)](docs/assets/workflow.svg)
+![Heterogeneous plans normalized into one ledger entry](docs/assets/workflow.svg)
+
+> FIG. 06 — Whatever plan format you bring, the ledger entry has one shape. That shape is what gets audited.
 
 Same ledger. Same enforcement layer. Same audit surface. Same closure truth.
 
@@ -117,6 +119,12 @@ Visual proof surfaces:
 
 ## 06 / Best Fit
 
+Scored on five dimensions: duration, risk, auditability, handoff, evidence need. If most bars stay empty, Plan Enforcer is overhead you don't need. If they fill, you are already paying the cost of custody elsewhere.
+
+![Fit scored across five dimensions: strong fit vs less suited](docs/assets/best-fit.svg)
+
+> FIG. 07 — Empty bars: you don't need a custody layer. Full bars: you already need one.
+
 Strong fit:
 - long-running agent work where drift compounds over time
 - regulated or auditable engineering
@@ -132,6 +140,10 @@ Less suited:
 ---
 
 ## 07 / Claim, Stated Narrowly
+
+![Claim stated narrowly: filed, signed, sealed](docs/assets/claim.svg)
+
+> FIG. 08 — Claim. Three pillars. Filed, signed, sealed.
 
 > When AI implementation has to survive scrutiny, mutation, interruption, and final review, Plan Enforcer provides the chain of custody.
 

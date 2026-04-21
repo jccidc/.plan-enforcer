@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five surfaces, five evidence receipts in a case folder">
+  <rect width="960" height="480" fill="#141211"/>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace">
+    <polygon points="24,44 220,44 240,24 24,24" fill="#d9cfb7"/>
+    <text x="38" y="39" font-size="10" letter-spacing="3" fill="#0b0a09">CASE PE-0427</text>
+  </g>
+  <rect x="24" y="44" width="912" height="412" fill="#ede4d3"/>
+  <rect x="24" y="44" width="912" height="24" fill="#d9cfb7"/>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#0b0a09">
+    <text x="40" y="60">SURFACE</text>
+    <text x="300" y="60">WHAT STAYS RECONSTRUCTIBLE</text>
+    <text x="640" y="60">WHERE IT LIVES</text>
+    <text x="900" y="60" text-anchor="end">KIND</text>
+  </g>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="12" fill="#0b0a09">
+    <g transform="translate(24,80)">
+      <rect x="0" y="0" width="912" height="72" fill="#ede4d3"/>
+      <rect x="0" y="0" width="6" height="72" fill="#6ab0ff"/>
+      <text x="20" y="22" font-size="9" letter-spacing="3" fill="#2b5c9a">NO. 01</text>
+      <text x="20" y="42" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#0b0a09">ASK FIDELITY</text>
+      <text x="20" y="60" font-size="10" fill="#3d3224">original prompt, verbatim</text>
+      <text x="280" y="42" font-size="12">original ask maps to landed work</text>
+      <text x="280" y="60" font-size="10" fill="#3d3224">no silent narrowing between turn 1 and turn N</text>
+      <text x="620" y="42" font-size="11" font-weight="700">.plan-enforcer/ask.md</text>
+      <text x="620" y="60" font-size="10" fill="#3d3224">+ sha256(intent) sealed at t0</text>
+      <text x="898" y="42" text-anchor="end" font-size="9" letter-spacing="2" fill="#2b5c9a">INTENT</text>
+      <line x1="6" y1="72" x2="912" y2="72" stroke="#b5ab93" stroke-width=".6"/>
+    </g>
+    <g transform="translate(24,152)">
+      <rect x="0" y="0" width="912" height="72" fill="#ede4d3"/>
+      <rect x="0" y="0" width="6" height="72" fill="#f0a500"/>
+      <text x="20" y="22" font-size="9" letter-spacing="3" fill="#9a6a00">NO. 02</text>
+      <text x="20" y="42" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#0b0a09">LINEAGE</text>
+      <text x="20" y="60" font-size="10" fill="#3d3224">plan to code to close</text>
+      <text x="280" y="42" font-size="12">every line ties back to a plan step</text>
+      <text x="280" y="60" font-size="10" fill="#3d3224">execution trace links tool calls to plan ids</text>
+      <text x="620" y="42" font-size="11" font-weight="700">plan.md · exec.log</text>
+      <text x="620" y="60" font-size="10" fill="#3d3224">cross-referenced by step id</text>
+      <text x="898" y="42" text-anchor="end" font-size="9" letter-spacing="2" fill="#9a6a00">TRACE</text>
+      <line x1="6" y1="72" x2="912" y2="72" stroke="#b5ab93" stroke-width=".6"/>
+    </g>
+    <g transform="translate(24,224)">
+      <rect x="0" y="0" width="912" height="72" fill="#ede4d3"/>
+      <rect x="0" y="0" width="6" height="72" fill="#7de38a"/>
+      <text x="20" y="22" font-size="9" letter-spacing="3" fill="#2d5c33">NO. 03</text>
+      <text x="20" y="42" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#0b0a09">DECISIONS</text>
+      <text x="20" y="60" font-size="10" fill="#3d3224">scope deltas + tradeoffs</text>
+      <text x="280" y="42" font-size="12">every mutation recorded with a reason</text>
+      <text x="280" y="60" font-size="10" fill="#3d3224">"we did X instead of Y because Z" — appended, not silent</text>
+      <text x="620" y="42" font-size="11" font-weight="700">decisions.md</text>
+      <text x="620" y="60" font-size="10" fill="#3d3224">append-only log · dated</text>
+      <text x="898" y="42" text-anchor="end" font-size="9" letter-spacing="2" fill="#2d5c33">CHOICE</text>
+      <line x1="6" y1="72" x2="912" y2="72" stroke="#b5ab93" stroke-width=".6"/>
+    </g>
+    <g transform="translate(24,296)">
+      <rect x="0" y="0" width="912" height="72" fill="#ede4d3"/>
+      <rect x="0" y="0" width="6" height="72" fill="#c9bfa8"/>
+      <text x="20" y="22" font-size="9" letter-spacing="3" fill="#6b6348">NO. 04</text>
+      <text x="20" y="42" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#0b0a09">RESUME</text>
+      <text x="20" y="60" font-size="10" fill="#3d3224">session continuity</text>
+      <text x="280" y="42" font-size="12">next session starts from truth, not from drift</text>
+      <text x="280" y="60" font-size="10" fill="#3d3224">resume reads ledger, not chat backscroll</text>
+      <text x="620" y="42" font-size="11" font-weight="700">resume.md · ledger tail</text>
+      <text x="620" y="60" font-size="10" fill="#3d3224">last-sealed-state handoff</text>
+      <text x="898" y="42" text-anchor="end" font-size="9" letter-spacing="2" fill="#6b6348">HANDOFF</text>
+      <line x1="6" y1="72" x2="912" y2="72" stroke="#b5ab93" stroke-width=".6"/>
+    </g>
+    <g transform="translate(24,368)">
+      <rect x="0" y="0" width="912" height="72" fill="#ede4d3"/>
+      <rect x="0" y="0" width="6" height="72" fill="#c9342a"/>
+      <text x="20" y="22" font-size="9" letter-spacing="3" fill="#c9342a">NO. 05</text>
+      <text x="20" y="42" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#0b0a09">CLOSURE</text>
+      <text x="20" y="60" font-size="10" fill="#3d3224">done = repo truth</text>
+      <text x="280" y="42" font-size="12">"done" only if repo sha matches plan contract</text>
+      <text x="280" y="60" font-size="10" fill="#3d3224">no declaring victory before verify gates pass</text>
+      <text x="620" y="42" font-size="11" font-weight="700">closure.md + seal</text>
+      <text x="620" y="60" font-size="10" fill="#3d3224">repo-sha-stamped · notarized</text>
+      <text x="898" y="42" text-anchor="end" font-size="9" letter-spacing="2" fill="#c9342a">SEAL</text>
+    </g>
+  </g>
+</svg>

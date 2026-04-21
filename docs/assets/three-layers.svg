@@ -1,78 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three layers: authorship, execution, truth — with commands, files, and guarantees">
+  <rect width="960" height="480" fill="#141211"/>
+  <rect x="0" y="0" width="960" height="26" fill="#141211"/>
+  <rect x="0" y="26" width="960" height="2" fill="#c9342a"/>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="20" y="18" fill="#c9342a">FIG. 04</text>
+    <text x="480" y="18" text-anchor="middle" fill="#ede4d3">THREE LAYERS · EACH LAYER OWNS A PHASE OF CUSTODY</text>
+    <text x="940" y="18" text-anchor="end" fill="#c9bfa8">COLUMN HEADERS</text>
+  </g>
 
-<rect width="800" height="360" fill="#201f1e"></rect>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#c9bfa8">
+    <text x="24" y="54">LAYER</text>
+    <text x="280" y="54">GUARANTEE</text>
+    <text x="560" y="54">COMMANDS</text>
+    <text x="760" y="54">PRODUCES</text>
+  </g>
+  <line x1="20" y1="60" x2="940" y2="60" stroke="rgba(237,228,211,.25)"/>
 
-<g transform="translate(40,30)">
-<rect x="0" y="0" width="720" height="84" fill="none" stroke="#617e94" stroke-width="1.2"></rect>
-<text x="20" y="24" font-size="10" fill="#ecf6f9" letter-spacing="1.5">01</text>
-<text x="20" y="48" font-size="18" font-weight="600" fill="#617e94">AUTHORSHIP</text>
-<text x="20" y="68" font-size="11" fill="#ecf6f9">capture intent before drift</text>
+  <g transform="translate(20,72)">
+    <rect width="920" height="120" fill="#1d1a18" stroke="#6ab0ff" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="120" fill="#6ab0ff"/>
+    <g transform="translate(20,28)">
+      <text font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#6ab0ff">01 · AUTHORSHIP</text>
+      <text y="30" font-family="ui-sans-serif,system-ui,sans-serif" font-size="22" font-weight="700" fill="#ede4d3">Intent capture</text>
+      <text y="54" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#c9bfa8">what the user actually asked for</text>
+    </g>
+    <g transform="translate(260,34)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#ede4d3">
+      <text>original ask is</text>
+      <text y="18">frozen and hashed</text>
+      <text y="36" fill="#c9bfa8" font-size="10">no silent narrowing,</text>
+      <text y="50" fill="#c9bfa8" font-size="10">no paraphrase drift</text>
+    </g>
+    <g transform="translate(540,34)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10">
+      <g><rect x="0" y="-10" width="60" height="18" fill="#0b0a09" stroke="#6ab0ff"/><text x="30" y="3" text-anchor="middle" fill="#6ab0ff">discuss</text></g>
+      <g transform="translate(66,0)"><rect x="0" y="-10" width="50" height="18" fill="#0b0a09" stroke="#6ab0ff"/><text x="25" y="3" text-anchor="middle" fill="#6ab0ff">draft</text></g>
+      <g transform="translate(122,0)"><rect x="0" y="-10" width="56" height="18" fill="#0b0a09" stroke="#6ab0ff"/><text x="28" y="3" text-anchor="middle" fill="#6ab0ff">review</text></g>
+      <text y="28" font-size="9" fill="#c9bfa8">three skills · one folder</text>
+    </g>
+    <g transform="translate(760,32)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#ede4d3">
+      <text font-weight="700">ask.md</text>
+      <text y="16" font-weight="700">plan.md</text>
+      <text y="32" font-weight="700">review.md</text>
+      <text y="52" font-size="9" fill="#c9bfa8">hashed at freeze</text>
+    </g>
+  </g>
 
-<g transform="translate(300,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">discuss</text>
-</g>
-<g transform="translate(400,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">draft</text>
-</g>
-<g transform="translate(500,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">review</text>
-</g>
-<g transform="translate(600,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">import</text>
-</g>
-<g transform="translate(360,88)"><line x1="0" y1="0" x2="0" y2="10" stroke="#617e94" stroke-width="1"></line><path d="M-4 8 L 0 14 L 4 8" fill="#617e94"></path></g>
-</g>
-<g transform="translate(40,130)">
-<rect x="0" y="0" width="720" height="84" fill="none" stroke="#617e94" stroke-width="1.2"></rect>
-<text x="20" y="24" font-size="10" fill="#ecf6f9" letter-spacing="1.5">02</text>
-<text x="20" y="48" font-size="18" font-weight="600" fill="#617e94">EXECUTION</text>
-<text x="20" y="68" font-size="11" fill="#ecf6f9">constrain while work happens</text>
+  <g transform="translate(20,202)">
+    <rect width="920" height="120" fill="#1d1a18" stroke="#f0a500" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="120" fill="#f0a500"/>
+    <g transform="translate(20,28)">
+      <text font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#f0a500">02 · EXECUTION</text>
+      <text y="30" font-family="ui-sans-serif,system-ui,sans-serif" font-size="22" font-weight="700" fill="#ede4d3">Work under contract</text>
+      <text y="54" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#c9bfa8">mid-flight changes must declare themselves</text>
+    </g>
+    <g transform="translate(260,34)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#ede4d3">
+      <text>every deviation</text>
+      <text y="18">is logged, not silent</text>
+      <text y="36" fill="#c9bfa8" font-size="10">tool calls linked to plan steps,</text>
+      <text y="50" fill="#c9bfa8" font-size="10">decisions appended with reason</text>
+    </g>
+    <g transform="translate(540,34)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10">
+      <g><rect x="0" y="-10" width="60" height="18" fill="#0b0a09" stroke="#f0a500"/><text x="30" y="3" text-anchor="middle" fill="#f0a500">execute</text></g>
+      <g transform="translate(66,0)"><rect x="0" y="-10" width="54" height="18" fill="#0b0a09" stroke="#f0a500"/><text x="27" y="3" text-anchor="middle" fill="#f0a500">decide</text></g>
+      <g transform="translate(126,0)"><rect x="0" y="-10" width="56" height="18" fill="#0b0a09" stroke="#f0a500"/><text x="28" y="3" text-anchor="middle" fill="#f0a500">resume</text></g>
+      <text y="28" font-size="9" fill="#c9bfa8">exec trace + decision log</text>
+    </g>
+    <g transform="translate(760,32)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#ede4d3">
+      <text font-weight="700">exec.log</text>
+      <text y="16" font-weight="700">decisions.md</text>
+      <text y="32" font-weight="700">resume.md</text>
+      <text y="52" font-size="9" fill="#c9bfa8">append-only</text>
+    </g>
+  </g>
 
-<g transform="translate(300,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">ledger</text>
-</g>
-<g transform="translate(400,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">phase-gate</text>
-</g>
-<g transform="translate(500,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">hooks</text>
-</g>
-<g transform="translate(600,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">resume</text>
-</g>
-<g transform="translate(360,88)"><line x1="0" y1="0" x2="0" y2="10" stroke="#617e94" stroke-width="1"></line><path d="M-4 8 L 0 14 L 4 8" fill="#617e94"></path></g>
-</g>
-<g transform="translate(40,230)">
-<rect x="0" y="0" width="720" height="84" fill="none" stroke="#617e94" stroke-width="1.2"></rect>
-<text x="20" y="24" font-size="10" fill="#ecf6f9" letter-spacing="1.5">03</text>
-<text x="20" y="48" font-size="18" font-weight="600" fill="#617e94">TRUTH</text>
-<text x="20" y="68" font-size="11" fill="#ecf6f9">preserve lineage after</text>
-
-<g transform="translate(300,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">verify</text>
-</g>
-<g transform="translate(400,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">audit</text>
-</g>
-<g transform="translate(500,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">report</text>
-</g>
-<g transform="translate(600,30)">
-<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
-<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">lineage</text>
-</g>
-
-</g>
+  <g transform="translate(20,332)">
+    <rect width="920" height="120" fill="#1d1a18" stroke="#c9342a" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="120" fill="#c9342a"/>
+    <g transform="translate(20,28)">
+      <text font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#c9342a">03 · TRUTH</text>
+      <text y="30" font-family="ui-sans-serif,system-ui,sans-serif" font-size="22" font-weight="700" fill="#ede4d3">Reconciled to repo</text>
+      <text y="54" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#c9bfa8">done = what actually shipped</text>
+    </g>
+    <g transform="translate(260,34)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#ede4d3">
+      <text>closure requires</text>
+      <text y="18">repo sha = plan contract</text>
+      <text y="36" fill="#c9bfa8" font-size="10">no declaring done until</text>
+      <text y="50" fill="#c9bfa8" font-size="10">every gate passes against HEAD</text>
+    </g>
+    <g transform="translate(540,34)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10">
+      <g><rect x="0" y="-10" width="56" height="18" fill="#0b0a09" stroke="#c9342a"/><text x="28" y="3" text-anchor="middle" fill="#c9342a">verify</text></g>
+      <g transform="translate(62,0)"><rect x="0" y="-10" width="42" height="18" fill="#0b0a09" stroke="#c9342a"/><text x="21" y="3" text-anchor="middle" fill="#c9342a">land</text></g>
+      <g transform="translate(110,0)"><rect x="0" y="-10" width="56" height="18" fill="#0b0a09" stroke="#c9342a"/><text x="28" y="3" text-anchor="middle" fill="#c9342a">doctor</text></g>
+      <text y="28" font-size="9" fill="#c9bfa8">repo-anchored seal</text>
+    </g>
+    <g transform="translate(760,32)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#ede4d3">
+      <text font-weight="700">verify.md</text>
+      <text y="16" font-weight="700">closure.md</text>
+      <text y="32" font-weight="700">seal (sha-stamped)</text>
+      <text y="52" font-size="9" fill="#c9bfa8">gates tied to HEAD</text>
+    </g>
+  </g>
 </svg>

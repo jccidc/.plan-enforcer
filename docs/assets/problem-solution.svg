@@ -1,57 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Drift compounds without receipts; Plan Enforcer anchors every stage to a file on disk">
+  <defs>
+    <pattern id="gridp" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0V24" fill="none" stroke="rgba(237,228,211,.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="960" height="540" fill="#141211"/>
+  <rect width="960" height="540" fill="url(#gridp)"/>
 
-<rect width="800" height="320" fill="#201f1e"></rect>
-<g>
-<text x="32" y="36" font-size="11" fill="#ecf6f9" letter-spacing="2">WITHOUT</text>
-<text x="32" y="62" font-size="20" font-weight="600" fill="#617e94">Drift compounds.</text>
-<g transform="translate(32,110)">
-<line x1="0" y1="40" x2="320" y2="40" stroke="#ecf6f9" stroke-width="1" stroke-dasharray="3 4" opacity=".5"></line>
-<path d="M0 40 C 40 40, 60 20, 100 30 S 160 80, 200 60 S 260 10, 320 90" fill="none" stroke="#617e94" stroke-width="1.5"></path>
-<circle cx="0" cy="40" r="3.5" fill="#617e94"></circle>
-<text x="0" y="22" font-size="10" fill="#ecf6f9">ask</text>
-<circle cx="320" cy="90" r="4" fill="none" stroke="#617e94" stroke-width="1.5"></circle>
-<text x="300" y="112" font-size="10" fill="#ecf6f9">landed</text>
-</g>
-<g transform="translate(32,240)" font-size="10" fill="#ecf6f9">
-<text y="0">· scope silently narrows</text>
-<text y="16">· decisions unrecorded</text>
-<text y="32">· resume from stale context</text>
-</g>
-</g>
-<line x1="400" y1="24" x2="400" y2="296" stroke="#ecf6f9" stroke-dasharray="2 3" opacity=".5"></line>
-<g>
-<text x="432" y="36" font-size="11" fill="#f7f7f7" letter-spacing="2">WITH PLAN ENFORCER</text>
-<text x="432" y="62" font-size="20" font-weight="600" fill="#617e94">Fidelity preserved.</text>
-<g transform="translate(432,110)">
-<line x1="0" y1="40" x2="320" y2="40" stroke="#617e94" stroke-width="1.5"></line>
-<line x1="0" y1="44" x2="320" y2="44" stroke="#617e94" stroke-width="1.5"></line>
+  <rect x="0" y="0" width="960" height="30" fill="#141211"/>
+  <rect x="0" y="30" width="960" height="2" fill="#c9342a"/>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="20" y="20" fill="#c9342a">CASE PE-0427</text>
+    <text x="480" y="20" text-anchor="middle" fill="#ede4d3">CHAIN OF CUSTODY · AI-ASSISTED IMPLEMENTATION</text>
+    <text x="940" y="20" text-anchor="end" fill="#c9bfa8">FIG. 01</text>
+  </g>
 
-<g transform="translate(8,42)">
-<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
-<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">ASK</text>
-</g>
-<g transform="translate(86,42)">
-<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
-<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">PLAN</text>
-</g>
-<g transform="translate(164,42)">
-<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
-<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">EXEC</text>
-</g>
-<g transform="translate(242,42)">
-<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
-<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">VERIFY</text>
-</g>
-<g transform="translate(320,42)">
-<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
-<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">LAND</text>
-</g>
-</g>
-<g transform="translate(432,240)" font-size="10" fill="#ecf6f9">
-<text y="0">· ledger kept on disk</text>
-<text y="16">· decisions tracked by design</text>
-<text y="32">· resume is first-class</text>
-</g>
-</g>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace">
+    <text x="30" y="60" font-size="11" letter-spacing="4" fill="#c9342a">WITHOUT — DRIFT COMPOUNDS</text>
+    <text x="30" y="80" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#ede4d3">Every missing receipt is a story you can't reconstruct.</text>
+  </g>
+
+  <g transform="translate(0,210)">
+    <line x1="40" y1="0" x2="920" y2="0" stroke="rgba(237,228,211,.25)" stroke-dasharray="3 4"/>
+    <circle cx="40" cy="0" r="5" fill="#ede4d3"/>
+    <text x="40" y="22" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="2" fill="#ede4d3">ASK</text>
+    <text x="40" y="36" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#c9bfa8">t0</text>
+    <g transform="translate(920,0)">
+      <circle r="11" fill="none" stroke="#c9342a" stroke-width="1.5"/>
+      <line x1="-6" y1="-6" x2="6" y2="6" stroke="#c9342a" stroke-width="1.5"/>
+      <line x1="-6" y1="6" x2="6" y2="-6" stroke="#c9342a" stroke-width="1.5"/>
+      <text x="0" y="28" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="2" fill="#c9342a">DONE?</text>
+      <text x="0" y="42" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#c9bfa8">unverifiable</text>
+    </g>
+    <path d="M40 0 C 140 0, 180 -40, 240 -22 S 360 -58, 420 -30 S 560 -74, 620 -40 S 800 -68, 920 0" fill="none" stroke="#c9342a" stroke-width="2.2" opacity=".9"/>
+    <path d="M40 0 C 140 0, 180 -40, 240 -22 S 360 -58, 420 -30 S 560 -74, 620 -40 S 800 -68, 920 0 L 920 0 L 40 0 Z" fill="#c9342a" opacity=".06"/>
+  </g>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10">
+    <g transform="translate(130,100)">
+      <rect width="170" height="54" fill="#1d1a18" stroke="#c9342a" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="54" fill="#c9342a"/>
+      <text x="12" y="18" fill="#c9342a" font-size="9" letter-spacing="2">FAILURE · 01</text>
+      <text x="12" y="34" fill="#ede4d3" font-weight="700">SCOPE NARROWED</text>
+      <text x="12" y="48" fill="#c9bfa8" font-size="9">no receipt of the narrowing</text>
+      <line x1="85" y1="54" x2="190" y2="108" stroke="#c9342a" stroke-dasharray="2 3"/>
+    </g>
+    <g transform="translate(340,100)">
+      <rect width="170" height="54" fill="#1d1a18" stroke="#c9342a" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="54" fill="#c9342a"/>
+      <text x="12" y="18" fill="#c9342a" font-size="9" letter-spacing="2">FAILURE · 02</text>
+      <text x="12" y="34" fill="#ede4d3" font-weight="700">DECISION MADE</text>
+      <text x="12" y="48" fill="#c9bfa8" font-size="9">no record of the tradeoff</text>
+      <line x1="85" y1="54" x2="80" y2="104" stroke="#c9342a" stroke-dasharray="2 3"/>
+    </g>
+    <g transform="translate(550,100)">
+      <rect width="170" height="54" fill="#1d1a18" stroke="#c9342a" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="54" fill="#c9342a"/>
+      <text x="12" y="18" fill="#c9342a" font-size="9" letter-spacing="2">FAILURE · 03</text>
+      <text x="12" y="34" fill="#ede4d3" font-weight="700">STALE RESUME</text>
+      <text x="12" y="48" fill="#c9bfa8" font-size="9">context already drifted</text>
+      <line x1="85" y1="54" x2="70" y2="105" stroke="#c9342a" stroke-dasharray="2 3"/>
+    </g>
+    <g transform="translate(760,100)">
+      <rect width="170" height="54" fill="#1d1a18" stroke="#c9342a" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="54" fill="#c9342a"/>
+      <text x="12" y="18" fill="#c9342a" font-size="9" letter-spacing="2">FAILURE · 04</text>
+      <text x="12" y="34" fill="#ede4d3" font-weight="700">CLOSED EARLY</text>
+      <text x="12" y="48" fill="#c9bfa8" font-size="9">repo differs from plan at close</text>
+      <line x1="85" y1="54" x2="80" y2="108" stroke="#c9342a" stroke-dasharray="2 3"/>
+    </g>
+  </g>
+
+  <line x1="0" y1="280" x2="960" y2="280" stroke="#c9342a" stroke-dasharray="2 6" opacity=".5"/>
+  <rect x="40" y="270" width="120" height="20" fill="#0b0a09"/>
+  <text x="100" y="284" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="4" fill="#c9342a">CUT LINE</text>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace">
+    <text x="30" y="318" font-size="11" letter-spacing="4" fill="#7de38a">WITH PLAN ENFORCER — CUSTODY HOLDS</text>
+    <text x="30" y="338" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#ede4d3">Every stage leaves a receipt. Every receipt is on disk.</text>
+  </g>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9">
+    <g transform="translate(40,360)">
+      <rect width="140" height="72" fill="#ede4d3"/>
+      <rect y="0" width="140" height="16" fill="#d9cfb7"/>
+      <text x="8" y="12" font-size="9" letter-spacing="2" fill="#0b0a09">STAGE 01 · ASK</text>
+      <text x="8" y="32" font-size="10" font-weight="700" fill="#0b0a09">ask.md</text>
+      <text x="8" y="48" font-size="9" fill="#3d3224">original prompt</text>
+      <text x="8" y="60" font-size="9" fill="#3d3224">+ sha256(intent)</text>
+      <circle cx="128" cy="10" r="3" fill="#6ab0ff"/>
+    </g>
+    <g transform="translate(188,360)">
+      <rect width="140" height="72" fill="#ede4d3"/>
+      <rect y="0" width="140" height="16" fill="#d9cfb7"/>
+      <text x="8" y="12" font-size="9" letter-spacing="2" fill="#0b0a09">STAGE 02 · PLAN</text>
+      <text x="8" y="32" font-size="10" font-weight="700" fill="#0b0a09">plan.md</text>
+      <text x="8" y="48" font-size="9" fill="#3d3224">contract + gates</text>
+      <text x="8" y="60" font-size="9" fill="#3d3224">frozen hash</text>
+      <circle cx="128" cy="10" r="3" fill="#6ab0ff"/>
+    </g>
+    <g transform="translate(336,360)">
+      <rect width="140" height="72" fill="#ede4d3"/>
+      <rect y="0" width="140" height="16" fill="#d9cfb7"/>
+      <text x="8" y="12" font-size="9" letter-spacing="2" fill="#0b0a09">STAGE 03 · EXEC</text>
+      <text x="8" y="32" font-size="10" font-weight="700" fill="#0b0a09">exec.log</text>
+      <text x="8" y="48" font-size="9" fill="#3d3224">step trace</text>
+      <text x="8" y="60" font-size="9" fill="#3d3224">tool + sha per line</text>
+      <circle cx="128" cy="10" r="3" fill="#f0a500"/>
+    </g>
+    <g transform="translate(484,360)">
+      <rect width="140" height="72" fill="#ede4d3"/>
+      <rect y="0" width="140" height="16" fill="#d9cfb7"/>
+      <text x="8" y="12" font-size="9" letter-spacing="2" fill="#0b0a09">STAGE 04 · DECIDE</text>
+      <text x="8" y="32" font-size="10" font-weight="700" fill="#0b0a09">decisions.md</text>
+      <text x="8" y="48" font-size="9" fill="#3d3224">scope delta</text>
+      <text x="8" y="60" font-size="9" fill="#3d3224">+ justification</text>
+      <circle cx="128" cy="10" r="3" fill="#f0a500"/>
+    </g>
+    <g transform="translate(632,360)">
+      <rect width="140" height="72" fill="#ede4d3"/>
+      <rect y="0" width="140" height="16" fill="#d9cfb7"/>
+      <text x="8" y="12" font-size="9" letter-spacing="2" fill="#0b0a09">STAGE 05 · VERIFY</text>
+      <text x="8" y="32" font-size="10" font-weight="700" fill="#0b0a09">verify.md</text>
+      <text x="8" y="48" font-size="9" fill="#3d3224">repo vs plan diff</text>
+      <text x="8" y="60" font-size="9" fill="#3d3224">gate results</text>
+      <circle cx="128" cy="10" r="3" fill="#7de38a"/>
+    </g>
+    <g transform="translate(780,360)">
+      <rect width="140" height="72" fill="#ede4d3" stroke="#7de38a" stroke-width="2"/>
+      <rect y="0" width="140" height="16" fill="#7de38a"/>
+      <text x="8" y="12" font-size="9" letter-spacing="2" fill="#0b0a09" font-weight="700">STAGE 06 · LAND</text>
+      <text x="8" y="32" font-size="10" font-weight="700" fill="#0b0a09">closure.md</text>
+      <text x="8" y="48" font-size="9" fill="#3d3224">repo sha matches</text>
+      <text x="8" y="60" font-size="9" fill="#3d3224">plan contract · SEALED</text>
+      <circle cx="128" cy="10" r="3" fill="#0b0a09"/>
+    </g>
+  </g>
+
+  <g transform="translate(0,462)">
+    <line x1="40" y1="0" x2="920" y2="0" stroke="#ede4d3" stroke-width="1.5" opacity=".4"/>
+    <g stroke="#ede4d3" stroke-width="1.5">
+      <line x1="110" y1="-6" x2="110" y2="6"/>
+      <line x1="258" y1="-6" x2="258" y2="6"/>
+      <line x1="406" y1="-6" x2="406" y2="6"/>
+      <line x1="554" y1="-6" x2="554" y2="6"/>
+      <line x1="702" y1="-6" x2="702" y2="6"/>
+      <line x1="850" y1="-6" x2="850" y2="6"/>
+    </g>
+    <text x="40" y="24" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#c9bfa8">CUSTODY THREAD</text>
+    <text x="920" y="24" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#7de38a">CONTINUOUS · AUDITABLE · REPLAYABLE</text>
+  </g>
+
+  <g transform="translate(850,508)">
+    <rect x="-70" y="-16" width="140" height="28" fill="none" stroke="#c9342a" stroke-width="1.5"/>
+    <text x="0" y="4" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" letter-spacing="4" fill="#c9342a" font-weight="700">SEALED · PE-0427</text>
+  </g>
 </svg>
