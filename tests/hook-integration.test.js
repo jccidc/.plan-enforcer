@@ -14,11 +14,10 @@ function makeTempProject(prefix) {
 }
 
 describe('session-start hook', () => {
-  it('clears stale named stage when no ledger or plan is active', () => {
+  it('clears stale named stage when no packet, ledger, or plan is active', () => {
     const projectDir = makeTempProject('plan-enforcer-session-start-clear-');
     const enforcerDir = path.join(projectDir, '.plan-enforcer');
     fs.mkdirSync(enforcerDir, { recursive: true });
-    fs.writeFileSync(path.join(enforcerDir, 'discuss.md'), '# Packet\n');
     fs.writeFileSync(path.join(enforcerDir, 'statusline-state.json'), JSON.stringify({
       stage: 'discuss',
       label: '1-DISCUSS',
@@ -32,6 +31,25 @@ describe('session-start hook', () => {
 
     assert.equal(result.status, 0);
     assert.equal(fs.existsSync(path.join(enforcerDir, 'statusline-state.json')), false);
+  });
+
+  it('restores discuss stage from packet when no ledger or plan is active yet', () => {
+    const projectDir = makeTempProject('plan-enforcer-session-start-discuss-');
+    const enforcerDir = path.join(projectDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'discuss.md'), '# README launch\n');
+
+    const result = spawnSync(process.execPath, [sessionStartHook], {
+      cwd: projectDir,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.equal(fs.existsSync(path.join(enforcerDir, 'statusline-state.json')), true);
+    const state = JSON.parse(fs.readFileSync(path.join(enforcerDir, 'statusline-state.json'), 'utf8'));
+    assert.equal(state.stage, 'discuss');
+    assert.equal(state.label, '1-DISCUSS');
+    assert.equal(state.title, 'README launch');
   });
 
   it('auto-activates a detected plan and creates a ledger', () => {

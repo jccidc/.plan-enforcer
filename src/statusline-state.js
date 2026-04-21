@@ -63,6 +63,7 @@ function resolveStatuslinePaths(opts = {}) {
     projectRoot,
     enforcerDir,
     statePath: path.join(enforcerDir, STATUSLINE_STATE_FILE),
+    archiveDir: path.join(enforcerDir, 'archive'),
     ledgerPath: path.join(enforcerDir, 'ledger.md'),
     discussPath: path.join(enforcerDir, DISCUSS_PACKET),
     legacyDiscussPath: path.join(enforcerDir, LEGACY_DISCUSS_PACKET)
@@ -200,6 +201,46 @@ function hasDiscussPacket(opts = {}) {
   return fs.existsSync(paths.discussPath) || fs.existsSync(paths.legacyDiscussPath);
 }
 
+function hasArchivedLedger(paths) {
+  if (!paths || !paths.archiveDir || !fs.existsSync(paths.archiveDir)) return false;
+  try {
+    return fs.readdirSync(paths.archiveDir)
+      .some((name) => name.endsWith('.md') && !name.endsWith('.verdict.md'));
+  } catch (_error) {
+    return false;
+  }
+}
+
+function resolveDiscussPacketPath(paths) {
+  if (fs.existsSync(paths.discussPath)) return paths.discussPath;
+  if (fs.existsSync(paths.legacyDiscussPath)) return paths.legacyDiscussPath;
+  return '';
+}
+
+function readDiscussPacketTitle(packetPath) {
+  if (!packetPath || !fs.existsSync(packetPath)) return null;
+  try {
+    const raw = fs.readFileSync(packetPath, 'utf8');
+    const heading = raw.match(/^#\s+(.+)$/m);
+    return heading && heading[1] ? heading[1].trim() : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function readDiscussPacketState(opts = {}) {
+  const paths = resolveStatuslinePaths(opts);
+  if (hasArchivedLedger(paths)) return null;
+  const packetPath = resolveDiscussPacketPath(paths);
+  if (!packetPath) return null;
+  return {
+    stage: 'discuss',
+    label: '1-DISCUSS',
+    title: readDiscussPacketTitle(packetPath),
+    source: 'discuss-packet'
+  };
+}
+
 function captureStatuslineSessionBridge(payload = {}, opts = {}) {
   const sessionId = payload && payload.session_id ? String(payload.session_id) : '';
   if (!sessionId) return null;
@@ -254,6 +295,8 @@ function inferStatuslineState(opts = {}) {
   }
   const explicit = readStatuslineState(paths);
   if (stateMatchesSession(explicit, opts)) return explicit;
+  const localDiscussState = readDiscussPacketState(paths);
+  if (localDiscussState) return localDiscussState;
   const bridgedPaths = resolveBridgedStatuslinePaths(opts);
   if (bridgedPaths && normalizePathForCompare(bridgedPaths.projectRoot) !== normalizePathForCompare(paths.projectRoot)) {
     if (fs.existsSync(bridgedPaths.ledgerPath)) {
@@ -263,6 +306,8 @@ function inferStatuslineState(opts = {}) {
     }
     const bridgedState = readStatuslineState(bridgedPaths);
     if (stateMatchesSession(bridgedState, opts)) return bridgedState;
+    const bridgedDiscussState = readDiscussPacketState(bridgedPaths);
+    if (bridgedDiscussState) return bridgedDiscussState;
   }
   return null;
 }
@@ -276,6 +321,7 @@ module.exports = {
   captureStatuslineSessionBridge,
   clearStatuslineState,
   hasDiscussPacket,
+  readDiscussPacketState,
   inferStatuslineState,
   readStatuslineState,
   readStatuslineSessionBridge,

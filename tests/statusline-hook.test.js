@@ -44,11 +44,24 @@ describe('statusline hook', () => {
     assert.match(result.stdout, /\[ENFORCER: 1-DISCUSS\]/);
   });
 
-  it('does not render stale discuss badge from packet alone', () => {
+  it('renders discuss stage from a live discuss packet when no ledger exists', () => {
     const fixture = mkHookFixture();
     const project = path.join(fixture, 'project');
     fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'discuss.md'), '# Launch packet\n');
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /\[ENFORCER: 1-DISCUSS\]/);
+  });
+
+  it('does not render discuss stage from packet alone after an archive exists', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    const archiveDir = path.join(project, '.plan-enforcer', 'archive');
+    fs.mkdirSync(archiveDir, { recursive: true });
     fs.writeFileSync(path.join(project, '.plan-enforcer', 'discuss.md'), '# Packet\n');
+    fs.writeFileSync(path.join(archiveDir, '2026-04-21-run.md'), '# Archived ledger\n');
 
     const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
     assert.equal(result.status, 0);
