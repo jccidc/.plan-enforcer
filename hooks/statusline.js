@@ -134,6 +134,10 @@ function mergeOutputs(segment, baseOutput) {
   return lines.join('\n');
 }
 
+function outputHasEnforcerSegment(text) {
+  return /\[ENFORCER:\s*[^\]]+\]/i.test(String(text || '').replace(/\x1b\[[0-9;]*m/g, ''));
+}
+
 function main() {
   const rawInput = readInput();
   let payload = null;
@@ -158,7 +162,7 @@ function main() {
   const baseOutput = runBaseCommand(baseCommand, rawInput, {
     allowBaseEnforcer: baseOwnsEnforcer
   });
-  if (baseOwnsEnforcer && baseOutput) {
+  if (baseOwnsEnforcer && outputHasEnforcerSegment(baseOutput)) {
     process.stdout.write(baseOutput);
     return;
   }

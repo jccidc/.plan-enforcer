@@ -120,6 +120,18 @@ function inferSessionMeta(paths, opts = {}) {
   };
 }
 
+function resolveBridgedStatuslinePaths(opts = {}) {
+  const sessionId = String(opts.sessionId || opts.session_id || '').trim();
+  const transcriptPath = String(opts.transcriptPath || opts.transcript_path || '').trim();
+  const bridged = readStatuslineSessionBridge();
+  if (!bridged) return null;
+  if (sessionId && bridged.sessionId && bridged.sessionId !== sessionId) return null;
+  if (transcriptPath && bridged.transcriptPath && bridged.transcriptPath !== transcriptPath) return null;
+  const bridgedRoot = normalizePathForCompare(bridged.projectRoot);
+  if (!bridgedRoot) return null;
+  return resolveStatuslinePaths({ cwd: bridgedRoot });
+}
+
 function writeStatuslineState(nextState, opts = {}) {
   const paths = resolveStatuslinePaths(opts);
   fs.mkdirSync(paths.enforcerDir, { recursive: true });
@@ -194,10 +206,20 @@ function captureStatuslineSessionBridge(payload = {}, opts = {}) {
   const cwd = payload && payload.workspace && payload.workspace.current_dir
     ? payload.workspace.current_dir
     : (opts.cwd || process.cwd());
-  const paths = resolveStatuslinePaths({ cwd });
+  let paths = resolveStatuslinePaths({ cwd });
+  const existing = readStatuslineSessionBridge();
+  const currentHasEnforcer = fs.existsSync(paths.enforcerDir);
+  if (!currentHasEnforcer && existing && String(existing.sessionId || '') === sessionId) {
+    const existingPaths = resolveStatuslinePaths({ cwd: existing.projectRoot || '' });
+    if (fs.existsSync(existingPaths.enforcerDir)) {
+      paths = existingPaths;
+    }
+  }
   const record = {
     sessionId,
-    transcriptPath: payload && payload.transcript_path ? String(payload.transcript_path) : '',
+    transcriptPath: payload && payload.transcript_path
+      ? String(payload.transcript_path)
+      : String(existing && existing.sessionId === sessionId ? (existing.transcriptPath || '') : ''),
     cwd: paths.cwd.replace(/\\/g, '/'),
     projectRoot: paths.projectRoot.replace(/\\/g, '/'),
     updatedAt: new Date().toISOString()
@@ -232,6 +254,16 @@ function inferStatuslineState(opts = {}) {
   }
   const explicit = readStatuslineState(paths);
   if (stateMatchesSession(explicit, opts)) return explicit;
+  const bridgedPaths = resolveBridgedStatuslinePaths(opts);
+  if (bridgedPaths && normalizePathForCompare(bridgedPaths.projectRoot) !== normalizePathForCompare(paths.projectRoot)) {
+    if (fs.existsSync(bridgedPaths.ledgerPath)) {
+      try {
+        return buildTaskStatuslineState(fs.readFileSync(bridgedPaths.ledgerPath, 'utf8'));
+      } catch (_error) {}
+    }
+    const bridgedState = readStatuslineState(bridgedPaths);
+    if (stateMatchesSession(bridgedState, opts)) return bridgedState;
+  }
   return null;
 }
 

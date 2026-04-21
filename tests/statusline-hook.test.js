@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { STATUSLINE_SESSION_BRIDGE } = require('../src/statusline-state');
 
 function mkHookFixture() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-statusline-hook-'));
@@ -144,7 +145,7 @@ describe('statusline hook', () => {
       CLAUDE_CONFIG_DIR: claudeDir
     });
     assert.equal(result.status, 0);
-    assert.equal(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), '[AUTO-CHAIN]');
+    assert.equal(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), '[ENFORCER: 1-DISCUSS] [AUTO-CHAIN]');
   });
 
   it('pads caption rows when the base statusline emits multiple lines', () => {
@@ -228,5 +229,41 @@ describe('statusline hook', () => {
     });
     assert.equal(result.status, 0);
     assert.doesNotMatch(result.stdout, /\[ENFORCER:/);
+  });
+
+  it('keeps the active stage when the same session drifts to another cwd', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    const unrelated = path.join(fixture, 'elsewhere');
+    const previousBridge = fs.existsSync(STATUSLINE_SESSION_BRIDGE)
+      ? fs.readFileSync(STATUSLINE_SESSION_BRIDGE, 'utf8')
+      : null;
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.mkdirSync(unrelated, { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's-bridge'
+    }, null, 2));
+    fs.writeFileSync(STATUSLINE_SESSION_BRIDGE, JSON.stringify({
+      sessionId: 's-bridge',
+      projectRoot: project
+    }, null, 2));
+
+    try {
+      const result = spawnSync(process.execPath, [path.join(fixture, 'hooks', 'statusline.js')], {
+        cwd: unrelated,
+        input: JSON.stringify({ workspace: { current_dir: unrelated }, session_id: 's-bridge' }),
+        encoding: 'utf8'
+      });
+      assert.equal(result.status, 0);
+      assert.match(result.stdout, /\[ENFORCER: 1-DISCUSS\]/);
+    } finally {
+      if (previousBridge == null) {
+        try { fs.unlinkSync(STATUSLINE_SESSION_BRIDGE); } catch (_error) {}
+      } else {
+        fs.writeFileSync(STATUSLINE_SESSION_BRIDGE, previousBridge, 'utf8');
+      }
+    }
   });
 });
