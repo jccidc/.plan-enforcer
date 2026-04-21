@@ -6,14 +6,16 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 describe('review-cli', () => {
+  const reviewCliPath = path.resolve(__dirname, '..', 'src', 'review-cli.js');
+
   it('prints a formatted report and returns weak/unsafe exit code for bad plans', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-review-cli-'));
     const planPath = path.join(tempDir, 'bad-plan.md');
 
     fs.writeFileSync(planPath, ['# Plan', '', '### Task 1: Improve backend'].join('\n'));
 
-    const result = spawnSync(process.execPath, ['src/review-cli.js', planPath], {
-      cwd: path.resolve(__dirname, '..'),
+    const result = spawnSync(process.execPath, [reviewCliPath, planPath], {
+      cwd: tempDir,
       encoding: 'utf8'
     });
 
@@ -41,8 +43,8 @@ describe('review-cli', () => {
       '- [ ] Verify targeted test passes'
     ].join('\n'));
 
-    const result = spawnSync(process.execPath, ['src/review-cli.js', planPath], {
-      cwd: path.resolve(__dirname, '..'),
+    const result = spawnSync(process.execPath, [reviewCliPath, planPath], {
+      cwd: tempDir,
       encoding: 'utf8'
     });
 
@@ -60,8 +62,8 @@ describe('review-cli', () => {
       '### Task 1: Improve backend'
     ].join('\n'));
 
-    const result = spawnSync(process.execPath, ['src/review-cli.js', '--write', planPath], {
-      cwd: path.resolve(__dirname, '..'),
+    const result = spawnSync(process.execPath, [reviewCliPath, '--write', planPath], {
+      cwd: tempDir,
       encoding: 'utf8'
     });
 
@@ -106,8 +108,8 @@ describe('review-cli', () => {
       '- [ ] Verify button renders'
     ].join('\n'));
 
-    const result = spawnSync(process.execPath, ['src/review-cli.js', planPath], {
-      cwd: path.resolve(__dirname, '..'),
+    const result = spawnSync(process.execPath, [reviewCliPath, planPath], {
+      cwd: tempDir,
       encoding: 'utf8'
     });
 
