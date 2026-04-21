@@ -32,11 +32,17 @@ function writeJson(filePath, payload) {
 
 function seedInstalledSkills(homeDir) {
   const skillsDir = path.join(homeDir, '.claude', 'skills');
+  const binDir = path.join(homeDir, '.local', 'bin');
   INSTALLED_SKILLS.forEach((skill) => fs.mkdirSync(path.join(skillsDir, skill), { recursive: true }));
   const hooksDir = path.join(skillsDir, 'plan-enforcer', 'hooks');
   fs.mkdirSync(hooksDir, { recursive: true });
   fs.writeFileSync(path.join(hooksDir, '.statusline-base-command'), 'node "~/.claude/hooks/statusline.js"\n', 'utf8');
-  return { skillsDir, hooksDir };
+  fs.mkdirSync(binDir, { recursive: true });
+  for (const command of ['plan-enforcer', 'plan-enforcer-doctor', 'plan-enforcer-status']) {
+    fs.writeFileSync(path.join(binDir, command), '#!/usr/bin/env bash\n', 'utf8');
+    fs.writeFileSync(path.join(binDir, `${command}.cmd`), '@echo off\r\n', 'utf8');
+  }
+  return { skillsDir, hooksDir, binDir };
 }
 
 describe('uninstall.sh', () => {
@@ -46,7 +52,7 @@ describe('uninstall.sh', () => {
     const projectDir = path.join(tempDir, 'project');
     fs.mkdirSync(homeDir, { recursive: true });
     fs.mkdirSync(projectDir, { recursive: true });
-    const { skillsDir } = seedInstalledSkills(homeDir);
+    const { skillsDir, binDir } = seedInstalledSkills(homeDir);
 
     const peStatusline = 'node "~/.claude/skills/plan-enforcer/hooks/statusline.js"';
     const peSession = 'node "~/.claude/skills/plan-enforcer/hooks/session-start.js"';
@@ -82,6 +88,10 @@ describe('uninstall.sh', () => {
       INSTALLED_SKILLS.forEach((skill) => {
         assert.equal(fs.existsSync(path.join(skillsDir, skill)), false, `skill still exists: ${skill}`);
       });
+      for (const command of ['plan-enforcer', 'plan-enforcer-doctor', 'plan-enforcer-status']) {
+        assert.equal(fs.existsSync(path.join(binDir, command)), false, `wrapper still exists: ${command}`);
+        assert.equal(fs.existsSync(path.join(binDir, `${command}.cmd`)), false, `wrapper still exists: ${command}.cmd`);
+      }
 
       const globalSettings = JSON.parse(fs.readFileSync(path.join(homeDir, '.claude', 'settings.json'), 'utf8'));
       const projectSettings = JSON.parse(fs.readFileSync(path.join(projectDir, '.claude', 'settings.json'), 'utf8'));

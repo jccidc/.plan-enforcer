@@ -1,32 +1,57 @@
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { parseTaskRows } = require('./ledger-parser');
 
 const STATUSLINE_STATE_FILE = 'statusline-state.json';
 const DISCUSS_PACKET = 'discuss.md';
 const LEGACY_DISCUSS_PACKET = 'combobulate.md';
+const STATUSLINE_SESSION_BRIDGE = path.join(os.tmpdir(), 'plan-enforcer-statusline-session.json');
+
+function normalizePathForCompare(value) {
+  return String(value || '').trim().replace(/\\/g, '/').replace(/\/+$/, '');
+}
+
+function resolveProjectHome() {
+  try {
+    return path.resolve(os.homedir());
+  } catch (_error) {
+    return '';
+  }
+}
 
 function resolveProjectRoot(startDir = process.cwd()) {
-  let current = path.resolve(startDir);
+  const initial = path.resolve(startDir);
+  const homePath = resolveProjectHome();
+  let current = initial;
   const rootPath = path.parse(current).root;
-  let firstProjectRoot = null;
+
+  if (fs.existsSync(path.join(current, '.plan-enforcer'))) {
+    return current;
+  }
 
   while (current && current !== rootPath) {
-    if (fs.existsSync(path.join(current, '.plan-enforcer'))) {
+    if (current === homePath || fs.existsSync(path.join(current, '.plan-enforcer-stop'))) {
+      break;
+    }
+    if (
+      current !== initial &&
+      fs.existsSync(path.join(current, '.plan-enforcer'))
+    ) {
       return current;
     }
-    if (!firstProjectRoot && (
+    if (
       fs.existsSync(path.join(current, '.git')) ||
       fs.existsSync(path.join(current, 'package.json'))
-    )) {
-      firstProjectRoot = current;
+    ) {
+      return current;
     }
     const parent = path.dirname(current);
     if (parent === current) break;
     current = parent;
   }
 
-  return firstProjectRoot || path.resolve(startDir);
+  return path.resolve(startDir);
 }
 
 function resolveStatuslinePaths(opts = {}) {
@@ -54,14 +79,58 @@ function readStatuslineState(opts = {}) {
   }
 }
 
+function readStatuslineSessionBridge() {
+  if (!fs.existsSync(STATUSLINE_SESSION_BRIDGE)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(STATUSLINE_SESSION_BRIDGE, 'utf8'));
+  } catch (_error) {
+    return null;
+  }
+}
+
+function inferSessionMeta(paths, opts = {}) {
+  const sessionId = opts.sessionId || opts.session_id || '';
+  const transcriptPath = opts.transcriptPath || opts.transcript_path || '';
+  if (sessionId || transcriptPath) {
+    return {
+      sessionId: sessionId || null,
+      transcriptPath: transcriptPath || null
+    };
+  }
+
+  const bridged = readStatuslineSessionBridge();
+  if (!bridged) {
+    return {
+      sessionId: null,
+      transcriptPath: null
+    };
+  }
+
+  const sameProject = normalizePathForCompare(bridged.projectRoot) === normalizePathForCompare(paths.projectRoot);
+  if (!sameProject) {
+    return {
+      sessionId: null,
+      transcriptPath: null
+    };
+  }
+
+  return {
+    sessionId: bridged.sessionId || null,
+    transcriptPath: bridged.transcriptPath || null
+  };
+}
+
 function writeStatuslineState(nextState, opts = {}) {
   const paths = resolveStatuslinePaths(opts);
   fs.mkdirSync(paths.enforcerDir, { recursive: true });
   const previous = readStatuslineState(paths) || {};
+  const sessionMeta = inferSessionMeta(paths, opts);
   const merged = {
     ...previous,
     ...nextState,
     projectRoot: paths.projectRoot.replace(/\\/g, '/'),
+    sessionId: sessionMeta.sessionId,
+    transcriptPath: sessionMeta.transcriptPath,
     updatedAt: new Date().toISOString()
   };
   fs.writeFileSync(paths.statePath, JSON.stringify(merged, null, 2) + '\n', 'utf8');
@@ -119,6 +188,41 @@ function hasDiscussPacket(opts = {}) {
   return fs.existsSync(paths.discussPath) || fs.existsSync(paths.legacyDiscussPath);
 }
 
+function captureStatuslineSessionBridge(payload = {}, opts = {}) {
+  const sessionId = payload && payload.session_id ? String(payload.session_id) : '';
+  if (!sessionId) return null;
+  const cwd = payload && payload.workspace && payload.workspace.current_dir
+    ? payload.workspace.current_dir
+    : (opts.cwd || process.cwd());
+  const paths = resolveStatuslinePaths({ cwd });
+  const record = {
+    sessionId,
+    transcriptPath: payload && payload.transcript_path ? String(payload.transcript_path) : '',
+    cwd: paths.cwd.replace(/\\/g, '/'),
+    projectRoot: paths.projectRoot.replace(/\\/g, '/'),
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    fs.writeFileSync(STATUSLINE_SESSION_BRIDGE, JSON.stringify(record, null, 2) + '\n', 'utf8');
+    return record;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function stateMatchesSession(state, opts = {}) {
+  if (!state || !state.stage || !state.label) return false;
+  const expectedSessionId = opts.sessionId || opts.session_id || '';
+  if (expectedSessionId && state.sessionId && state.sessionId !== expectedSessionId) {
+    return false;
+  }
+  const expectedTranscriptPath = opts.transcriptPath || opts.transcript_path || '';
+  if (expectedTranscriptPath && state.transcriptPath && state.transcriptPath !== expectedTranscriptPath) {
+    return false;
+  }
+  return true;
+}
+
 function inferStatuslineState(opts = {}) {
   const paths = resolveStatuslinePaths(opts);
   if (fs.existsSync(paths.ledgerPath)) {
@@ -127,10 +231,7 @@ function inferStatuslineState(opts = {}) {
     } catch (_error) {}
   }
   const explicit = readStatuslineState(paths);
-  if (explicit && explicit.stage && explicit.label) return explicit;
-  if (hasDiscussPacket(paths)) {
-    return { stage: 'discuss', label: '1-DISCUSS' };
-  }
+  if (stateMatchesSession(explicit, opts)) return explicit;
   return null;
 }
 
@@ -138,13 +239,17 @@ module.exports = {
   DISCUSS_PACKET,
   LEGACY_DISCUSS_PACKET,
   STATUSLINE_STATE_FILE,
+  STATUSLINE_SESSION_BRIDGE,
   buildTaskStatuslineState,
+  captureStatuslineSessionBridge,
   clearStatuslineState,
   hasDiscussPacket,
   inferStatuslineState,
   readStatuslineState,
+  readStatuslineSessionBridge,
   resolveProjectRoot,
   resolveStatuslinePaths,
+  stateMatchesSession,
   writeNamedStatuslineStage,
   writeStatuslineState,
   writeTaskStatuslineState

@@ -1,13 +1,12 @@
 ---
 name: plan-enforcer-combobulate
-description: "Legacy alias for `plan-enforcer-discuss` --- preserves older naming while the public authorship chain standardizes on discuss."
+description: "Public flow name is `discuss`. Use this compatibility skill before `plan-enforcer-draft` when the user's request is ambiguous, underspecified, or mixing multiple outcomes --- it writes the intent packet the drafter consumes so the resulting plan reflects what the user actually wants instead of what sounded reasonable to guess."
 ---
 
-# Plan Enforcer Combobulate
+# Plan Enforcer Discuss
 
-This is the legacy/internal alias for the public `plan-enforcer-discuss`
-stage. Use the same workflow and packet shape, but prefer calling it
-"discuss" in user-facing docs and commands.
+Public front-end name is `discuss -> draft -> review`. This skill file
+and packet path stay on legacy `combobulate` naming for compatibility.
 
 An intent-capture gate. The job is to turn a fuzzy request ("clean up
 the auth flow", "make the onboarding better") into a concrete written
@@ -34,33 +33,43 @@ Use this when any of:
   the request and the wrong interpretation would waste a phase
 
 Skip this skill when the request is already concrete ("add a /healthz
-endpoint returning 200 OK"), the user says "skip combobulate" or
-similar, or a packet at `.plan-enforcer/combobulate.md` already exists
-and is recent (mtime < 24h) and the new request overlaps with its
-scope.
+endpoint returning 200 OK"), the user says "skip discuss" or "skip
+combobulate" or similar, or a packet at
+`.plan-enforcer/combobulate.md` already exists and is recent
+(mtime < 24h) and the new request overlaps with its scope.
 
 ## Rules
 
-1. Produce the public packet at `.plan-enforcer/discuss.md`. One per
+1. At stage start, set the statusline stage to `1-DISCUSS` with:
+   `node "$HOME/.claude/skills/plan-enforcer/src/statusline-stage-cli.js" discuss --label 1-DISCUSS`
+2. Produce a single file at `.plan-enforcer/combobulate.md`. One per
    project; overwrite the prior one unless the user asks otherwise.
-2. Also write `.plan-enforcer/combobulate.md` as the compatibility
-   alias while older review/draft flows still read that name.
-3. Do NOT start drafting tasks in this skill. Its output is an intent
+   If `.plan-enforcer/combobulate.md` already exists, Read it before
+   overwriting. Claude runtime rejects overwrite-without-read.
+3. Also update `.plan-enforcer/discuss.md` as the canonical public-path
+   copy. If it already exists, Read it before overwriting or update it
+   after reading the canonical packet.
+4. Do NOT start drafting tasks in this skill. Its output is an intent
    packet, not a plan.
-4. Ask only questions whose answers change the plan shape. If the
+5. Ask only questions whose answers change the plan shape. If the
    user has already stated something, record it; do not re-ask.
-5. Default to the packet sections below. Only omit a section when it
+6. Default to the packet sections below. Only omit a section when it
    truly adds no value for the current ask.
-6. If a question has two plausible answers that would lead to very
+7. If a question has two plausible answers that would lead to very
    different plans, ask the user. Do NOT pick one silently.
-7. When done, tell the user the packet path and that `plan-enforcer-
-   draft` will consume it automatically on its next run.
-8. Before writing the packet, ensure awareness has at least one
+8. When done, tell the user the packet path and that `draft`
+   (`plan-enforcer-draft`) will consume it automatically on its next
+   run.
+9. Before writing the packet, ensure awareness has at least one
    verbatim intent row:
    - run `plan-enforcer-awareness capture-latest --if-empty`
+   - if `plan-enforcer-awareness` is not on PATH, use:
+     `node "$HOME/.claude/skills/plan-enforcer/src/awareness-cli.js" capture-latest --if-empty`
    - if you rely on additional scope-bearing user quotes beyond the
      latest prompt, append them with `plan-enforcer-awareness add
      --intent "<verbatim quote>"`
+   - same fallback for manual rows:
+     `node "$HOME/.claude/skills/plan-enforcer/src/awareness-cli.js" add --intent "<verbatim quote>"`
    - do not paraphrase those quotes into awareness rows; exact text
      only
 
@@ -150,7 +159,8 @@ Producing a packet that looks like a plan is the failure mode. Smells:
 
 After writing the packet:
 
-- Tell the user the path (`.plan-enforcer/discuss.md`).
+- Tell the user the path (`.plan-enforcer/combobulate.md`).
 - Summarize the key decisions captured in one line per major section.
-- Offer next step: "want me to draft the plan against this packet?"
-  and wait. Do not auto-invoke the drafter.
+- Offer next step in public wording: "want me to draft the plan
+  against this discuss packet?" and wait. Do not auto-invoke the
+  drafter.

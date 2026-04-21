@@ -5,9 +5,11 @@ set -euo pipefail
 # Cross-platform: Linux, macOS, Git Bash (Windows)
 
 SKILLS_DIR="$HOME/.claude/skills"
+CLI_BIN_DIR="$HOME/.local/bin"
 STATUSLINE_BASE="$SKILLS_DIR/plan-enforcer/hooks/.statusline-base-command"
 SKILLS_REMOVED=0
 HOOK_SETTINGS_CLEANED=0
+WRAPPERS_REMOVED=0
 
 remove_hooks_node() {
   local settings_file="$1"
@@ -89,8 +91,18 @@ for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforc
   fi
 done
 
+for command in plan-enforcer plan-enforcer-discuss plan-enforcer-awareness plan-enforcer-audit plan-enforcer-chain plan-enforcer-config plan-enforcer-doctor plan-enforcer-export plan-enforcer-import plan-enforcer-lint plan-enforcer-logs plan-enforcer-report plan-enforcer-review plan-enforcer-phase-verify plan-enforcer-status plan-enforcer-verify plan-enforcer-why; do
+  for target in "$CLI_BIN_DIR/$command" "$CLI_BIN_DIR/$command.cmd"; do
+    if [[ -f "$target" ]]; then
+      rm -f "$target"
+      WRAPPERS_REMOVED=$((WRAPPERS_REMOVED + 1))
+    fi
+  done
+done
+
 echo ""
 echo "Plan Enforcer uninstalled."
 echo "  skills removed: ${SKILLS_REMOVED}"
+echo "  command wrappers removed: ${WRAPPERS_REMOVED}"
 echo "  settings cleaned: ${HOOK_SETTINGS_CLEANED}"
 echo "  preserved: .plan-enforcer/ history"

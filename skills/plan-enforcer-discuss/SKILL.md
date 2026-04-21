@@ -39,26 +39,36 @@ recent (mtime < 24h) and the new request overlaps with its scope.
 
 ## Rules
 
-1. Produce a single file at `.plan-enforcer/discuss.md`. One per
+1. At stage start, set the statusline stage to `1-DISCUSS` with:
+   `node "$HOME/.claude/skills/plan-enforcer/src/statusline-stage-cli.js" discuss --label 1-DISCUSS`
+2. Produce a single file at `.plan-enforcer/discuss.md`. One per
    project; overwrite the prior one unless the user asks otherwise.
-2. Also write `.plan-enforcer/combobulate.md` as a compatibility copy
+   If `.plan-enforcer/discuss.md` already exists, Read it before
+   overwriting. Claude runtime rejects overwrite-without-read.
+3. Also write `.plan-enforcer/combobulate.md` as a compatibility copy
    while older flows still expect the legacy packet name.
-3. Do NOT start drafting tasks in this skill. Its output is an intent
+   If `.plan-enforcer/combobulate.md` already exists, Read it before
+   overwriting or update it after reading the canonical packet.
+4. Do NOT start drafting tasks in this skill. Its output is an intent
    packet, not a plan.
-4. Ask only questions whose answers change the plan shape. If the
+5. Ask only questions whose answers change the plan shape. If the
    user has already stated something, record it; do not re-ask.
-5. Default to the packet sections below. Only omit a section when it
+6. Default to the packet sections below. Only omit a section when it
    truly adds no value for the current ask.
-6. If a question has two plausible answers that would lead to very
+7. If a question has two plausible answers that would lead to very
    different plans, ask the user. Do NOT pick one silently.
-7. When done, tell the user the packet path and that
+8. When done, tell the user the packet path and that
    `plan-enforcer-draft` will consume it automatically on its next run.
-8. Before writing the packet, ensure awareness has at least one
+9. Before writing the packet, ensure awareness has at least one
    verbatim intent row:
    - run `plan-enforcer-awareness capture-latest --if-empty`
+   - if `plan-enforcer-awareness` is not on PATH, use:
+     `node "$HOME/.claude/skills/plan-enforcer/src/awareness-cli.js" capture-latest --if-empty`
    - if you rely on additional scope-bearing user quotes beyond the
      latest prompt, append them with `plan-enforcer-awareness add
      --intent "<verbatim quote>"`
+   - same fallback for manual rows:
+     `node "$HOME/.claude/skills/plan-enforcer/src/awareness-cli.js" add --intent "<verbatim quote>"`
    - do not paraphrase those quotes into awareness rows; exact text
      only
 

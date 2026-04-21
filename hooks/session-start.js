@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const { parseLedger, parseMetadata, parseTaskRows } = require('../src/ledger-parser');
 const { extractTasks, findPlanFile, generateLedger } = require('../src/plan-detector');
 const { readConfig } = require('../src/config');
-const { clearStatuslineState, hasDiscussPacket, writeNamedStatuslineStage, writeTaskStatuslineState } = require('../src/statusline-state');
+const { clearStatuslineState, writeTaskStatuslineState } = require('../src/statusline-state');
 
 function ledgerHash(content) {
   return crypto.createHash('sha256').update(content || '').digest('hex').slice(0, 8);
@@ -455,15 +455,7 @@ if (fs.existsSync(resolvedLedgerPath)) {
 
 const planFile = findPlanFile(cwd);
 if (!planFile) {
-  if (hasDiscussPacket({ cwd: path.dirname(resolvedEnforcerDir) })) {
-    writeNamedStatuslineStage('discuss', {
-      cwd: path.dirname(resolvedEnforcerDir),
-      label: '1-DISCUSS',
-      source: 'session-start'
-    });
-  } else {
-    clearStatuslineState({ cwd });
-  }
+  clearStatuslineState({ cwd: path.dirname(resolvedEnforcerDir) });
   process.exit(0);
 }
 

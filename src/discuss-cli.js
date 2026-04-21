@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const readline = require('readline/promises');
 
@@ -165,8 +166,10 @@ async function collectInteractive(packet) {
 function findDiscussProjectRoot(startDir = process.cwd()) {
   let current = path.resolve(startDir);
   const initial = current;
+  const homePath = path.resolve(os.homedir());
 
   while (true) {
+    if (current === homePath || fs.existsSync(path.join(current, '.plan-enforcer-stop'))) return initial;
     if (fs.existsSync(path.join(current, '.plan-enforcer'))) return current;
     if (fs.existsSync(path.join(current, '.git'))) return current;
     if (fs.existsSync(path.join(current, 'package.json'))) return current;
@@ -292,7 +295,9 @@ function writeDiscussPacket(packet, opts = {}) {
     cwd: paths.projectRoot,
     label: '1-DISCUSS',
     source: opts.source || 'discuss-cli',
-    title: packet.title || slugTitle(packet.sourceAsk)
+    title: packet.title || slugTitle(packet.sourceAsk),
+    sessionId: opts.sessionId || opts.session_id || '',
+    transcriptPath: opts.transcriptPath || opts.transcript_path || ''
   });
   return { paths, awareness, markdown };
 }

@@ -112,11 +112,14 @@ function shouldBootstrapDiscuss(prompt) {
   ].some((pattern) => pattern.test(normalized));
 }
 
-function bootstrapDiscuss(projectRoot, prompt) {
+function bootstrapDiscuss(projectRoot, details) {
+  const prompt = typeof details === 'string' ? details : details && details.prompt;
   if (!shouldBootstrapDiscuss(prompt) || hasActiveLedger(projectRoot)) return;
   writeDiscussPacket(createEmptyPacket(prompt, slugTitle(prompt)), {
     cwd: projectRoot,
-    source: 'user-message'
+    source: 'user-message',
+    sessionId: details && details.sessionId ? details.sessionId : '',
+    transcriptPath: details && details.transcriptPath ? details.transcriptPath : ''
   });
 }
 
@@ -162,7 +165,11 @@ function main() {
   } catch (_e) {}
 
   try {
-    bootstrapDiscuss(projectRoot, prompt);
+    bootstrapDiscuss(projectRoot, {
+      prompt,
+      sessionId: ctx.session_id || '',
+      transcriptPath: ctx.transcript_path || ''
+    });
   } catch (_e) {}
 }
 

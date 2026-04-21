@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { inferStatuslineState } = require('../src/statusline-state');
+const { captureStatuslineSessionBridge, inferStatuslineState } = require('../src/statusline-state');
 
 const BASE_COMMAND_FILE = '.statusline-base-command';
 
@@ -86,12 +86,32 @@ function formatSegment(state) {
   return `\x1b[1;96m[ENFORCER: ${String(state.label).toUpperCase()}]\x1b[0m`;
 }
 
+function visibleWidth(text) {
+  let width = 0;
+  const plain = String(text || '').replace(/\x1b\[[0-9;]*m/g, '');
+  for (const char of plain) {
+    const codePoint = char.codePointAt(0) || 0;
+    if (codePoint >= 0x1F000 || (codePoint >= 0x2600 && codePoint <= 0x27BF)) {
+      width += 2;
+    } else {
+      width += 1;
+    }
+  }
+  return width;
+}
+
 function mergeOutputs(segment, baseOutput) {
   if (!segment) return baseOutput;
   if (!baseOutput) return segment;
   const lines = String(baseOutput).split(/\r?\n/);
   if (lines.length === 0) return segment;
   lines[0] = `${segment} ${lines[0]}`;
+  if (lines.length > 1) {
+    const pad = ' '.repeat(visibleWidth(segment) + 1);
+    for (let i = 1; i < lines.length; i++) {
+      lines[i] = `${pad}${lines[i]}`;
+    }
+  }
   return lines.join('\n');
 }
 
@@ -105,7 +125,12 @@ function main() {
   const cwd = payload && payload.workspace && payload.workspace.current_dir
     ? payload.workspace.current_dir
     : process.cwd();
-  const state = inferStatuslineState({ cwd });
+  captureStatuslineSessionBridge(payload || {}, { cwd });
+  const state = inferStatuslineState({
+    cwd,
+    sessionId: payload && payload.session_id ? payload.session_id : '',
+    transcriptPath: payload && payload.transcript_path ? payload.transcript_path : ''
+  });
   const segment = formatSegment(state);
   const baseCommand = process.env.PLAN_ENFORCER_STATUSLINE_CHAINED === '1'
     ? ''

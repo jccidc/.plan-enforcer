@@ -14,6 +14,26 @@ function makeTempProject(prefix) {
 }
 
 describe('session-start hook', () => {
+  it('clears stale named stage when no ledger or plan is active', () => {
+    const projectDir = makeTempProject('plan-enforcer-session-start-clear-');
+    const enforcerDir = path.join(projectDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'discuss.md'), '# Packet\n');
+    fs.writeFileSync(path.join(enforcerDir, 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 'stale-session'
+    }, null, 2));
+
+    const result = spawnSync(process.execPath, [sessionStartHook], {
+      cwd: projectDir,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.equal(fs.existsSync(path.join(enforcerDir, 'statusline-state.json')), false);
+  });
+
   it('auto-activates a detected plan and creates a ledger', () => {
     const projectDir = makeTempProject('plan-enforcer-session-start-');
     const planDir = path.join(projectDir, 'docs', 'plans');

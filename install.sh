@@ -6,6 +6,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_DIR="$HOME/.claude/skills"
+CLI_BIN_DIR="$HOME/.local/bin"
 TIER="structural"
 SCOPE="project"
 SETTINGS_PATH=""
@@ -16,6 +17,7 @@ HOOKS_COPIED=0
 HOOKS_SKIPPED=0
 MODULES_COPIED=0
 MODULES_SKIPPED=0
+WRAPPERS_INSTALLED=0
 
 usage() {
   cat <<'USAGE'
@@ -95,7 +97,7 @@ done
 
 SRC_DEST="$SKILLS_DIR/plan-enforcer/src"
 mkdir -p "$SRC_DEST"
-for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
+for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-stage-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
   src="$SCRIPT_DIR/src/$module"
   if [[ ! -f "$src" ]]; then
     echo "Warning: $src not found, skipping"
@@ -117,6 +119,43 @@ fi
 if [[ -n "$REPO_SHA" ]]; then
   echo "$REPO_SHA" > "$SKILLS_DIR/plan-enforcer/.installed-from"
 fi
+
+install_command_wrappers() {
+  local repo_root="$1"
+  local bin_dir="$2"
+  local count
+  count="$(node - "$repo_root" "$bin_dir" <<'NODEEOF'
+const fs = require('fs');
+const path = require('path');
+
+const repoRoot = process.argv[2];
+const binDir = process.argv[3];
+const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
+
+fs.mkdirSync(binDir, { recursive: true });
+
+let count = 0;
+for (const [name, relTarget] of Object.entries(pkg.bin || {})) {
+  const unixTarget = `$HOME/.claude/skills/plan-enforcer/${String(relTarget).replace(/\\/g, '/')}`;
+  const cmdTarget = `%USERPROFILE%\\.claude\\skills\\plan-enforcer\\${String(relTarget).replace(/\//g, '\\')}`;
+  const shPath = path.join(binDir, name);
+  const cmdPath = path.join(binDir, `${name}.cmd`);
+
+  fs.writeFileSync(
+    shPath,
+    ['#!/usr/bin/env bash', 'set -euo pipefail', `node "${unixTarget}" "$@"`, ''].join('\n'),
+    'utf8'
+  );
+  fs.chmodSync(shPath, 0o755);
+  fs.writeFileSync(cmdPath, `@echo off\r\nnode "${cmdTarget}" %*\r\n`, 'utf8');
+  count += 1;
+}
+
+process.stdout.write(String(count));
+NODEEOF
+)"
+  WRAPPERS_INSTALLED="$count"
+}
 
 configure_statusline_only() {
   local settings_file="$1"
@@ -336,6 +375,7 @@ if [[ "$TIER" == "advisory" ]]; then
 fi
 
 if command -v node &>/dev/null; then
+  install_command_wrappers "$SCRIPT_DIR" "$CLI_BIN_DIR"
   if [[ "$TIER" == "advisory" ]]; then
     configure_statusline_only "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
     HOOKS_INSTALLED="statusLine -> $SETTINGS_PATH"
@@ -386,6 +426,8 @@ else
   echo ""
 fi
 
+CONFIG_NOTE="skipped (--global install; bootstraps on first discuss/import)"
+if [[ "$SCOPE" != "global" ]]; then
 CONFIG_DIR="$(pwd)/.plan-enforcer"
 mkdir -p "$CONFIG_DIR"
 cat > "$CONFIG_DIR/config.md" <<EOF
@@ -425,6 +467,8 @@ Hooks active at this tier:
                  [enforced tier only]
 EOF
 echo "Config written to $CONFIG_DIR/config.md"
+CONFIG_NOTE=".plan-enforcer/config.md"
+fi
 
 echo ""
 echo "Plan Enforcer installed."
@@ -447,11 +491,12 @@ if [[ "$MODULES_SKIPPED" -gt 0 ]]; then
 else
   echo ""
 fi
+echo "  commands: ${WRAPPERS_INSTALLED} wrappers in ${CLI_BIN_DIR}"
 echo "  hook settings: ${HOOKS_INSTALLED}"
 if [[ -n "$REPO_SHA" ]]; then
   echo "  repo commit: ${REPO_SHA}"
 fi
-echo "  config: .plan-enforcer/config.md"
+echo "  config: ${CONFIG_NOTE}"
 echo ""
 echo "Next:"
 echo "  check install: plan-enforcer doctor"

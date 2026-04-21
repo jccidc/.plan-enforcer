@@ -8,6 +8,7 @@ set -euo pipefail
 
 REPO_URL="https://github.com/jccidc/plan-enforcer"
 SKILLS_DIR="$HOME/.claude/skills"
+CLI_BIN_DIR="$HOME/.local/bin"
 SETTINGS_PATH="$HOME/.claude/settings.json"
 TIER="structural"
 TEMP_DIR=""
@@ -100,7 +101,7 @@ install_skills_and_runtime() {
   local src_dest="$SKILLS_DIR/plan-enforcer/src"
   mkdir -p "$src_dest"
   log "Installing shared runtime modules..."
-  for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
+  for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-stage-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
     local src="$src_root/src/$module"
     if [[ ! -f "$src" ]]; then
       log "Warning: $src not found, skipping"
@@ -109,6 +110,36 @@ install_skills_and_runtime() {
     cp "$src" "$src_dest/$module"
     log "  $src_dest/$module"
   done
+}
+
+install_command_wrappers() {
+  local src_root="$1"
+  local bin_dir="$2"
+  mkdir -p "$bin_dir"
+  node - "$src_root" "$bin_dir" <<'NODEEOF'
+const fs = require('fs');
+const path = require('path');
+
+const repoRoot = process.argv[2];
+const binDir = process.argv[3];
+const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
+
+for (const [name, relTarget] of Object.entries(pkg.bin || {})) {
+  const unixTarget = `$HOME/.claude/skills/plan-enforcer/${String(relTarget).replace(/\\/g, '/')}`;
+  const cmdTarget = `%USERPROFILE%\\.claude\\skills\\plan-enforcer\\${String(relTarget).replace(/\//g, '\\')}`;
+  const shPath = path.join(binDir, name);
+  const cmdPath = path.join(binDir, `${name}.cmd`);
+
+  fs.writeFileSync(
+    shPath,
+    ['#!/usr/bin/env bash', 'set -euo pipefail', `node "${unixTarget}" "$@"`, ''].join('\n'),
+    'utf8'
+  );
+  fs.chmodSync(shPath, 0o755);
+  fs.writeFileSync(cmdPath, `@echo off\r\nnode "${cmdTarget}" %*\r\n`, 'utf8');
+}
+NODEEOF
+  log "Installed command wrappers in $bin_dir"
 }
 
 patch_settings_with_node() {
@@ -214,6 +245,7 @@ EOF
 download_repo
 SRC_ROOT="$TEMP_DIR/plan-enforcer"
 install_skills_and_runtime "$SRC_ROOT"
+install_command_wrappers "$SRC_ROOT" "$CLI_BIN_DIR"
 
 log "Configuring hooks..."
 if command -v node >/dev/null 2>&1; then

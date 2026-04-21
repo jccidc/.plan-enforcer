@@ -18,7 +18,7 @@ function mkHookFixture() {
 function runHook(hookPath, cwd, extraEnv = {}) {
   return spawnSync(process.execPath, [hookPath], {
     cwd,
-    input: JSON.stringify({ workspace: { current_dir: cwd } }),
+    input: JSON.stringify({ workspace: { current_dir: cwd }, session_id: 's1' }),
     encoding: 'utf8',
     env: {
       ...process.env,
@@ -28,7 +28,22 @@ function runHook(hookPath, cwd, extraEnv = {}) {
 }
 
 describe('statusline hook', () => {
-  it('renders discuss stage from packet fallback', () => {
+  it('renders discuss stage from explicit state', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's1'
+    }, null, 2));
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /\[ENFORCER: 1-DISCUSS\]/);
+  });
+
+  it('does not render stale discuss badge from packet alone', () => {
     const fixture = mkHookFixture();
     const project = path.join(fixture, 'project');
     fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
@@ -36,7 +51,7 @@ describe('statusline hook', () => {
 
     const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
     assert.equal(result.status, 0);
-    assert.match(result.stdout, /\[ENFORCER: 1-DISCUSS\]/);
+    assert.doesNotMatch(result.stdout, /\[ENFORCER:/);
   });
 
   it('renders task progress from ledger', () => {
@@ -64,7 +79,11 @@ describe('statusline hook', () => {
     const project = path.join(fixture, 'project');
     const baseScript = path.join(fixture, 'base-statusline.js');
     fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
-    fs.writeFileSync(path.join(project, '.plan-enforcer', 'discuss.md'), '# Packet\n');
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's1'
+    }, null, 2));
     fs.writeFileSync(baseScript, 'process.stdout.write("[BASE]")\n');
     fs.writeFileSync(
       path.join(fixture, 'hooks', '.statusline-base-command'),
@@ -83,7 +102,11 @@ describe('statusline hook', () => {
     const claudeHooks = path.join(claudeDir, 'hooks');
     fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
     fs.mkdirSync(claudeHooks, { recursive: true });
-    fs.writeFileSync(path.join(project, '.plan-enforcer', 'discuss.md'), '# Packet\n');
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's1'
+    }, null, 2));
     fs.writeFileSync(
       path.join(claudeHooks, 'statusline.js'),
       'process.stdout.write("[AUTO]")\n'
@@ -103,7 +126,11 @@ describe('statusline hook', () => {
     const claudeHooks = path.join(claudeDir, 'hooks');
     fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
     fs.mkdirSync(claudeHooks, { recursive: true });
-    fs.writeFileSync(path.join(project, '.plan-enforcer', 'discuss.md'), '# Packet\n');
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's1'
+    }, null, 2));
     fs.writeFileSync(
       path.join(claudeHooks, 'statusline.js'),
       [
@@ -118,5 +145,62 @@ describe('statusline hook', () => {
     });
     assert.equal(result.status, 0);
     assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: 1-DISCUSS\] \[AUTO-CHAIN\]/);
+  });
+
+  it('pads caption rows when the base statusline emits multiple lines', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    const baseScript = path.join(fixture, 'base-multiline-statusline.js');
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's1'
+    }, null, 2));
+    fs.writeFileSync(baseScript, 'process.stdout.write("[BASE]\\ncaption")\n');
+    fs.writeFileSync(
+      path.join(fixture, 'hooks', '.statusline-base-command'),
+      `${process.execPath} "${baseScript.replace(/\\/g, '/')}"\n`
+    );
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
+    const clean = result.stdout.replace(/\x1B\[[0-9;]*m/g, '');
+    assert.equal(result.status, 0);
+    assert.match(clean, /^\[ENFORCER: 1-DISCUSS\] \[BASE\]\n\s+caption$/);
+  });
+
+  it('ignores explicit stage when the current session differs', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 'stale-session'
+    }, null, 2));
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
+    assert.equal(result.status, 0);
+    assert.doesNotMatch(result.stdout, /\[ENFORCER:/);
+  });
+
+  it('does not inherit a home-level .plan-enforcer badge in unrelated folders', () => {
+    const fixture = mkHookFixture();
+    const fakeHome = path.join(fixture, 'home');
+    const project = path.join(fakeHome, 'My Drive', 'projects', 'random');
+    fs.mkdirSync(path.join(fakeHome, '.plan-enforcer'), { recursive: true });
+    fs.mkdirSync(project, { recursive: true });
+    fs.writeFileSync(path.join(fakeHome, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'draft',
+      label: '2-DRAFT',
+      sessionId: 's1'
+    }, null, 2));
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project, {
+      HOME: fakeHome,
+      USERPROFILE: fakeHome
+    });
+    assert.equal(result.status, 0);
+    assert.doesNotMatch(result.stdout, /\[ENFORCER:/);
   });
 });
