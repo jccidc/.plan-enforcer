@@ -10,7 +10,8 @@ Use this when the user does not already have a plan file and wants Plan Enforcer
 Public front-end flow is `discuss -> draft -> review`. `draft` should
 consume the clarify-first packet when one exists, then hand the plan to
 `review` before execution unless the user explicitly wants to skip that
-guardrail.
+guardrail. If the ask is still ambiguous, it needs `discuss` first via
+`plan-enforcer-discuss` before drafting.
 
 ## Goal
 
