@@ -445,7 +445,7 @@ function tryAutoActivate() {
 
     emitActivationOutput([
       `PLAN ENFORCER ACTIVATED (Read-trigger). Detected plan in ${relativePlan}.`,
-      '--- Plan Enforcer -----------------------------------',
+      '--- 🛡 Plan Enforcer --------------------------------',
       ` Source: ${relativePlan}`,
       ` Format: ${format} (${tasks.length} tasks detected)`,
       ` Ledger: ${path.relative(cwd, rootLedgerPath).replace(/\\/g, '/')}`,
@@ -552,7 +552,7 @@ if (totalTasks > 0 && toolCount % 10 === 0) {
 
 if (remaining === 0 && totalTasks > 0) {
   output.push('');
-  output.push('--- Plan Enforcer (COMPLETE) -------------------------');
+  output.push('--- 🛡 Plan Enforcer (COMPLETE) ----------------------');
   output.push(` ${totalTasks}/${totalTasks} tasks  |  ${verifiedCount} verified  |  ${doneCount} done (unverified)`);
   output.push(` Tier: ${config.tier}`);
   output.push('------------------------------------------------------');

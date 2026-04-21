@@ -179,7 +179,7 @@ function buildActiveOutput(ledger, tier, resolvedLedgerPath, completionGate) {
   let out = '';
   if (remaining === 0 && total > 0) {
     out += `PLAN ENFORCER: Plan complete. ${total} tasks finished.\n`;
-    out += '--- Plan Enforcer (COMPLETE) -------------------------\n';
+    out += '--- 🛡 Plan Enforcer (COMPLETE) ----------------------\n';
     out += ` ${doneCount}/${total} tasks  |  ${counts.verified} verified  |  ${counts.skipped} skipped  |  ${counts.blocked} blocked\n`;
     out += ` Tier: ${tier}  |  Drift: ${drift}  |  Source: ${source}\n`;
     out += '-----------------------------------------------------\n';
@@ -192,7 +192,7 @@ function buildActiveOutput(ledger, tier, resolvedLedgerPath, completionGate) {
 
   const relLedger = path.relative(cwd, resolvedLedgerPath).replace(/\\/g, '/');
   out += `PLAN ENFORCER ACTIVE. Tier: ${tier}. Ledger: ${relLedger}\n`;
-  out += '--- Plan Enforcer -----------------------------------\n';
+  out += '--- 🛡 Plan Enforcer --------------------------------\n';
   out += ` ${doneCount}/${total} tasks  |  ${counts.verified} verified  |  ${counts.skipped} skipped  |  ${counts.blocked} blocked\n`;
   out += ` Tier: ${tier}  |  Drift: ${drift}  |  Remaining: ${remaining}\n`;
   out += '-----------------------------------------------------\n';
@@ -223,7 +223,7 @@ function buildActiveOutput(ledger, tier, resolvedLedgerPath, completionGate) {
 function buildActivationOutput(planFile, format, tasks, tier, ledgerContent, completionGate) {
   let out = '';
   out += 'PLAN ENFORCER ACTIVATED. Auto-detected plan file.\n';
-  out += '--- Plan Enforcer -----------------------------------\n';
+  out += '--- 🛡 Plan Enforcer --------------------------------\n';
   out += ` Source: ${planFile}\n`;
   out += ` Format: ${format} (${tasks.length} tasks detected)\n`;
   out += ' Ledger: .plan-enforcer/ledger.md\n';
