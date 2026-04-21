@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="800" height="360" fill="#201f1e"></rect>
+
+<g transform="translate(40,30)">
+<rect x="0" y="0" width="720" height="84" fill="none" stroke="#617e94" stroke-width="1.2"></rect>
+<text x="20" y="24" font-size="10" fill="#ecf6f9" letter-spacing="1.5">01</text>
+<text x="20" y="48" font-size="18" font-weight="600" fill="#617e94">AUTHORSHIP</text>
+<text x="20" y="68" font-size="11" fill="#ecf6f9">capture intent before drift</text>
+
+<g transform="translate(300,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">discuss</text>
+</g>
+<g transform="translate(400,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">draft</text>
+</g>
+<g transform="translate(500,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">review</text>
+</g>
+<g transform="translate(600,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">import</text>
+</g>
+<g transform="translate(360,88)"><line x1="0" y1="0" x2="0" y2="10" stroke="#617e94" stroke-width="1"></line><path d="M-4 8 L 0 14 L 4 8" fill="#617e94"></path></g>
+</g>
+<g transform="translate(40,130)">
+<rect x="0" y="0" width="720" height="84" fill="none" stroke="#617e94" stroke-width="1.2"></rect>
+<text x="20" y="24" font-size="10" fill="#ecf6f9" letter-spacing="1.5">02</text>
+<text x="20" y="48" font-size="18" font-weight="600" fill="#617e94">EXECUTION</text>
+<text x="20" y="68" font-size="11" fill="#ecf6f9">constrain while work happens</text>
+
+<g transform="translate(300,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">ledger</text>
+</g>
+<g transform="translate(400,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">phase-gate</text>
+</g>
+<g transform="translate(500,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">hooks</text>
+</g>
+<g transform="translate(600,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">resume</text>
+</g>
+<g transform="translate(360,88)"><line x1="0" y1="0" x2="0" y2="10" stroke="#617e94" stroke-width="1"></line><path d="M-4 8 L 0 14 L 4 8" fill="#617e94"></path></g>
+</g>
+<g transform="translate(40,230)">
+<rect x="0" y="0" width="720" height="84" fill="none" stroke="#617e94" stroke-width="1.2"></rect>
+<text x="20" y="24" font-size="10" fill="#ecf6f9" letter-spacing="1.5">03</text>
+<text x="20" y="48" font-size="18" font-weight="600" fill="#617e94">TRUTH</text>
+<text x="20" y="68" font-size="11" fill="#ecf6f9">preserve lineage after</text>
+
+<g transform="translate(300,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">verify</text>
+</g>
+<g transform="translate(400,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">audit</text>
+</g>
+<g transform="translate(500,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">report</text>
+</g>
+<g transform="translate(600,30)">
+<rect x="0" y="0" width="86" height="26" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect>
+<text x="43" y="17" text-anchor="middle" font-size="11" font-weight="500" fill="#395984">lineage</text>
+</g>
+
+</g>
+</svg>

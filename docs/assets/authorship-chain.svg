@@ -4,26 +4,26 @@
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="320" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0d1117"/>
-      <stop offset="1" stop-color="#161b22"/>
+      <stop offset="0" stop-color="#201f1e"/>
+      <stop offset="1" stop-color="#f7f7f7"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#617e94" flood-opacity="0.4"/>
     </filter>
     <style>
       .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
       .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
-      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
-      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
-      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .step-num { font-size: 11px; font-weight: 700; fill: #8957e5; letter-spacing: 0.1em; }
-      .step-title { font-size: 14px; font-weight: 700; fill: #e6edf3; }
-      .step-sub { font-size: 11px; font-weight: 500; fill: #8b949e; }
-      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
-      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
-      .arrow { fill: none; stroke: #30363d; stroke-width: 2; }
-      .arrowhead { fill: #30363d; }
-      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #ecf6f9; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #617e94; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #ecf6f9; }
+      .step-num { font-size: 11px; font-weight: 700; fill: #395984; letter-spacing: 0.1em; }
+      .step-title { font-size: 14px; font-weight: 700; fill: #617e94; }
+      .step-sub { font-size: 11px; font-weight: 500; fill: #ecf6f9; }
+      .step-cmd { font-size: 11px; font-weight: 600; fill: #395984; }
+      .card { fill: #f7f7f7; stroke: #ecf6f9; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #ecf6f9; stroke-width: 2; }
+      .arrowhead { fill: #ecf6f9; }
+      .footer { font-size: 11px; font-weight: 500; fill: #ecf6f9; }
     </style>
     <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/>
@@ -47,7 +47,7 @@
     <text x="20" y="74" class="sans step-sub">Verbatim user quotes +</text>
     <text x="20" y="90" class="sans step-sub">brief (problem, in scope,</text>
     <text x="20" y="106" class="sans step-sub">out of scope).</text>
-    <line x1="20" y1="114" x2="200" y2="114" stroke="#30363d" stroke-width="1"/>
+    <line x1="20" y1="114" x2="200" y2="114" stroke="#ecf6f9" stroke-width="1"/>
     <text x="20" y="132" class="mono step-cmd">.plan-enforcer/discuss.md</text>
   </g>
 
@@ -59,7 +59,7 @@
     <text x="20" y="74" class="sans step-sub">Repo conventions + git log</text>
     <text x="20" y="90" class="sans step-sub">+ test/config constraints,</text>
     <text x="20" y="106" class="sans step-sub">file:line cited.</text>
-    <line x1="20" y1="114" x2="200" y2="114" stroke="#30363d" stroke-width="1"/>
+    <line x1="20" y1="114" x2="200" y2="114" stroke="#ecf6f9" stroke-width="1"/>
     <text x="20" y="132" class="mono step-cmd">.plan-enforcer/research.md</text>
   </g>
 
@@ -71,7 +71,7 @@
     <text x="20" y="74" class="sans step-sub">Reads both briefs. Writes</text>
     <text x="20" y="90" class="sans step-sub">concrete plan with anti-</text>
     <text x="20" y="106" class="sans step-sub">rationalization table.</text>
-    <line x1="20" y1="114" x2="200" y2="114" stroke="#30363d" stroke-width="1"/>
+    <line x1="20" y1="114" x2="200" y2="114" stroke="#ecf6f9" stroke-width="1"/>
     <text x="20" y="132" class="mono step-cmd">docs/plans/&lt;slug&gt;.md</text>
   </g>
 
@@ -83,7 +83,7 @@
     <text x="20" y="74" class="sans step-sub">Placeholder scanner +</text>
     <text x="20" y="90" class="sans step-sub">structural checks +</text>
     <text x="20" y="106" class="sans step-sub">adversarial detectors.</text>
-    <line x1="20" y1="114" x2="200" y2="114" stroke="#30363d" stroke-width="1"/>
+    <line x1="20" y1="114" x2="200" y2="114" stroke="#ecf6f9" stroke-width="1"/>
     <text x="20" y="132" class="mono step-cmd">-review --adversarial</text>
   </g>
 

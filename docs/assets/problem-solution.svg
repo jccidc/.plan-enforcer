@@ -1,76 +1,57 @@
-<svg width="1200" height="620" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Plan Enforcer problem and solution</title>
-  <desc id="desc">Two-card SVG showing AI drift and weak accountability on one side, and the Plan Enforcer ledger plus chain of custody on the other.</desc>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg">
 
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="620" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0d1117"/>
-      <stop offset="1" stop-color="#161b22"/>
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <style>
-      .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
-      .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
-      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
-      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
-      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .step-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; fill: #8957e5; text-transform: uppercase; }
-      .card-title { font-size: 18px; font-weight: 700; fill: #e6edf3; }
-      .body { font-size: 12px; font-weight: 500; fill: #c9d1d9; }
-      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
-      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
-      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
-      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
-    </style>
-  </defs>
+<rect width="800" height="320" fill="#201f1e"></rect>
+<g>
+<text x="32" y="36" font-size="11" fill="#ecf6f9" letter-spacing="2">WITHOUT</text>
+<text x="32" y="62" font-size="20" font-weight="600" fill="#617e94">Drift compounds.</text>
+<g transform="translate(32,110)">
+<line x1="0" y1="40" x2="320" y2="40" stroke="#ecf6f9" stroke-width="1" stroke-dasharray="3 4" opacity=".5"></line>
+<path d="M0 40 C 40 40, 60 20, 100 30 S 160 80, 200 60 S 260 10, 320 90" fill="none" stroke="#617e94" stroke-width="1.5"></path>
+<circle cx="0" cy="40" r="3.5" fill="#617e94"></circle>
+<text x="0" y="22" font-size="10" fill="#ecf6f9">ask</text>
+<circle cx="320" cy="90" r="4" fill="none" stroke="#617e94" stroke-width="1.5"></circle>
+<text x="300" y="112" font-size="10" fill="#ecf6f9">landed</text>
+</g>
+<g transform="translate(32,240)" font-size="10" fill="#ecf6f9">
+<text y="0">· scope silently narrows</text>
+<text y="16">· decisions unrecorded</text>
+<text y="32">· resume from stale context</text>
+</g>
+</g>
+<line x1="400" y1="24" x2="400" y2="296" stroke="#ecf6f9" stroke-dasharray="2 3" opacity=".5"></line>
+<g>
+<text x="432" y="36" font-size="11" fill="#f7f7f7" letter-spacing="2">WITH PLAN ENFORCER</text>
+<text x="432" y="62" font-size="20" font-weight="600" fill="#617e94">Fidelity preserved.</text>
+<g transform="translate(432,110)">
+<line x1="0" y1="40" x2="320" y2="40" stroke="#617e94" stroke-width="1.5"></line>
+<line x1="0" y1="44" x2="320" y2="44" stroke="#617e94" stroke-width="1.5"></line>
 
-  <rect width="1200" height="620" fill="url(#bg)"/>
-
-  <text x="60" y="54" class="sans eyebrow">Problem &#8594; solution</text>
-  <text x="60" y="84" class="sans title">AI drifts. Most agent workflows cannot hold it accountable.</text>
-  <text x="60" y="108" class="sans subtitle">Without a ledger and chain of custody, "done" is just another model claim.</text>
-
-  <g transform="translate(40, 160)">
-    <rect width="540" height="380" rx="10" class="card" filter="url(#shadow)"/>
-    <text x="22" y="34" class="sans step-num">The problem</text>
-    <text x="22" y="62" class="sans card-title">Drift is common.</text>
-    <text x="22" y="82" class="sans card-title">Accountability is weak.</text>
-    <line x1="22" y1="96" x2="518" y2="96" stroke="#30363d" stroke-width="1"/>
-
-    <text x="22" y="126" class="sans body">&#8226; Silent narrowing: the ask shrinks and nobody sees where.</text>
-    <text x="22" y="156" class="sans body">&#8226; Fake completion: the agent says "done" before the repo agrees.</text>
-    <text x="22" y="186" class="sans body">&#8226; Late mutation loss: a new requirement never survives into</text>
-    <text x="22" y="204" class="sans body">&#160;&#160;final code.</text>
-    <text x="22" y="234" class="sans body">&#8226; Bad resume: the next session reads stale context and rebuilds</text>
-    <text x="22" y="252" class="sans body">&#160;&#160;the wrong thing.</text>
-    <text x="22" y="282" class="sans body">&#8226; No chain of custody: months later nobody can explain why a</text>
-    <text x="22" y="300" class="sans body">&#160;&#160;file changed.</text>
-
-    <rect x="22" y="322" width="496" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
-    <text x="38" y="347" class="sans body">Real-world version: roadmap updated twice, model snapped back twice.</text>
-  </g>
-
-  <g transform="translate(620, 160)">
-    <rect width="540" height="380" rx="10" class="card-active" filter="url(#shadow)"/>
-    <text x="22" y="34" class="sans step-num">The solution</text>
-    <text x="22" y="62" class="sans card-title">Add the ledger, the wall,</text>
-    <text x="22" y="82" class="sans card-title">and the chain of custody.</text>
-    <line x1="22" y1="96" x2="518" y2="96" stroke="#8957e5" stroke-width="1" opacity="0.35"/>
-
-    <text x="22" y="126" class="sans body">&#8226; Authorship: <tspan class="mono step-cmd">discuss &#8594; draft &#8594; review</tspan> freezes intent</text>
-    <text x="22" y="144" class="sans body">&#160;&#160;before execution.</text>
-    <text x="22" y="174" class="sans body">&#8226; Execution: phase-first runtime and a single on-disk ledger</text>
-    <text x="22" y="192" class="sans body">&#160;&#160;survive session death.</text>
-    <text x="22" y="222" class="sans body">&#8226; Truth: verify, report, ask-fidelity, carryover, and closure</text>
-    <text x="22" y="240" class="sans body">&#160;&#160;all land on disk.</text>
-    <text x="22" y="270" class="sans body">&#8226; Hook wall: unplanned edits and untyped deviations get blocked,</text>
-    <text x="22" y="288" class="sans body">&#160;&#160;not politely discouraged.</text>
-
-    <rect x="22" y="322" width="496" height="40" rx="8" fill="#11161c" stroke="#30363d" stroke-width="1"/>
-    <text x="38" y="347" class="sans body">Keep your planner if you want. What changes is accountability.</text>
-  </g>
-
-  <text x="60" y="598" class="sans footer">Prompts are advice. Hooks are walls.</text>
+<g transform="translate(8,42)">
+<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
+<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">ASK</text>
+</g>
+<g transform="translate(86,42)">
+<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
+<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">PLAN</text>
+</g>
+<g transform="translate(164,42)">
+<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
+<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">EXEC</text>
+</g>
+<g transform="translate(242,42)">
+<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
+<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">VERIFY</text>
+</g>
+<g transform="translate(320,42)">
+<rect x="-18" y="-16" width="36" height="24" fill="#395984" stroke="#f7f7f7" stroke-width="1"></rect>
+<text x="0" y="0" text-anchor="middle" font-size="9" font-weight="600" fill="#f7f7f7">LAND</text>
+</g>
+</g>
+<g transform="translate(432,240)" font-size="10" fill="#ecf6f9">
+<text y="0">· ledger kept on disk</text>
+<text y="16">· decisions tracked by design</text>
+<text y="32">· resume is first-class</text>
+</g>
+</g>
 </svg>

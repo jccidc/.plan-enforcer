@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="800" height="360" fill="#201f1e"></rect>
+<text x="40" y="36" font-size="11" fill="#ecf6f9" letter-spacing="2">CAUGHT · LOGGED · REVIEWABLE</text>
+
+<g transform="translate(40,70)">
+<rect x="0" y="0" width="720" height="26" fill="none" stroke="#ecf6f9" stroke-width=".5" stroke-dasharray="2 3"></rect>
+<g transform="translate(10,13)"><circle r="6" fill="#f7f7f7" stroke="#395984" stroke-width="1"></circle><path d="M-3 0 L -1 2 L 3 -2" fill="none" stroke="#395984" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g>
+<text x="30" y="18" font-size="13" fill="#617e94">silent narrowing of the original request</text>
+<text x="710" y="18" text-anchor="end" font-size="10" fill="#ecf6f9">#001</text>
+</g>
+<g transform="translate(40,108)">
+<rect x="0" y="0" width="720" height="26" fill="none" stroke="#ecf6f9" stroke-width=".5" stroke-dasharray="2 3"></rect>
+<g transform="translate(10,13)"><circle r="6" fill="#f7f7f7" stroke="#395984" stroke-width="1"></circle><path d="M-3 0 L -1 2 L 3 -2" fill="none" stroke="#395984" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g>
+<text x="30" y="18" font-size="13" fill="#617e94">phase drift during long execution</text>
+<text x="710" y="18" text-anchor="end" font-size="10" fill="#ecf6f9">#002</text>
+</g>
+<g transform="translate(40,146)">
+<rect x="0" y="0" width="720" height="26" fill="none" stroke="#ecf6f9" stroke-width=".5" stroke-dasharray="2 3"></rect>
+<g transform="translate(10,13)"><circle r="6" fill="#f7f7f7" stroke="#395984" stroke-width="1"></circle><path d="M-3 0 L -1 2 L 3 -2" fill="none" stroke="#395984" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g>
+<text x="30" y="18" font-size="13" fill="#617e94">undocumented scope changes</text>
+<text x="710" y="18" text-anchor="end" font-size="10" fill="#ecf6f9">#003</text>
+</g>
+<g transform="translate(40,184)">
+<rect x="0" y="0" width="720" height="26" fill="none" stroke="#ecf6f9" stroke-width=".5" stroke-dasharray="2 3"></rect>
+<g transform="translate(10,13)"><circle r="6" fill="#f7f7f7" stroke="#395984" stroke-width="1"></circle><path d="M-3 0 L -1 2 L 3 -2" fill="none" stroke="#395984" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g>
+<text x="30" y="18" font-size="13" fill="#617e94">incomplete closure masked as done</text>
+<text x="710" y="18" text-anchor="end" font-size="10" fill="#ecf6f9">#004</text>
+</g>
+<g transform="translate(40,222)">
+<rect x="0" y="0" width="720" height="26" fill="none" stroke="#ecf6f9" stroke-width=".5" stroke-dasharray="2 3"></rect>
+<g transform="translate(10,13)"><circle r="6" fill="#f7f7f7" stroke="#395984" stroke-width="1"></circle><path d="M-3 0 L -1 2 L 3 -2" fill="none" stroke="#395984" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g>
+<text x="30" y="18" font-size="13" fill="#617e94">stale-context resumes</text>
+<text x="710" y="18" text-anchor="end" font-size="10" fill="#ecf6f9">#005</text>
+</g>
+<g transform="translate(40,260)">
+<rect x="0" y="0" width="720" height="26" fill="none" stroke="#ecf6f9" stroke-width=".5" stroke-dasharray="2 3"></rect>
+<g transform="translate(10,13)"><circle r="6" fill="#f7f7f7" stroke="#395984" stroke-width="1"></circle><path d="M-3 0 L -1 2 L 3 -2" fill="none" stroke="#395984" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g>
+<text x="30" y="18" font-size="13" fill="#617e94">missing carryover between sessions</text>
+<text x="710" y="18" text-anchor="end" font-size="10" fill="#ecf6f9">#006</text>
+</g>
+<g transform="translate(40,298)">
+<rect x="0" y="0" width="720" height="26" fill="none" stroke="#ecf6f9" stroke-width=".5" stroke-dasharray="2 3"></rect>
+<g transform="translate(10,13)"><circle r="6" fill="#f7f7f7" stroke="#395984" stroke-width="1"></circle><path d="M-3 0 L -1 2 L 3 -2" fill="none" stroke="#395984" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g>
+<text x="30" y="18" font-size="13" fill="#617e94">changes landed without a decision trail</text>
+<text x="710" y="18" text-anchor="end" font-size="10" fill="#ecf6f9">#007</text>
+</g>
+</svg>

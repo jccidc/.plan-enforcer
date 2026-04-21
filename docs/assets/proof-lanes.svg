@@ -4,25 +4,25 @@
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="650" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0d1117"/>
-      <stop offset="1" stop-color="#161b22"/>
+      <stop offset="0" stop-color="#201f1e"/>
+      <stop offset="1" stop-color="#f7f7f7"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#617e94" flood-opacity="0.4"/>
     </filter>
     <style>
       .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
       .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
-      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
-      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
-      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
-      .step-num { font-size: 11px; font-weight: 700; fill: #8957e5; letter-spacing: 0.12em; text-transform: uppercase; }
-      .step-title { font-size: 17px; font-weight: 700; fill: #e6edf3; }
-      .step-sub { font-size: 12px; font-weight: 500; fill: #8b949e; }
-      .step-cmd { font-size: 11px; font-weight: 600; fill: #58a6ff; }
-      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
-      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
-      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #ecf6f9; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #617e94; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #ecf6f9; }
+      .step-num { font-size: 11px; font-weight: 700; fill: #395984; letter-spacing: 0.12em; text-transform: uppercase; }
+      .step-title { font-size: 17px; font-weight: 700; fill: #617e94; }
+      .step-sub { font-size: 12px; font-weight: 500; fill: #ecf6f9; }
+      .step-cmd { font-size: 11px; font-weight: 600; fill: #395984; }
+      .card { fill: #f7f7f7; stroke: #ecf6f9; stroke-width: 1.5; }
+      .card-active { fill: #f7f7f7; stroke: #395984; stroke-width: 1.5; }
+      .footer { font-size: 11px; font-weight: 500; fill: #ecf6f9; }
     </style>
   </defs>
 
@@ -36,7 +36,7 @@
     <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">Execution</text>
     <text x="22" y="62" class="sans step-title">PE is execution-credible</text>
-    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#ecf6f9" stroke-width="1"/>
     <text x="22" y="100" class="sans step-sub">Phased-small and phased-large prove the</text>
     <text x="22" y="118" class="sans step-sub">system is not just an audit wrapper.</text>
     <text x="22" y="156" class="mono step-cmd">24 / 24 small  |  98 / 98 large trust</text>
@@ -46,7 +46,7 @@
     <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">Authorship</text>
     <text x="22" y="62" class="sans step-title">Discuss, draft, review</text>
-    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#ecf6f9" stroke-width="1"/>
     <text x="22" y="100" class="sans step-sub">Public chain exists, but do not overclaim</text>
     <text x="22" y="118" class="sans step-sub">isolated discuss superiority. Fair claim</text>
     <text x="22" y="136" class="sans step-sub">is competitive authorship.</text>
@@ -56,7 +56,7 @@
     <rect width="360" height="180" rx="10" class="card-active" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">Carryover</text>
     <text x="22" y="62" class="sans step-title">The moat wedge</text>
-    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#ecf6f9" stroke-width="1"/>
     <text x="22" y="100" class="sans step-sub">H through N repeat the same result:</text>
     <text x="22" y="118" class="sans step-sub">repaired-contract truth survives mutation,</text>
     <text x="22" y="136" class="sans step-sub">interruption, and closure.</text>
@@ -66,7 +66,7 @@
     <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">Composability</text>
     <text x="22" y="62" class="sans step-title">Keep your planner</text>
-    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#ecf6f9" stroke-width="1"/>
     <text x="22" y="100" class="sans step-sub">Public proof that PE sits under GSD or</text>
     <text x="22" y="118" class="sans step-sub">Superpowers as additive enforcement</text>
     <text x="22" y="136" class="sans step-sub">and truth.</text>
@@ -77,7 +77,7 @@
     <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">Dogfood</text>
     <text x="22" y="62" class="sans step-title">We live in it ourselves</text>
-    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#ecf6f9" stroke-width="1"/>
     <text x="22" y="100" class="sans step-sub">Proves operator usability and has found</text>
     <text x="22" y="118" class="sans step-sub">real bugs in live repo work. Credibility</text>
     <text x="22" y="136" class="sans step-sub">lane, not competitor scoring.</text>
@@ -87,7 +87,7 @@
     <rect width="360" height="180" rx="10" class="card" filter="url(#shadow)"/>
     <text x="22" y="34" class="sans step-num">Roadmap regression</text>
     <text x="22" y="62" class="sans step-title">Real pain, not current moat</text>
-    <line x1="22" y1="76" x2="338" y2="76" stroke="#30363d" stroke-width="1"/>
+    <line x1="22" y1="76" x2="338" y2="76" stroke="#ecf6f9" stroke-width="1"/>
     <text x="22" y="100" class="sans step-sub">Keep this lane public and maintained, but</text>
     <text x="22" y="118" class="sans step-sub">do not pitch it as the current separator.</text>
     <text x="22" y="136" class="sans step-sub">Credibility lane, not the wedge.</text>

@@ -1,132 +1,50 @@
-<svg width="1200" height="560" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Plan Enforcer chain of custody</title>
-  <desc id="desc">Five-stage chain of custody: user intent captured as a brief, plan drafted and reviewed, ledger tracks every task, hooks enforce every edit, commits and audit CLIs make the chain queryable.</desc>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg">
 
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="560" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0d1117"/>
-      <stop offset="1" stop-color="#161b22"/>
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <style>
-      .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
-      .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
-      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
-      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
-      .stage-num { font-size: 12px; font-weight: 700; fill: #8957e5; }
-      .stage-title { font-size: 15px; font-weight: 700; fill: #e6edf3; }
-      .stage-sub { font-size: 12px; font-weight: 500; fill: #8b949e; }
-      .stage-detail { font-size: 11px; font-weight: 500; fill: #6e7681; }
-      .mono-sample { font-size: 11px; font-weight: 500; fill: #8b949e; }
-      .mono-hl { font-size: 11px; font-weight: 600; fill: #58a6ff; }
-      .mono-good { font-size: 11px; font-weight: 600; fill: #3fb950; }
-      .card { fill: #1c2128; stroke: #30363d; stroke-width: 1.5; }
-      .arrow { fill: none; stroke: #30363d; stroke-width: 2; }
-      .arrowhead { fill: #30363d; }
-      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
-    </style>
-    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/>
-    </marker>
-  </defs>
+<rect width="800" height="260" fill="#201f1e"></rect>
+<text x="400" y="32" text-anchor="middle" font-size="11" fill="#ecf6f9" letter-spacing="2.5">CHAIN OF CUSTODY</text>
+<line x1="80" y1="140" x2="720" y2="140" stroke="#617e94" stroke-width="1.2"></line>
 
-  <rect width="1200" height="560" fill="url(#bg)"/>
+<g>
+<circle cx="80" cy="140" r="6" fill="#201f1e" stroke="#617e94" stroke-width="1.4"></circle>
+<g transform="translate(86,140)"><line x1="16" y1="-3" x2="16" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="36" y1="-3" x2="36" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="56" y1="-3" x2="56" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="76" y1="-3" x2="76" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="96" y1="-3" x2="96" y2="3" stroke="#ecf6f9" stroke-width=".8"></line></g>
+<text x="80" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#617e94" letter-spacing="1.5">ASK</text>
+<text x="80" y="170" text-anchor="middle" font-size="10" fill="#ecf6f9">original request</text>
+<g transform="translate(80,200)"><rect x="-22" y="0" width="44" height="18" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect><text x="0" y="12" text-anchor="middle" font-size="9" fill="#395984" font-weight="600">SEALED</text></g>
+</g>
+<g>
+<circle cx="208" cy="140" r="6" fill="#201f1e" stroke="#617e94" stroke-width="1.4"></circle>
+<g transform="translate(214,140)"><line x1="16" y1="-3" x2="16" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="36" y1="-3" x2="36" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="56" y1="-3" x2="56" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="76" y1="-3" x2="76" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="96" y1="-3" x2="96" y2="3" stroke="#ecf6f9" stroke-width=".8"></line></g>
+<text x="208" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#617e94" letter-spacing="1.5">PLAN</text>
+<text x="208" y="170" text-anchor="middle" font-size="10" fill="#ecf6f9">draft · review</text>
+<g transform="translate(208,200)"><rect x="-22" y="0" width="44" height="18" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect><text x="0" y="12" text-anchor="middle" font-size="9" fill="#395984" font-weight="600">SEALED</text></g>
+</g>
+<g>
+<circle cx="336" cy="140" r="6" fill="#201f1e" stroke="#617e94" stroke-width="1.4"></circle>
+<g transform="translate(342,140)"><line x1="16" y1="-3" x2="16" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="36" y1="-3" x2="36" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="56" y1="-3" x2="56" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="76" y1="-3" x2="76" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="96" y1="-3" x2="96" y2="3" stroke="#ecf6f9" stroke-width=".8"></line></g>
+<text x="336" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#617e94" letter-spacing="1.5">EXEC</text>
+<text x="336" y="170" text-anchor="middle" font-size="10" fill="#ecf6f9">phase-gated</text>
+<g transform="translate(336,200)"><rect x="-22" y="0" width="44" height="18" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect><text x="0" y="12" text-anchor="middle" font-size="9" fill="#395984" font-weight="600">SEALED</text></g>
+</g>
+<g>
+<circle cx="464" cy="140" r="6" fill="#201f1e" stroke="#617e94" stroke-width="1.4"></circle>
+<g transform="translate(470,140)"><line x1="16" y1="-3" x2="16" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="36" y1="-3" x2="36" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="56" y1="-3" x2="56" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="76" y1="-3" x2="76" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="96" y1="-3" x2="96" y2="3" stroke="#ecf6f9" stroke-width=".8"></line></g>
+<text x="464" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#617e94" letter-spacing="1.5">DECIDE</text>
+<text x="464" y="170" text-anchor="middle" font-size="10" fill="#ecf6f9">scope changes</text>
+<g transform="translate(464,200)"><rect x="-22" y="0" width="44" height="18" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect><text x="0" y="12" text-anchor="middle" font-size="9" fill="#395984" font-weight="600">SEALED</text></g>
+</g>
+<g>
+<circle cx="592" cy="140" r="6" fill="#201f1e" stroke="#617e94" stroke-width="1.4"></circle>
+<g transform="translate(598,140)"><line x1="16" y1="-3" x2="16" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="36" y1="-3" x2="36" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="56" y1="-3" x2="56" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="76" y1="-3" x2="76" y2="3" stroke="#ecf6f9" stroke-width=".8"></line><line x1="96" y1="-3" x2="96" y2="3" stroke="#ecf6f9" stroke-width=".8"></line></g>
+<text x="592" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#617e94" letter-spacing="1.5">VERIFY</text>
+<text x="592" y="170" text-anchor="middle" font-size="10" fill="#ecf6f9">evidence</text>
+<g transform="translate(592,200)"><rect x="-22" y="0" width="44" height="18" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect><text x="0" y="12" text-anchor="middle" font-size="9" fill="#395984" font-weight="600">SEALED</text></g>
+</g>
+<g>
+<circle cx="720" cy="140" r="6" fill="#201f1e" stroke="#617e94" stroke-width="1.4"></circle>
 
-  <!-- Header -->
-  <text x="60" y="54" class="sans eyebrow">Plan Enforcer</text>
-  <text x="60" y="84" class="sans title">Chain of custody, enforced at the tool call.</text>
-  <text x="60" y="108" class="sans stage-sub">Every AI-written change traces to an approved plan step or a typed deviation.</text>
-
-  <!-- Five stage cards along a horizontal flow -->
-  <!-- Layout: 5 cards at y=150, h=210. x positions: 60, 280, 500, 720, 940. w=200, gap=20. -->
-
-  <!-- Stage 1: Intent -->
-  <g transform="translate(60, 150)">
-    <rect width="200" height="210" rx="10" class="card" filter="url(#shadow)"/>
-    <text x="20" y="32" class="sans stage-num">01 · INTENT</text>
-    <text x="20" y="58" class="sans stage-title">Capture what</text>
-    <text x="20" y="76" class="sans stage-title">the user asked</text>
-    <text x="20" y="104" class="sans stage-sub">plan-enforcer:</text>
-    <text x="20" y="122" class="sans stage-sub">Discuss</text>
-    <line x1="20" y1="138" x2="180" y2="138" stroke="#30363d" stroke-width="1"/>
-    <text x="20" y="160" class="mono mono-sample">.plan-enforcer/</text>
-    <text x="20" y="176" class="mono mono-sample">  discuss.md</text>
-    <text x="20" y="198" class="sans stage-detail">Brief: problem, in/out</text>
-  </g>
-
-  <!-- Stage 2: Plan -->
-  <g transform="translate(280, 150)">
-    <rect width="200" height="210" rx="10" class="card" filter="url(#shadow)"/>
-    <text x="20" y="32" class="sans stage-num">02 · PLAN</text>
-    <text x="20" y="58" class="sans stage-title">Draft + review</text>
-    <text x="20" y="76" class="sans stage-title">the plan file</text>
-    <text x="20" y="104" class="sans stage-sub">plan-enforcer-draft</text>
-    <text x="20" y="122" class="sans stage-sub">plan-enforcer-review</text>
-    <line x1="20" y1="138" x2="180" y2="138" stroke="#30363d" stroke-width="1"/>
-    <text x="20" y="160" class="mono mono-sample">docs/plans/</text>
-    <text x="20" y="176" class="mono mono-sample">  2026-04-12-</text>
-    <text x="20" y="192" class="mono mono-sample">  auth.md</text>
-  </g>
-
-  <!-- Stage 3: Ledger -->
-  <g transform="translate(500, 150)">
-    <rect width="200" height="210" rx="10" class="card" filter="url(#shadow)"/>
-    <text x="20" y="32" class="sans stage-num">03 · LEDGER</text>
-    <text x="20" y="58" class="sans stage-title">Track every</text>
-    <text x="20" y="76" class="sans stage-title">task + decision</text>
-    <text x="20" y="104" class="sans stage-sub">T-rows (tasks)</text>
-    <text x="20" y="122" class="sans stage-sub">D-rows (decisions)</text>
-    <line x1="20" y1="138" x2="180" y2="138" stroke="#30363d" stroke-width="1"/>
-    <text x="20" y="160" class="mono mono-sample">.plan-enforcer/</text>
-    <text x="20" y="176" class="mono mono-sample">  ledger.md</text>
-    <text x="20" y="198" class="sans stage-detail">v2 schema w/ Chain col</text>
-  </g>
-
-  <!-- Stage 4: Hooks -->
-  <g transform="translate(720, 150)">
-    <rect width="200" height="210" rx="10" class="card" filter="url(#shadow)"/>
-    <text x="20" y="32" class="sans stage-num">04 · HOOKS</text>
-    <text x="20" y="58" class="sans stage-title">Enforce every</text>
-    <text x="20" y="76" class="sans stage-title">tool call</text>
-    <text x="20" y="104" class="sans stage-sub">chain-guard</text>
-    <text x="20" y="122" class="sans stage-sub">delete-guard</text>
-    <text x="20" y="140" class="sans stage-sub">evidence-gate</text>
-    <line x1="20" y1="156" x2="180" y2="156" stroke="#30363d" stroke-width="1"/>
-    <text x="20" y="176" class="mono mono-sample">PreToolUse blocks</text>
-    <text x="20" y="192" class="mono mono-sample">edits w/o a D-row</text>
-  </g>
-
-  <!-- Stage 5: Audit -->
-  <g transform="translate(940, 150)">
-    <rect width="200" height="210" rx="10" class="card" filter="url(#shadow)"/>
-    <text x="20" y="32" class="sans stage-num">05 · AUDIT</text>
-    <text x="20" y="58" class="sans stage-title">Query the chain</text>
-    <text x="20" y="76" class="sans stage-title">after the fact</text>
-    <text x="20" y="104" class="sans stage-sub">plan-enforcer-chain</text>
-    <text x="20" y="122" class="sans stage-sub">plan-enforcer-why</text>
-    <text x="20" y="140" class="sans stage-sub">plan-enforcer-audit</text>
-    <line x1="20" y1="156" x2="180" y2="156" stroke="#30363d" stroke-width="1"/>
-    <text x="20" y="176" class="mono mono-sample">Commits + evidence</text>
-    <text x="20" y="192" class="mono mono-sample">traceable in 1 cmd</text>
-  </g>
-
-  <!-- Arrows between cards -->
-  <path d="M 262 255 L 278 255" class="arrow" marker-end="url(#arrow-end)"/>
-  <path d="M 482 255 L 498 255" class="arrow" marker-end="url(#arrow-end)"/>
-  <path d="M 702 255 L 718 255" class="arrow" marker-end="url(#arrow-end)"/>
-  <path d="M 922 255 L 938 255" class="arrow" marker-end="url(#arrow-end)"/>
-
-  <!-- Sample output footer block -->
-  <g transform="translate(60, 410)">
-    <rect width="1080" height="110" rx="8" class="card"/>
-    <text x="24" y="28" class="sans eyebrow">Sample — plan-enforcer chain T5</text>
-    <text x="24" y="56" class="mono mono-sample">Chain for T5: src/auth/middleware.ts — token verification</text>
-    <text x="24" y="76" class="mono mono-sample">  status: <tspan class="mono-good">verified</tspan>   evidence: <tspan class="mono-hl">src/auth/middleware.ts; tests pass</tspan></text>
-    <text x="24" y="92" class="mono mono-sample">  chain:  <tspan class="mono-hl">D2</tspan> (pivot — scope expansion), <tspan class="mono-hl">C:a1b2c3d</tspan> (commit), <tspan class="mono-hl">V1</tspan> (tests/auth.test.ts passed)</text>
-  </g>
-
-  <!-- Footer credit -->
-  <text x="60" y="548" class="sans footer">No cooperative "please log your reasoning" — hooks block the tool call until the typed trail exists.</text>
+<text x="720" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#617e94" letter-spacing="1.5">LAND</text>
+<text x="720" y="170" text-anchor="middle" font-size="10" fill="#ecf6f9">repo truth</text>
+<g transform="translate(720,200)"><rect x="-22" y="0" width="44" height="18" fill="#f7f7f7" stroke="#395984" stroke-width=".8"></rect><text x="0" y="12" text-anchor="middle" font-size="9" fill="#395984" font-weight="600">SEALED</text></g>
+</g>
 </svg>
