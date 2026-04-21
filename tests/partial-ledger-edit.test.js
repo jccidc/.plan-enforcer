@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { detectPartialLedgerEdit } = require('../src/partial-ledger-edit');
+const { detectBulkPendingClosureFromEdits, detectPartialLedgerEdit, MASS_PENDING_CLOSURE_THRESHOLD } = require('../src/partial-ledger-edit');
 
 const taskRow = (id, status, evidence = '') =>
   `| ${id} | Task ${id} | ${status} | ${evidence} |       |       |`;
@@ -153,5 +153,68 @@ describe('detectPartialLedgerEdit', () => {
       old_string: oldLedger, new_string: newLedger
     }));
     assert.equal(result.partial, false);
+  });
+});
+
+describe('detectBulkPendingClosureFromEdits', () => {
+  function edit(old_string, new_string) {
+    return [{ old: old_string, new: new_string }];
+  }
+
+  it('flags mass pending -> done closure sweeps', () => {
+    const oldLedger = makeLedger({
+      tRows: [
+        taskRow('T1', 'pending'),
+        taskRow('T2', 'pending'),
+        taskRow('T3', 'pending'),
+        taskRow('T4', 'pending'),
+        taskRow('T5', 'pending')
+      ]
+    });
+    const newLedger = makeLedger({
+      tRows: [
+        taskRow('T1', 'done', 'src/a.ts'),
+        taskRow('T2', 'done', 'src/b.ts'),
+        taskRow('T3', 'done', 'src/c.ts'),
+        taskRow('T4', 'done', 'src/d.ts'),
+        taskRow('T5', 'pending')
+      ]
+    });
+    const result = detectBulkPendingClosureFromEdits(edit(oldLedger, newLedger));
+    assert.equal(result.bulk, true);
+    assert.equal(result.ids.length, MASS_PENDING_CLOSURE_THRESHOLD);
+    assert.match(result.reason, /mass-mark/i);
+  });
+
+  it('does not flag normal reprioritization with one blocked row', () => {
+    const oldLedger = makeLedger({
+      tRows: [taskRow('T1', 'in-progress'), taskRow('T2', 'pending'), taskRow('T3', 'pending')]
+    });
+    const newLedger = makeLedger({
+      tRows: [taskRow('T1', 'done', 'npm test'), taskRow('T2', 'blocked'), taskRow('T3', 'in-progress')]
+    });
+    const result = detectBulkPendingClosureFromEdits(edit(oldLedger, newLedger));
+    assert.equal(result.bulk, false);
+  });
+
+  it('does not count pending -> verified in the sweep detector', () => {
+    const oldLedger = makeLedger({
+      tRows: [
+        taskRow('T1', 'pending'),
+        taskRow('T2', 'pending'),
+        taskRow('T3', 'pending'),
+        taskRow('T4', 'pending')
+      ]
+    });
+    const newLedger = makeLedger({
+      tRows: [
+        taskRow('T1', 'verified', 'npm test'),
+        taskRow('T2', 'verified', 'npm test'),
+        taskRow('T3', 'verified', 'npm test'),
+        taskRow('T4', 'verified', 'npm test')
+      ]
+    });
+    const result = detectBulkPendingClosureFromEdits(edit(oldLedger, newLedger));
+    assert.equal(result.bulk, false);
   });
 });

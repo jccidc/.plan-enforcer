@@ -27,6 +27,46 @@ describe('status-cli', () => {
     assert.match(result.stdout, /Current Task: T5 - Add authentication/);
   });
 
+  it('surfaces phase-local scope and query tools for phased source plans', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-scope-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/2026-04-21-dotreadme-p1-scaffold-and-preview.md -->',
+      '<!-- tier: structural -->',
+      '<!-- created: 2026-04-21T10:00:00Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | One | verified | yes | | |',
+      '| T2  | Two | pending | | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, ['src/status-cli.js', path.join(enforcerDir, 'ledger.md')], {
+      cwd: repoRoot,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Scope: phase-local P1/);
+    assert.match(result.stdout, /Query tools:/);
+    assert.match(result.stdout, /plan-enforcer audit --strict/);
+    assert.match(result.stdout, /plan-enforcer why <path>/);
+    assert.match(result.stdout, /plan-enforcer export --pretty/);
+  });
+
   it('includes recent phase verify summary when phase-report exists', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-status-phase-cli-'));
     const enforcerDir = path.join(tempDir, '.plan-enforcer');

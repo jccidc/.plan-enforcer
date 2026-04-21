@@ -31,7 +31,7 @@ Options:
 
 Tiers:
   advisory     Skill only - no hooks, passive guidance
-  structural   Skill + SessionStart hook for auto-activation/resume
+  structural   Skill + auto-activation + hard-integrity guards
   enforced     Skill + SessionStart + PreToolUse + PostToolUse + SessionEnd hooks
 USAGE
   exit 0
@@ -204,7 +204,7 @@ console.log(`  statusLine: ${statuslineCmd}`);
 NODEEOF
 }
 
-merge_with_node_session_only() {
+merge_with_node_structural() {
   local settings_file="$1"
   local hooks_dir="$2"
   local fallback_settings="$3"
@@ -248,6 +248,9 @@ settings.hooks = settings.hooks || {};
 
 const sessionCmd = `node "${hooksDir}/session-start.js"`;
 const userPromptCmd = `node "${hooksDir}/user-message.js"`;
+const deleteGuardCmd = `node "${hooksDir}/delete-guard.js"`;
+const ledgerSchemaGuardCmd = `node "${hooksDir}/ledger-schema-guard.js"`;
+const evidenceCmd = `node "${hooksDir}/evidence-gate.js"`;
 
 settings.hooks.SessionStart = settings.hooks.SessionStart || [];
 const existingSessionCmds = new Set();
@@ -278,11 +281,40 @@ if (!existingPromptCmds.has(userPromptCmd)) {
   });
 }
 
+settings.hooks.PreToolUse = settings.hooks.PreToolUse || [];
+const existingPreToolCmds = new Set();
+for (const entry of settings.hooks.PreToolUse) {
+  for (const hook of entry.hooks || []) existingPreToolCmds.add(hook.command || '');
+}
+for (const command of [deleteGuardCmd, ledgerSchemaGuardCmd]) {
+  if (existingPreToolCmds.has(command)) continue;
+  settings.hooks.PreToolUse.push({
+    hooks: [{
+      type: 'command',
+      command
+    }]
+  });
+}
+
+settings.hooks.PostToolUse = settings.hooks.PostToolUse || [];
+const existingPostToolCmds = new Set();
+for (const entry of settings.hooks.PostToolUse) {
+  for (const hook of entry.hooks || []) existingPostToolCmds.add(hook.command || '');
+}
+if (!existingPostToolCmds.has(evidenceCmd)) {
+  settings.hooks.PostToolUse.push({
+    hooks: [{
+      type: 'command',
+      command: evidenceCmd
+    }]
+  });
+}
+
 fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
 console.log(`  statusLine: ${statuslineCmd}`);
 console.log(`  updated hooks in ${settingsPath}`);
-console.log('  enabled: SessionStart, UserPromptSubmit');
+console.log('  enabled: SessionStart, UserPromptSubmit, PreToolUse(delete/ledger), PostToolUse(evidence)');
 NODEEOF
 }
 
@@ -380,9 +412,9 @@ if command -v node &>/dev/null; then
     configure_statusline_only "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
     HOOKS_INSTALLED="statusLine -> $SETTINGS_PATH"
   elif [[ "$TIER" == "structural" ]]; then
-    # Structural: session-start only (auto-creates ledger, no ongoing enforcement)
-    merge_with_node_session_only "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
-    HOOKS_INSTALLED="statusLine + SessionStart + UserPromptSubmit -> $SETTINGS_PATH"
+    # Structural: auto-activation + hard-integrity guards only
+    merge_with_node_structural "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
+    HOOKS_INSTALLED="statusLine + SessionStart + UserPromptSubmit + PreToolUse(delete/ledger) + PostToolUse(evidence) -> $SETTINGS_PATH"
   else
     # Enforced: full hook bundle
     merge_with_node "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
@@ -400,14 +432,16 @@ else
     echo '    "command": "node ~/.claude/skills/plan-enforcer/hooks/statusline.js"'
     echo '  }'
   elif [[ "$TIER" == "structural" ]]; then
-    HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit"
+    HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit + PreToolUse(delete/ledger) + PostToolUse(evidence)"
     echo '  "statusLine": {'
     echo '    "type": "command",'
     echo '    "command": "node ~/.claude/skills/plan-enforcer/hooks/statusline.js"'
     echo '  },'
     echo '  "hooks": {'
     echo '    "SessionStart": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/session-start.js", "statusMessage": "Plan Enforcer: checking for active plan..."}]}],'
-    echo '    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/user-message.js"}]}]'
+    echo '    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/user-message.js"}]}],'
+    echo '    "PreToolUse":   [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/delete-guard.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/ledger-schema-guard.js"}]}],'
+    echo '    "PostToolUse":  [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/evidence-gate.js"}]}]'
     echo '  }'
   else
     HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit + PreToolUse + PostToolUse + SessionEnd"
@@ -444,8 +478,9 @@ schema: v2
 
 Tier controls enforcement strictness:
 - advisory:   audit-only. Hooks log violations; nothing ever blocks.
-- structural: warn on soft deviations, block on hard integrity breaks
-              (unlogged deletion, evidence-less verification).
+- structural: auto-activate + warn on soft deviations visible in reports,
+              block on hard integrity breaks (unlogged deletion, bulk
+              pending closure, evidence-less verification).
 - enforced:   block every unplanned edit, unlogged deletion, phase pivot,
               and evidence-less verification until resolved.
 
@@ -459,10 +494,12 @@ Hooks active at this tier:
                  hook-staleness check
 - UserPromptSubmit: raw user-prompt capture to '.user-messages.jsonl'
                     for awareness quote verification
-- PreToolUse:    chain-guard (unplanned edits), delete-guard (deletions), ledger-schema-guard (T-row tampering)
-                 [enforced tier only]
-- PostToolUse:   evidence gate, counters, reconciliation nudges, session log append
-                 [enforced tier only]
+- PreToolUse:    delete-guard (deletions), ledger-schema-guard (T-row tampering, bulk pending closure)
+                 [structural + enforced]
+- PostToolUse:   evidence gate
+                 [structural + enforced]
+- PreToolUse:    chain-guard (unplanned edits)
+- PostToolUse:   counters, reconciliation nudges, session log append
 - SessionEnd:    missing-ledger assertion, chain integrity check, orphan-intent check
                  [enforced tier only]
 EOF

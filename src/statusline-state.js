@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { parseTaskRows } = require('./ledger-parser');
+const { parseMetadata, parseTaskRows } = require('./ledger-parser');
 
 const STATUSLINE_STATE_FILE = 'statusline-state.json';
 const DISCUSS_PACKET = 'discuss.md';
@@ -158,6 +158,7 @@ function clearStatuslineState(opts = {}) {
 }
 
 function buildTaskStatuslineState(ledger) {
+  const meta = parseMetadata(ledger);
   const rows = parseTaskRows(ledger);
   const total = rows.length;
   const completed = rows.filter((row) => (
@@ -166,12 +167,18 @@ function buildTaskStatuslineState(ledger) {
     row.status === 'skipped' ||
     row.status === 'superseded'
   )).length;
+  const verified = rows.filter((row) => row.status === 'verified').length;
+  const doneUnverified = rows.filter((row) => row.status === 'done').length;
   const nextRow = rows.find((row) => row.status === 'in-progress' || row.status === 'pending') || null;
+  const prefix = meta.scope && meta.scope.shortLabel ? `${meta.scope.shortLabel} ` : '';
   return {
     stage: 'tasks',
-    label: `${completed}/${total}`,
+    label: `${prefix}${completed}/${total}`,
     done: completed,
+    verified,
+    doneUnverified,
     total,
+    scope: meta.scope || null,
     taskId: nextRow ? nextRow.id : null,
     taskName: nextRow ? nextRow.name : null,
     taskStatus: nextRow ? nextRow.status : null

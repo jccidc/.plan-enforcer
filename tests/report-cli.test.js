@@ -52,6 +52,45 @@ describe('report-cli', () => {
     assert.match(result.stdout, /rerun T1: npm test/);
   });
 
+  it('shows phase-local scope and query tools for phased source plans', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-scope-cli-'));
+    const enforcerDir = path.join(tempDir, '.plan-enforcer');
+    fs.mkdirSync(enforcerDir, { recursive: true });
+    fs.writeFileSync(path.join(enforcerDir, 'ledger.md'), [
+      '# Ledger',
+      '<!-- schema: v2 -->',
+      '<!-- source: docs/plans/2026-04-21-dotreadme-p1-scaffold-and-preview.md -->',
+      '<!-- tier: structural -->',
+      '<!-- created: 2026-04-21T08:00:00Z -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | One | verified | npm test | | |',
+      '| T2  | Two | pending | | | |',
+      '',
+      '## Decision Log',
+      '| ID | Type | Scope | Reason | Evidence |',
+      '|----|------|-------|--------|----------|',
+      '',
+      '## Reconciliation History',
+      '| Round | Tasks Checked | Gaps Found | Action Taken |',
+      '|-------|---------------|------------|--------------|'
+    ].join('\n'));
+
+    const result = spawnSync(process.execPath, [reportBin, '--active'], {
+      cwd: tempDir,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Scope: phase-local P1/);
+    assert.match(result.stdout, /Query tools:/);
+    assert.match(result.stdout, /plan-enforcer verify/);
+    assert.match(result.stdout, /plan-enforcer chain <taskId>/);
+  });
+
   it('supports explicit --active mode', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-enforcer-report-active-flag-cli-'));
     const enforcerDir = path.join(tempDir, '.plan-enforcer');

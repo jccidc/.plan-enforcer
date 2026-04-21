@@ -285,6 +285,27 @@ describe('ledger-schema-guard — enforced tier', () => {
     assert.equal(r.code, 2);
     assert.match(r.stderr, /T-row|Decision Log/i);
   });
+
+  it('bulk pending -> done sweep => block', () => {
+    const dir = mkProject('enforced', LEDGER_15);
+    const oldStr = [
+      '| T2 | task2 | pending | | | |',
+      '| T3 | task3 | pending | | | |',
+      '| T4 | task4 | pending | | | |',
+      '| T5 | task5 | pending | | | |',
+      '| T6 | task6 | pending | | | |'
+    ].join('\n');
+    const newStr = [
+      '| T2 | task2 | done | src/t2.ts | | |',
+      '| T3 | task3 | done | src/t3.ts | | |',
+      '| T4 | task4 | done | src/t4.ts | | |',
+      '| T5 | task5 | done | src/t5.ts | | |',
+      '| T6 | task6 | pending | | | |'
+    ].join('\n');
+    const r = editLedger(dir, oldStr, newStr);
+    assert.equal(r.code, 2, 'must block bulk pending closure');
+    assert.match(r.stderr, /bulk pending closure|mass-mark/i);
+  });
 });
 
 describe('ledger-schema-guard — structural tier', () => {
@@ -294,6 +315,28 @@ describe('ledger-schema-guard — structural tier', () => {
       file_path: path.join(dir, '.plan-enforcer', 'ledger.md'),
       old_string: '| T6 | task6 | pending | | | |',
       new_string: ''
+    });
+    assert.equal(r.code, 2);
+  });
+
+  it('bulk pending -> done sweep also blocks', () => {
+    const dir = mkProject('structural', LEDGER_15);
+    const r = runHook(dir, 'Edit', {
+      file_path: path.join(dir, '.plan-enforcer', 'ledger.md'),
+      old_string: [
+        '| T2 | task2 | pending | | | |',
+        '| T3 | task3 | pending | | | |',
+        '| T4 | task4 | pending | | | |',
+        '| T5 | task5 | pending | | | |',
+        '| T6 | task6 | pending | | | |'
+      ].join('\n'),
+      new_string: [
+        '| T2 | task2 | done | src/t2.ts | | |',
+        '| T3 | task3 | done | src/t3.ts | | |',
+        '| T4 | task4 | done | src/t4.ts | | |',
+        '| T5 | task5 | done | src/t5.ts | | |',
+        '| T6 | task6 | pending | | | |'
+      ].join('\n')
     });
     assert.equal(r.code, 2);
   });
@@ -309,6 +352,29 @@ describe('ledger-schema-guard — advisory tier', () => {
     });
     assert.equal(r.code, 0);
     assert.match(r.stdout, /unlogged deletion|audit/i);
+  });
+
+  it('bulk pending -> done sweep audits, never blocks', () => {
+    const dir = mkProject('advisory', LEDGER_15);
+    const r = runHook(dir, 'Edit', {
+      file_path: path.join(dir, '.plan-enforcer', 'ledger.md'),
+      old_string: [
+        '| T2 | task2 | pending | | | |',
+        '| T3 | task3 | pending | | | |',
+        '| T4 | task4 | pending | | | |',
+        '| T5 | task5 | pending | | | |',
+        '| T6 | task6 | pending | | | |'
+      ].join('\n'),
+      new_string: [
+        '| T2 | task2 | done | src/t2.ts | | |',
+        '| T3 | task3 | done | src/t3.ts | | |',
+        '| T4 | task4 | done | src/t4.ts | | |',
+        '| T5 | task5 | done | src/t5.ts | | |',
+        '| T6 | task6 | pending | | | |'
+      ].join('\n')
+    });
+    assert.equal(r.code, 0);
+    assert.match(r.stdout, /bulk pending closure|audit/i);
   });
 });
 

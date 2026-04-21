@@ -40,6 +40,18 @@ function summarizePhaseReport(phaseReportPath) {
   ].join('\n');
 }
 
+function summarizeQuerySurfaces() {
+  return [
+    '',
+    'Query tools:',
+    '  audit: plan-enforcer audit --strict',
+    '  verify: plan-enforcer verify',
+    '  chain: plan-enforcer chain <taskId>',
+    '  why: plan-enforcer why <path>',
+    '  export: plan-enforcer export --pretty'
+  ].join('\n');
+}
+
 function resolveStateRoot(ledgerPath) {
   const stateDir = path.dirname(ledgerPath);
   const projectRoot = path.basename(stateDir) === '.plan-enforcer'
@@ -200,7 +212,8 @@ function main(argv = process.argv.slice(2)) {
   const awareness = summarizeAwarenessStatus(ledgerPath, ledger);
   const executed = summarizeExecutedVerificationStatus(ledgerPath, ledger);
   const next = summarizeOperatorNextSteps(ledgerPath, ledger, { includeExecuted: false });
-  process.stdout.write(`${formatStatusReport(ledger)}${next}${executed}${git}${awareness}${phaseReport}\n`);
+  const queries = summarizeQuerySurfaces();
+  process.stdout.write(`${formatStatusReport(ledger)}${queries}${next}${executed}${git}${awareness}${phaseReport}\n`);
 }
 
 if (require.main === module) {
@@ -219,6 +232,7 @@ module.exports = {
   summarizeExecutedVerificationActions,
   summarizeExecutedVerificationStatus,
   summarizeGitStatus,
+  summarizeQuerySurfaces,
   summarizePhaseReport,
   NO_ACTIVE_SESSION_MESSAGE
 };

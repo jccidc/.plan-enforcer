@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { parseLedger, parseMetadata, parseTaskRows } = require('./ledger-parser');
-const { NO_ACTIVE_SESSION_MESSAGE, summarizeAwarenessStatus, summarizeExecutedVerificationStatus, summarizeGitStatus, summarizeOperatorNextSteps, summarizePhaseReport } = require('./status-cli');
+const { NO_ACTIVE_SESSION_MESSAGE, summarizeAwarenessStatus, summarizeExecutedVerificationStatus, summarizeGitStatus, summarizeOperatorNextSteps, summarizePhaseReport, summarizeQuerySurfaces } = require('./status-cli');
 const { formatArchiveReport } = require('./archive');
 
 function printUsage() {
@@ -53,6 +53,7 @@ function formatActiveReport(ledgerPath) {
   const lines = [
     '---🛡 Plan Enforcer Active Report --------------------',
     ` Source: ${meta.source}`,
+    ...(meta.scope ? [` Scope: ${meta.scope.description}`] : []),
     ` Tier: ${meta.tier}  |  Started: ${meta.created}`,
     ` Tasks: ${stats.doneCount}/${stats.total} done  |  Verified: ${stats.counts.verified}  |  Remaining: ${stats.remaining}`,
     ` Current: ${current ? `${current.id} - ${current.name}` : 'none'}  |  Drift: ${stats.drift}`,
@@ -92,7 +93,8 @@ function formatActiveReport(ledgerPath) {
     `  discuss packet: ${formatDisplayPath(discussPath)}${fs.existsSync(discussPath) ? '' : ' (missing)'}`,
     `  awareness: ${formatDisplayPath(awarenessPath)}${fs.existsSync(awarenessPath) ? '' : ' (missing)'}`
   ].join('\n');
-  return `${lines.join('\n')}${truth}${next}${executed}${git}${awareness}${phaseReport}\n-----------------------------------------------------`;
+  const queries = summarizeQuerySurfaces();
+  return `${lines.join('\n')}${truth}${queries}${next}${executed}${git}${awareness}${phaseReport}\n-----------------------------------------------------`;
 }
 
 function main(argv = process.argv.slice(2)) {

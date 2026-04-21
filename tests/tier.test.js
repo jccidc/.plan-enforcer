@@ -20,8 +20,8 @@ describe('tier constants', () => {
   it('exports three tiers', () => {
     assert.deepEqual(TIERS, ['advisory', 'structural', 'enforced']);
   });
-  it('exports seven violation types', () => {
-    assert.deepEqual(VIOLATIONS, ['unplanned_edit', 'unlogged_delete', 'missing_evidence', 'missing_awareness_link', 'unverified_awareness_quote', 'orphan_intent', 'phase_pivot']);
+  it('exports eight violation types', () => {
+    assert.deepEqual(VIOLATIONS, ['unplanned_edit', 'unlogged_delete', 'missing_evidence', 'bulk_task_closure', 'missing_awareness_link', 'unverified_awareness_quote', 'orphan_intent', 'phase_pivot']);
   });
   it('exports four action types', () => {
     assert.deepEqual(ACTIONS, ['allow', 'audit', 'warn', 'block']);
@@ -40,6 +40,7 @@ describe('decide — awareness-aware matrix', () => {
       unplanned_edit: 'audit',
       unlogged_delete: 'audit',
       missing_evidence: 'audit',
+      bulk_task_closure: 'audit',
       missing_awareness_link: 'audit',
       unverified_awareness_quote: 'audit',
       orphan_intent: 'audit',
@@ -49,6 +50,7 @@ describe('decide — awareness-aware matrix', () => {
       unplanned_edit: 'warn',
       unlogged_delete: 'block',
       missing_evidence: 'block',
+      bulk_task_closure: 'block',
       missing_awareness_link: 'warn',
       unverified_awareness_quote: 'warn',
       orphan_intent: 'warn',
@@ -58,6 +60,7 @@ describe('decide — awareness-aware matrix', () => {
       unplanned_edit: 'block',
       unlogged_delete: 'block',
       missing_evidence: 'block',
+      bulk_task_closure: 'block',
       missing_awareness_link: 'block',
       unverified_awareness_quote: 'block',
       orphan_intent: 'block',
@@ -174,6 +177,7 @@ describe('formatViolation', () => {
     assert.equal(formatViolation('unplanned_edit'), 'unplanned edit');
     assert.equal(formatViolation('unlogged_delete'), 'unlogged deletion');
     assert.equal(formatViolation('missing_evidence'), 'missing evidence on verified row');
+    assert.equal(formatViolation('bulk_task_closure'), 'bulk pending closure');
     assert.equal(formatViolation('missing_awareness_link'), 'missing awareness link on verified row');
     assert.equal(formatViolation('unverified_awareness_quote'), 'unverified awareness quote');
     assert.equal(formatViolation('orphan_intent'), 'orphan user intent');

@@ -32,7 +32,7 @@ const REQUIRED_RUNTIME_MODULES = [
 ];
 
 function seedInstalledSurface(homeDir, opts = {}) {
-  const hooks = opts.hooks || ['session-start.js', 'statusline.js', 'user-message.js'];
+  const hooks = opts.hooks || ['session-start.js', 'statusline.js', 'user-message.js', 'delete-guard.js', 'ledger-schema-guard.js', 'evidence-gate.js'];
   const runtimeModules = opts.runtimeModules || REQUIRED_RUNTIME_MODULES;
   const skillsDir = path.join(homeDir, '.claude', 'skills');
   REQUIRED_SKILLS.forEach((skill) => fs.mkdirSync(path.join(skillsDir, skill), { recursive: true }));
@@ -77,7 +77,12 @@ describe('doctor-cli', () => {
     ].join('\n'));
     writeProjectSettings(projectDir, {
       SessionStart: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/session-start.js' }] }],
-      UserPromptSubmit: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/user-message.js' }] }]
+      UserPromptSubmit: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/user-message.js' }] }],
+      PreToolUse: [
+        { hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/delete-guard.js' }] },
+        { hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/ledger-schema-guard.js' }] }
+      ],
+      PostToolUse: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/evidence-gate.js' }] }]
     });
 
     try {
@@ -155,7 +160,12 @@ describe('doctor-cli', () => {
     seedInstalledSurface(homeDir);
     writeProjectSettings(projectDir, {
       SessionStart: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/session-start.js' }] }],
-      UserPromptSubmit: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/user-message.js' }] }]
+      UserPromptSubmit: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/user-message.js' }] }],
+      PreToolUse: [
+        { hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/delete-guard.js' }] },
+        { hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/ledger-schema-guard.js' }] }
+      ],
+      PostToolUse: [{ hooks: [{ type: 'command', command: 'node ~/.claude/skills/plan-enforcer/hooks/evidence-gate.js' }] }]
     });
 
     try {

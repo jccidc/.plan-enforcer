@@ -18,6 +18,8 @@ const FORWARD_COMPLETIONS = new Set([
   'in-progress->done',
   'done->verified'
 ]);
+const MASS_PENDING_CLOSURE_TARGETS = new Set(['done', 'skipped', 'blocked', 'superseded']);
+const MASS_PENDING_CLOSURE_THRESHOLD = 4;
 
 function extractEdits(toolContext) {
   if (!toolContext || !toolContext.tool_input) return [];
@@ -78,6 +80,32 @@ function statusTransitions(oldStr, newStr) {
     }
   }
   return transitions;
+}
+
+function detectBulkPendingClosureFromEdits(edits, opts = {}) {
+  if (!Array.isArray(edits) || edits.length === 0) {
+    return { bulk: false, ids: [], reason: null };
+  }
+  const threshold = Number.isFinite(opts.threshold) ? opts.threshold : MASS_PENDING_CLOSURE_THRESHOLD;
+  const ids = [];
+  for (const edit of edits) {
+    const transitions = statusTransitions(edit.old, edit.new);
+    for (const [id, transition] of Object.entries(transitions)) {
+      if (transition.from !== 'pending') continue;
+      if (!MASS_PENDING_CLOSURE_TARGETS.has(transition.to)) continue;
+      if (ids.includes(id)) continue;
+      ids.push(id);
+    }
+  }
+  if (ids.length < threshold) {
+    return { bulk: false, ids: [], reason: null };
+  }
+  const label = ids.length > 6 ? `${ids.slice(0, 6).join(', ')}, +${ids.length - 6} more` : ids.join(', ');
+  return {
+    bulk: true,
+    ids,
+    reason: `${ids.length} pending row(s) were moved straight to terminal statuses in one ledger edit [${label}]. Reprioritize by changing the active row and leave untouched rows pending; do not mass-mark them done/skipped.`
+  };
 }
 
 function isForwardCompletion(transition) {
@@ -149,6 +177,8 @@ function detectPartialLedgerEdit(toolContext) {
 
 module.exports = {
   detectPartialLedgerEdit,
+  detectBulkPendingClosureFromEdits,
+  MASS_PENDING_CLOSURE_THRESHOLD,
   // exported for tests
   parseTaskRow,
   statusTransitions,

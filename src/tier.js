@@ -14,6 +14,7 @@
 //   unplanned_edit     — Edit/Write to a file not in the planned set
 //   unlogged_delete    — deletion without a typed `delete` D-row
 //   missing_evidence   — row flipped to verified without structural evidence
+//   bulk_task_closure  — many pending rows terminalized in one ledger edit
 //   phase_pivot        — tool call against a phase that isn't active
 //
 // Actions:
@@ -31,6 +32,7 @@ const VIOLATIONS = Object.freeze([
   'unplanned_edit',
   'unlogged_delete',
   'missing_evidence',
+  'bulk_task_closure',
   'missing_awareness_link',
   'unverified_awareness_quote',
   'orphan_intent',
@@ -47,6 +49,7 @@ const MATRIX = Object.freeze({
     unplanned_edit: 'audit',
     unlogged_delete: 'audit',
     missing_evidence: 'audit',
+    bulk_task_closure: 'audit',
     missing_awareness_link: 'audit',
     unverified_awareness_quote: 'audit',
     orphan_intent: 'audit',
@@ -56,6 +59,7 @@ const MATRIX = Object.freeze({
     unplanned_edit: 'warn',
     unlogged_delete: 'block',
     missing_evidence: 'block',
+    bulk_task_closure: 'block',
     missing_awareness_link: 'warn',
     unverified_awareness_quote: 'warn',
     orphan_intent: 'warn',
@@ -65,6 +69,7 @@ const MATRIX = Object.freeze({
     unplanned_edit: 'block',
     unlogged_delete: 'block',
     missing_evidence: 'block',
+    bulk_task_closure: 'block',
     missing_awareness_link: 'block',
     unverified_awareness_quote: 'block',
     orphan_intent: 'block',
@@ -105,7 +110,7 @@ function readTier(enforcerDir) {
  * Returns the action plus a human-readable message the hook can print.
  *
  * @param {'advisory' | 'structural' | 'enforced'} tier
- * @param {'unplanned_edit' | 'unlogged_delete' | 'missing_evidence' | 'missing_awareness_link' | 'unverified_awareness_quote' | 'orphan_intent' | 'phase_pivot'} violation
+ * @param {'unplanned_edit' | 'unlogged_delete' | 'missing_evidence' | 'bulk_task_closure' | 'missing_awareness_link' | 'unverified_awareness_quote' | 'orphan_intent' | 'phase_pivot'} violation
  * @param {{ detail?: string }} [ctx] - optional context merged into the message
  * @returns {{ action: 'allow' | 'audit' | 'warn' | 'block', message: string }}
  */
@@ -157,6 +162,7 @@ function formatViolation(violation) {
     case 'unplanned_edit': return 'unplanned edit';
     case 'unlogged_delete': return 'unlogged deletion';
     case 'missing_evidence': return 'missing evidence on verified row';
+    case 'bulk_task_closure': return 'bulk pending closure';
     case 'missing_awareness_link': return 'missing awareness link on verified row';
     case 'unverified_awareness_quote': return 'unverified awareness quote';
     case 'orphan_intent': return 'orphan user intent';

@@ -31,7 +31,7 @@ const REQUIRED_RUNTIME_MODULES = [
 
 const REQUIRED_HOOK_FILES = {
   advisory: [],
-  structural: ['session-start.js', 'user-message.js'],
+  structural: ['session-start.js', 'user-message.js', 'delete-guard.js', 'ledger-schema-guard.js', 'evidence-gate.js'],
   enforced: [
     'session-start.js',
     'user-message.js',
@@ -48,7 +48,10 @@ const REQUIRED_HOOK_COMMANDS = {
   advisory: [],
   structural: [
     { event: 'SessionStart', fragment: 'session-start.js' },
-    { event: 'UserPromptSubmit', fragment: 'user-message.js' }
+    { event: 'UserPromptSubmit', fragment: 'user-message.js' },
+    { event: 'PreToolUse', fragment: 'delete-guard.js' },
+    { event: 'PreToolUse', fragment: 'ledger-schema-guard.js' },
+    { event: 'PostToolUse', fragment: 'evidence-gate.js' }
   ],
   enforced: [
     { event: 'SessionStart', fragment: 'session-start.js' },

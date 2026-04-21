@@ -19,6 +19,7 @@ const fs = require('fs');
 const path = require('path');
 const { decide, readTier, shouldBlock } = require('../src/tier');
 const { detectAcrossEdits } = require('../src/ledger-row-removal');
+const { detectBulkPendingClosureFromEdits } = require('../src/partial-ledger-edit');
 
 const GUARDED_TOOLS = new Set(['Edit', 'MultiEdit', 'Write', 'Bash']);
 
@@ -166,6 +167,16 @@ function main() {
 
   const edits = toEdits(ctx.tool_name, ctx.tool_input, ledgerPath);
   if (edits.length === 0) return emit('allow', '');
+
+  const bulkClosure = detectBulkPendingClosureFromEdits(edits);
+  if (bulkClosure.bulk) {
+    const tier = readTier(path.join(projectRoot, '.plan-enforcer'));
+    const { action, message } = decide(tier, 'bulk_task_closure', {
+      detail: bulkClosure.reason
+    });
+    emit(action, message);
+    return;
+  }
 
   const { uncovered, removed } = detectAcrossEdits(edits);
   if (uncovered.length === 0) return emit('allow', '');

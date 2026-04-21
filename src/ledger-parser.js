@@ -8,6 +8,20 @@
 const VALID_D_TYPES = new Set(['deviation', 'unplanned', 'delete', 'pivot', 'override']);
 const TASK_ID_PATTERN = 'T\\d+[A-Za-z0-9]*';
 
+function derivePlanScope(source) {
+  const normalized = String(source || '').replace(/\\/g, '/');
+  const match = normalized.match(/(?:^|[\/._-])(?:phase[-_ ]*|p)(0*[1-9]\d*)(?=$|[\/._-])/i);
+  if (!match) return null;
+  const phaseNumber = Number.parseInt(match[1], 10);
+  if (!Number.isFinite(phaseNumber) || phaseNumber < 1) return null;
+  const shortLabel = `P${phaseNumber}`;
+  return {
+    kind: 'phase',
+    shortLabel,
+    description: `phase-local ${shortLabel}`
+  };
+}
+
 /**
  * Split a pipe-table row into its content cells. Strips leading/trailing empty
  * cells from the split, preserves interior content.
@@ -200,7 +214,8 @@ function parseMetadata(ledger) {
   const tier = (ledger.match(/<!-- tier:\s*(.+?)\s*-->/) || [])[1] || 'unknown';
   const created = (ledger.match(/<!-- created:\s*(.+?)\s*-->/) || [])[1] || 'unknown';
   const schema = ledger.includes('<!-- schema: v2 -->') ? 'v2' : 'v1';
-  return { source, tier, created, schema };
+  const scope = derivePlanScope(source);
+  return { source, tier, created, schema, scope };
 }
 
 function formatStatusReport(ledger) {
@@ -214,6 +229,7 @@ function formatStatusReport(ledger) {
   const lines = [
     '---🛡 Plan Enforcer Status ---------------------------',
     ` ${stats.doneCount}/${stats.total} tasks  |  ${stats.counts.verified} verified  |  ${stats.counts.skipped + stats.counts.superseded} skipped  |  ${stats.counts.blocked} blocked`,
+    ...(meta.scope ? [` Scope: ${meta.scope.description}  |  Source: ${meta.source}`] : []),
     ` Tier: ${meta.tier}  |  Drift: ${stats.drift}  |  Current: ${current ? current.id : 'none'}`,
     '-----------------------------------------------------'
   ];
@@ -297,6 +313,7 @@ function formatLogsReport(ledger) {
 }
 
 module.exports = {
+  derivePlanScope,
   VALID_D_TYPES,
   formatLogsReport,
   formatStatusReport,

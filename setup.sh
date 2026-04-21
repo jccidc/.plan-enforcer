@@ -198,13 +198,15 @@ if (tier === 'structural' || tier === 'enforced') {
   addHook('SessionStart', sessionCmd, { statusMessage: 'Plan Enforcer: checking for active plan...' });
   addHook('UserPromptSubmit', userPromptCmd);
 }
-if (tier === 'enforced') {
+if (tier === 'structural' || tier === 'enforced') {
+  addHook('PreToolUse', deleteGuardCmd);
+  addHook('PreToolUse', ledgerSchemaGuardCmd);
   addHook('PostToolUse', evidenceCmd);
+}
+if (tier === 'enforced') {
   addHook('PostToolUse', postCmd);
   addHook('SessionEnd', endCmd);
   addHook('PreToolUse', chainGuardCmd);
-  addHook('PreToolUse', deleteGuardCmd);
-  addHook('PreToolUse', ledgerSchemaGuardCmd);
 }
 
 fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
@@ -213,6 +215,9 @@ console.log(`  statusLine: ${statuslineCmd}`);
 if (tier === 'structural') {
   console.log(`  SessionStart: ${sessionCmd}`);
   console.log(`  UserPromptSubmit: ${userPromptCmd}`);
+  console.log(`  PreToolUse:   ${deleteGuardCmd}`);
+  console.log(`  PreToolUse:   ${ledgerSchemaGuardCmd}`);
+  console.log(`  PostToolUse:  ${evidenceCmd}`);
 } else if (tier === 'enforced') {
   console.log(`  SessionStart: ${sessionCmd}`);
   console.log(`  UserPromptSubmit: ${userPromptCmd}`);
@@ -260,7 +265,7 @@ write_config
 
 HOOKS_SUMMARY="statusLine"
 if [[ "$TIER" == "structural" ]]; then
-  HOOKS_SUMMARY="statusLine + SessionStart + UserPromptSubmit"
+  HOOKS_SUMMARY="statusLine + SessionStart + UserPromptSubmit + PreToolUse(delete/ledger) + PostToolUse(evidence)"
 elif [[ "$TIER" == "enforced" ]]; then
   HOOKS_SUMMARY="statusLine + SessionStart + UserPromptSubmit + PreToolUse + PostToolUse + SessionEnd"
 fi

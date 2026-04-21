@@ -109,6 +109,27 @@ describe('statusline hook', () => {
     assert.match(result.stdout, /\[ENFORCER: 2\/3\]/);
   });
 
+  it('prefixes phase-local task progress when the source plan is a phase file', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'ledger.md'), [
+      '# Plan Enforcer Ledger',
+      '<!-- source: docs/plans/2026-04-21-dotreadme-p1-scaffold-and-preview.md -->',
+      '',
+      '## Task Ledger',
+      '',
+      '| ID  | Task | Status | Evidence | Chain | Notes |',
+      '|-----|------|--------|----------|-------|-------|',
+      '| T1  | one  | verified | done | | |',
+      '| T2  | two  | pending | | | |'
+    ].join('\n'));
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /\[ENFORCER: P1 1\/2\]/);
+  });
+
   it('delegates to prior statusline command when present', () => {
     const fixture = mkHookFixture();
     const project = path.join(fixture, 'project');
