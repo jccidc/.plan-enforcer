@@ -144,7 +144,7 @@ describe('statusline hook', () => {
       CLAUDE_CONFIG_DIR: claudeDir
     });
     assert.equal(result.status, 0);
-    assert.match(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), /\[ENFORCER: 1-DISCUSS\] \[AUTO-CHAIN\]/);
+    assert.equal(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), '[AUTO-CHAIN]');
   });
 
   it('pads caption rows when the base statusline emits multiple lines', () => {
@@ -167,6 +167,32 @@ describe('statusline hook', () => {
     const clean = result.stdout.replace(/\x1B\[[0-9;]*m/g, '');
     assert.equal(result.status, 0);
     assert.match(clean, /^\[ENFORCER: 1-DISCUSS\] \[BASE\]\n\s+caption$/);
+  });
+
+  it('lets an enforcer-aware base statusline own the segment and captions', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    const baseScript = path.join(fixture, 'base-enforcer-statusline.js');
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's1'
+    }, null, 2));
+    fs.writeFileSync(baseScript, [
+      'const file = ".plan-enforcer/statusline-state.json";',
+      'if (process.env.PLAN_ENFORCER_STATUSLINE_CHAINED === "1") process.exit(9);',
+      'process.stdout.write("[ENFORCER: 1-DISCUSS] [BASE]\\ncaption")'
+    ].join('\n'));
+    fs.writeFileSync(
+      path.join(fixture, 'hooks', '.statusline-base-command'),
+      `${process.execPath} "${baseScript.replace(/\\/g, '/')}"\n`
+    );
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
+    const clean = result.stdout.replace(/\x1B\[[0-9;]*m/g, '');
+    assert.equal(result.status, 0);
+    assert.equal(clean, '[ENFORCER: 1-DISCUSS] [BASE]\ncaption');
   });
 
   it('ignores explicit stage when the current session differs', () => {

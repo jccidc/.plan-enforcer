@@ -41,6 +41,24 @@ function looksLikePlanEnforcerWrapper(filePath) {
   }
 }
 
+function extractScriptPath(command) {
+  const quoted = String(command || '').match(/"([^"]+\.js)"/);
+  if (quoted && quoted[1]) return quoted[1];
+  const bare = String(command || '').match(/(?:^|\s)([^\s"]+\.js)(?:\s|$)/);
+  return bare && bare[1] ? bare[1] : '';
+}
+
+function baseCommandOwnsEnforcer(command) {
+  const scriptPath = extractScriptPath(command);
+  if (!scriptPath) return false;
+  try {
+    const content = fs.readFileSync(scriptPath, 'utf8');
+    return /statusline-state\.json|readEnforcerState|PLAN_ENFORCER_STATUSLINE_CHAINED/i.test(content);
+  } catch (_error) {
+    return false;
+  }
+}
+
 function discoverBaseCommand() {
   const claudeDir = resolveClaudeDir();
   if (!claudeDir) return '';
@@ -60,16 +78,17 @@ function discoverBaseCommand() {
   return '';
 }
 
-function runBaseCommand(command, rawInput) {
+function runBaseCommand(command, rawInput, opts = {}) {
   if (!command) return '';
   if (/plan-enforcer[\\/]+hooks[\\/]+statusline\.js/i.test(command)) return '';
   try {
+    const env = { ...process.env };
+    if (!opts.allowBaseEnforcer) {
+      env.PLAN_ENFORCER_STATUSLINE_CHAINED = '1';
+    }
     const result = spawnSync(command, {
       shell: true,
-      env: {
-        ...process.env,
-        PLAN_ENFORCER_STATUSLINE_CHAINED: '1'
-      },
+      env,
       input: rawInput,
       encoding: 'utf8',
       timeout: 2000,
@@ -135,7 +154,14 @@ function main() {
   const baseCommand = process.env.PLAN_ENFORCER_STATUSLINE_CHAINED === '1'
     ? ''
     : (readBaseCommand() || discoverBaseCommand());
-  const baseOutput = runBaseCommand(baseCommand, rawInput);
+  const baseOwnsEnforcer = baseCommandOwnsEnforcer(baseCommand);
+  const baseOutput = runBaseCommand(baseCommand, rawInput, {
+    allowBaseEnforcer: baseOwnsEnforcer
+  });
+  if (baseOwnsEnforcer && baseOutput) {
+    process.stdout.write(baseOutput);
+    return;
+  }
   const merged = mergeOutputs(segment, baseOutput);
   if (merged) {
     process.stdout.write(merged);
