@@ -2,6 +2,12 @@
 
 All notable changes to Plan Enforcer are captured here.
 
+## [0.1.1] -- 2026-04-22
+
+### Fixed
+
+- **Statusline stage no longer goes stale.** `inferStatuslineState` now requires a ledger or discuss packet on disk before trusting `statusline-state.json` to name the current stage. Previously, if a plan closed (or was abandoned via the preflight-refuse path, or the discuss packet was manually cleaned up), the `[ENFORCER: 1-DISCUSS]` / `[2-DRAFT]` / `[3-EXECUTE]` tag could persist in the statusline across sessions because nothing cleared the state file. The hook is now defensive: no backing artifact = no stage rendered. Added `tests/statusline-stage-clears.test.js` covering the four permutations (stale state alone, discuss witness, ledger witness, discuss-then-deleted).
+
 ## [0.1.0] -- 2026-04-22
 
 First public release.

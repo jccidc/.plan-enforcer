@@ -295,15 +295,28 @@ function stateMatchesSession(state, opts = {}) {
 
 function inferStatuslineState(opts = {}) {
   const paths = resolveStatuslinePaths(opts);
+
+  // 1. Ledger on disk is authoritative -- derive stage from it.
   if (fs.existsSync(paths.ledgerPath)) {
     try {
       return buildTaskStatuslineState(fs.readFileSync(paths.ledgerPath, 'utf8'));
     } catch (_error) {}
   }
-  const explicit = readStatuslineState(paths);
-  if (stateMatchesSession(explicit, opts)) return explicit;
-  const localDiscussState = readDiscussPacketState(paths);
-  if (localDiscussState) return localDiscussState;
+
+  // 2. No ledger: only surface a stage if a discuss packet witnesses
+  //    active authorship work. statusline-state.json alone is not
+  //    sufficient -- without a backing artifact, any label in that file
+  //    is stale (plan closed, abandoned, or the packet was manually
+  //    cleaned up but the state file was never cleared).
+  const localHasDiscuss = fs.existsSync(paths.discussPath) || fs.existsSync(paths.legacyDiscussPath);
+  if (localHasDiscuss) {
+    const explicit = readStatuslineState(paths);
+    if (stateMatchesSession(explicit, opts)) return explicit;
+    const localDiscussState = readDiscussPacketState(paths);
+    if (localDiscussState) return localDiscussState;
+  }
+
+  // 3. Same witness requirement applies to bridged-session paths.
   const bridgedPaths = resolveBridgedStatuslinePaths(opts);
   if (bridgedPaths && normalizePathForCompare(bridgedPaths.projectRoot) !== normalizePathForCompare(paths.projectRoot)) {
     if (fs.existsSync(bridgedPaths.ledgerPath)) {
@@ -311,11 +324,15 @@ function inferStatuslineState(opts = {}) {
         return buildTaskStatuslineState(fs.readFileSync(bridgedPaths.ledgerPath, 'utf8'));
       } catch (_error) {}
     }
-    const bridgedState = readStatuslineState(bridgedPaths);
-    if (stateMatchesSession(bridgedState, opts)) return bridgedState;
-    const bridgedDiscussState = readDiscussPacketState(bridgedPaths);
-    if (bridgedDiscussState) return bridgedDiscussState;
+    const bridgedHasDiscuss = fs.existsSync(bridgedPaths.discussPath) || fs.existsSync(bridgedPaths.legacyDiscussPath);
+    if (bridgedHasDiscuss) {
+      const bridgedState = readStatuslineState(bridgedPaths);
+      if (stateMatchesSession(bridgedState, opts)) return bridgedState;
+      const bridgedDiscussState = readDiscussPacketState(bridgedPaths);
+      if (bridgedDiscussState) return bridgedDiscussState;
+    }
   }
+
   return null;
 }
 
