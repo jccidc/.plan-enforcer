@@ -37,8 +37,6 @@ layer underneath it:
 No matter how work started, the closeout band is the same:
 
 - [Verify, audit, report](verify-audit-report.md)
-- [Final truth](../proof/final-truth.md)
-- [Closure surface](../proof/closure.md)
 
 ## 5. Resume continuity
 

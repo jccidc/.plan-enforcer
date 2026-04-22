@@ -14,13 +14,6 @@ touring.
 - [Dogfood proof](dogfood-proof.md)
 - [Roadmap regression](roadmap-regression.md)
 
-## Product truth surfaces
-
-- [Final truth](final-truth.md)
-- [Closure surface](closure.md)
-- [Lineage surface](lineage.md)
-- [Dossier surface](dossier.md)
-
 ## Operator path
 
 - [Public examples](../examples/README.md)
