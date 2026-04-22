@@ -9,7 +9,7 @@
 Plan Enforcer is the control and accountability layer beneath AI-assisted implementation. It gives drifting agent work a real ledger, a real decision trail, and a real chain of custody from original ask to landed repo state.
 
 Keep your planner. Keep your IDE. Keep your workflow.
-
+                
 Plan Enforcer exists to make agent work **fidelity-preserving, accountable, and cold-reviewable**.
 
 ![Before and after: on the left, a wavy drift line shows an ask that slides into a vague landed state; on the right, five crisp stage pills -- ask, plan, exec, verify, land -- connect in a clean chain.](docs/assets/intro-drift-vs-fidelity.svg)
@@ -102,7 +102,17 @@ Plan Enforcer earns its keep when the cost of losing a step is real. It is overh
 
 ---
 
-## 06 / Claim, Stated Narrowly
+## 06 / Benchmarks
+
+Across 26 retained scorecards in the framework-comparison lab, Plan Enforcer carries zero integrity-penalty points -- no silent plan mutation, no false completion, no silent skip, no missing evidence -- while GSD accumulates three and Superpowers ten. On the carryover ladder, where scenarios grow from small asks through large mutating contracts, Plan Enforcer is all-pass from `H` through `N`; GSD and Superpowers are partial on every rung.
+
+![Two-panel benchmark summary: left panel shows integrity penalty points with Plan Enforcer at 0, GSD at 3, Superpowers at 10 (lower is better); right panel shows carryover ladder total with Plan Enforcer at 276, GSD at 205, Superpowers at 209 (higher is better).](docs/assets/benchmark-moats.svg)
+
+> Integrity penalties are judge-scored hits per retained scorecard. Carryover is the ask-fidelity count that survives through mutation, interruption, resume, and re-review. Source: [docs/proof/benchmark-side-by-side.md](docs/proof/benchmark-side-by-side.md).
+
+---
+
+## 07 / Claim, Stated Narrowly
 
 Not better prompting. Not a generative agent. Not a plan-writer. Plan Enforcer is the chain of custody underneath whatever generative process you already use -- the layer that keeps an AI implementation honest when it has to survive scrutiny, mutation, interruption, and final review.
 
