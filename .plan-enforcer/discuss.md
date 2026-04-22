@@ -1,172 +1,165 @@
-# Closure Receipt Feature — First-Class Plan Enforcer
+# Abandon-Plan Feature — First-Class /plan-enforcer-abandon
 
 ## Source Ask
 
-> 100% make it skill level. and a command / plan-enforcer-recipt to call whenever
+> sometimes I'll be in the middle of a plan or whatever and I changed my mind right... There really is no slash command to cleanly archive that plan. Any thoughts on this
 
-> Wait, what made you generate the closure recipt? thats awesome
+> six months down the road I changed my mind and I'm like oh I wonder what that plan was. The fact that I can have an archive and you know look up what that plan was is probably pretty important too
 
-User confirmations on three load-bearing calls (a/b/a):
-- trigger: hook-based auto-emission when last non-terminal row flips to terminal
-- filename: `closure-<plan-slug>-<utc-iso>.md` -- every emission preserved as its own file (audit purposes)
-- "plan closed" definition: all rows in TERMINAL_STATUSES (verified / skipped / blocked / superseded)
-
-Template content default accepted: standardized sections derived from ledger structure, plan-specific extras (must-haves, custom lint results) added opportunistically when present in the plan, not required.
+User confirmed "build the full feature" after a brief discussion of alternatives. Walkthrough of pain: user has hit this personally and I hit it manually earlier today when pivoting from the README rebuild plan to the closure-receipt-feature plan (D6 in the closed ledger captures the manual dance).
 
 ## Normalized Goal
 
-The closure-receipt artifact today is per-plan: it only exists when a plan author remembers to add a "write closure receipt" task. That makes it a pattern, not a feature -- bad plans forget it, runs without one are indistinguishable from runs that didn't happen. Promote receipt emission to the runtime so every closed plan leaves an audit-grade summary on disk, regardless of whether the plan asked for it.
+Plan Enforcer has no clean way to abandon an in-flight plan. Today it requires the user (or me) to manually add a Decision Log row covering all non-terminal T-IDs, rewrite the ledger, write an archive file, and fight the schema-guard along the way. Collapse that into one command: `plan-enforcer-abandon --reason "<why>"` marks remaining rows superseded, logs the pivot, triggers the shipped auto-emission hook so a closure receipt fires, archives the active ledger, and clears the active slot. The archive must stay human-readable and discoverable months later so "I wonder what that plan was" is answerable without git archaeology.
 
 ## Non-Negotiables
 
-- NN1: receipts emit automatically when a plan closes -- no plan-author opt-in required
-- NN2: a `plan-enforcer-receipt` CLI / `/plan-enforcer-receipt` skill command exists for explicit on-demand emission against the current ledger
-- NN3: every receipt is preserved as its own file (`closure-<plan-slug>-<utc-iso>.md`); never overwritten, never silently coalesced
-- NN4: receipts land in `.plan-enforcer/proof/` (existing convention preserved)
-- NN5: enforcement is hook-based (matches the project's "enforce via hooks not cooperative prompts" philosophy from CLAUDE.md / I2)
-- NN6: receipt content is derived from ledger state -- no plan-author authoring required for the standard sections
-- NN7: ASCII-only inside generated receipts (CLAUDE.md global rule); no Unicode box-drawing
-- NN8: forbidden-language rule (CLAUDE.md) applies to any user-facing copy in receipts and CLI output
-- NN9: receipts must NOT introduce new dependencies (system Node only, like every other CLI in this repo)
-- NN10: existing skill / CLI / hook conventions preserved -- new code matches the shape of `report-cli.js`, `status-cli.js`, `plan-enforcer-status` skill, etc.
+- NN1: single command (`plan-enforcer-abandon` / `/plan-enforcer-abandon`) does the whole flow atomically -- no manual Decision-Log authoring, no manual archive writing
+- NN2: `--reason "<text>"` is REQUIRED -- the command refuses to run without a reason, same discipline the Decision Log enforces on every row
+- NN3: integrates with the shipped receipt feature -- the plan-close.js hook's auto-emission must fire, the resulting receipt joins the walkable Prior-closure chain for that plan-slug
+- NN4: archive file lands at `.plan-enforcer/archive/<iso>-<slug>.md` matching the convention already established by `src/archive.js` and the existing archive entry
+- NN5: archived file retains the full human-readable ledger format (scoreboard, task table with every row and its final status, Decision Log including the abandon entry, reconciliation history, archive-frontmatter noting the abandonment)
+- NN6: archives must be easy to browse later -- `plan-enforcer-report` with no args already lists/reads archive files, this feature must not regress that path
+- NN7: no new dependencies; reuse existing helpers in `src/archive.js` (`archiveLedger`, `buildArchiveFilename`, `parseArchiveFile`, `listArchiveReports`)
+- NN8: ASCII only inside CLI output and skill prose (CLAUDE.md global rule)
+- NN9: forbidden-language rule (CLAUDE.md) applies to any new committed file
+- NN10: existing conventions preserved -- CLI / bin / skill / hook patterns match the shape of the receipt feature we just shipped
 
 ## Hidden Contract Candidates
 
-- HC1: the receipt is itself a Plan Enforcer artifact and should be replayable -- a future operator reading it should be able to reconstruct the plan's outcome without re-reading ledger.md
-- HC2: receipts are durable audit trail; should be tracked in git by default (not gitignored under `.plan-enforcer/.*`)
-- HC3: the auto-emission hook must be idempotent for the same closed-state ledger -- accidental re-saves of the same ledger should not spam new receipts. The "first transition into all-terminal" event triggers exactly one auto-emission per close.
-- HC4: explicit `plan-enforcer-receipt` invocation is independent -- always emits a fresh file regardless of close state, lets users snapshot mid-flight (with appropriate "plan still open" framing inside the receipt)
-- HC5: receipt content must survive the playground test -- accurate even if the receipt is the only file a reviewer reads
-- HC6: when the last non-terminal row flips to a terminal state, the hook reads the ledger AFTER the edit committed (PostToolUse), not the pre-edit state
-- HC7: existing "session close" behavior (`hooks/session-end.js`) stays unchanged; new receipt logic is a separate emission, not a replacement for the session-end gate
-- HC8: each receipt references its prior closure receipt for the same plan (if one exists in `.plan-enforcer/proof/`), turning the audit trail from "N loose files in a directory" into a walkable chain. Latest receipt links to the immediately-prior one; the first-ever closure for a plan writes "Prior closure -- none (first close of this plan)". Mirrors the project's chain-of-custody thesis applied to its own audit artifacts.
+- HC1: idempotence -- running `plan-enforcer-abandon` twice in a row against the same state must NOT double-archive or emit two abandonment receipts; the second invocation errors cleanly because there is no active plan to abandon
+- HC2: safety against "accidental abandon" -- the command must require `--reason`, and ideally also print a short "this will abandon N pending tasks, confirm" prompt (or `--force` to skip). Abandoning is cheap to recover from (archive preserves everything) but still deserves a guard.
+- HC3: audit integrity -- after abandonment, the archived ledger file must be sufficient alone to reconstruct what the plan was, what was verified before abandon, which rows were not done, and why the user pulled the cord. No "you had to be there" gaps.
+- HC4: discoverable archive -- `.plan-enforcer/archive/` directory listing + filename convention + frontmatter inside each archive must let a six-months-later user run `plan-enforcer-report` (or `ls` + grep) and find the plan by slug, date, or reason keyword
+- HC5: abandonment receipt chain -- the emitted closure receipt goes to `.plan-enforcer/proof/closure-<slug>-<iso>.md` as usual; its "Prior closure" link is whatever the plan-slug had before; the plan-slug stays the same so the chain survives
+- HC6: active-plan precondition -- abandon refuses if no active plan (no `.plan-enforcer/ledger.md`) OR if the plan is already fully closed (no non-terminal rows). Edge case handled with a clear error message.
+- HC7: fresh-ledger ready -- after abandonment, `.plan-enforcer/ledger.md` is removed (OR reset to empty state) so the next `plan-enforcer discuss` / `plan-enforcer import` starts cleanly without needing manual intervention
 
 ## Plausible Interpretations
 
-- PI1 (hook-based trigger): PostToolUse hook on ledger.md edits inspects the new state. If the last non-terminal row flipped to terminal in this edit, emit receipt. Existing `hooks/post-tool.js` is the natural extension point, OR a dedicated `hooks/plan-close.js` hook installed via settings. *Chosen by user (a).*
-- PI2 (skill-prompt trigger): `plan-enforcer` executor skill includes a "if no pending rows, emit receipt" instruction. *Rejected by user.*
-- PI3 (hybrid): skill asks, hook backstops. *Rejected.*
+- PI1 (new D-row type "abandon"): introduce a new Decision Log type. Pros: semantically explicit. Cons: schema change ripples through `VALID_D_TYPES`, ledger-schema-guard, renderers.
+- PI2 (reuse type "pivot"): abandon IS a pivot away from the plan. Existing type, no schema change. My pick.
+- PI3 (reuse type "delete"): wrong fit -- delete is for removing rows/code, not the plan itself. Rejected.
 
-- PI4 (filename = `closure-<plan-slug>-<utc-iso>.md`): every emission its own file, fully ordered, no collisions. *Chosen by user (b).*
-- PI5 (filename = `closure-<plan-slug>.md` overwrite): canonical per-plan, history in git. *Rejected.*
-- PI6 (filename = `closure.md` always-overwrite): only latest survives. *Rejected.*
+- PI4 (filename `-abandoned` suffix): `closure-<slug>-<iso>-abandoned.md` and `<iso>-<slug>-abandoned.md`. Pros: visible at `ls`. Cons: breaks alignment with established archive naming and receipt chain (receipts look for `closure-<slug>-*.md` when resolving prior closure).
+- PI5 (no suffix): use existing conventions; content (D-row reason + all rows superseded in the task table) tells you it is an abandonment. My pick.
 
-- PI7 ("closed" = all TERMINAL_STATUSES): includes blocked. Plan can close with a known limitation. *Chosen by user (a).*
-- PI8 ("closed" = verified or skipped): blocked counts as open. *Rejected.*
-- PI9 ("closed" = verified only): strictest. *Rejected.*
+- PI6 (bundle companion browse command in this feature): add `/plan-enforcer-history` skill that lists archive entries nicely. Pros: one-stop. Cons: `plan-enforcer-report` already does this via the `[archive-path]` arg default; a wrapper may be redundant.
+- PI7 (rely on existing `plan-enforcer-report`): document the browse path in the abandon skill's "See also" and in the proof pack, do not ship a new browse skill in this feature. My pick.
+
+- PI8 (introduce new "abandoned" T-row status): would add a terminal status variant. Pros: explicit. Cons: changes `TERMINAL_STATUSES` in multiple files (hooks/session-end, hooks/plan-close, src/ledger-parser, receipt renderer), and the reason is already captured in the D-row evidence + archive frontmatter.
+- PI9 (reuse existing "superseded" status): no schema change, receipt renderer already treats superseded correctly, the D-row carries the abandonment reason. My pick.
+
+- PI10 (require in-flight plan only): abandon only runs if at least one non-terminal row exists. Already-closed plans do not need abandoning; they can archive via the existing close + archive path. Edge-case: abandon on empty / missing ledger errors with a clear message. My pick.
+- PI11 (allow on any state): abandon would archive regardless. Looser but lets user use one command for "retire this plan even if closed". Rejected -- confusing semantics; retiring a closed plan is a different operation.
 
 ## Chosen Interpretation
 
-PI1 + PI4 + PI7, plus the HC8 chain enhancement. A new PostToolUse hook (or extension to `hooks/post-tool.js`) watches ledger.md edits. When the edit transitions the active task set into all-terminal status (`verified | skipped | blocked | superseded`), the hook calls a new `src/receipt-cli.js` to emit `closure-<plan-slug>-<utc-iso>.md` to `.plan-enforcer/proof/`. The same CLI is exposed as `bin/plan-enforcer-receipt` and as a `skills/plan-enforcer-receipt/SKILL.md` skill so the user can fire it on demand. The receipt content is derived from ledger state (scoreboard, task table, decision log, reconciliation history, blocked-row coordination items) plus opportunistic extras when the source plan provides them (must-have coverage, lint results citing real verifying-tool outputs). Every receipt includes a "Prior closure" header section that either links to the immediately-prior receipt for this plan-slug or states "none (first close of this plan)" -- making the closure log a walkable chain rather than a flat directory.
+PI2 + PI5 + PI7 + PI9 + PI10. A new `src/abandon-cli.js` performs the full flow against the active ledger: preflight (non-terminal rows exist, reason present), inject a `pivot`-typed Decision Log row citing every non-terminal T-ID and the user's reason, flip every non-terminal row to `superseded` with evidence `abandoned: <reason>`, call the existing `archiveLedger` helper in `src/archive.js` to write `.plan-enforcer/archive/<iso>-<slug>.md` with frontmatter naming the abandonment, remove `.plan-enforcer/ledger.md`, and return the emitted receipt path (the shipped plan-close.js hook would normally fire, but since we are deleting the active ledger after close, the abandonment flow calls `receipt-cli.js` directly to guarantee the receipt emits and gets its Prior-closure link resolved before the ledger is removed). Companion browse is delegated to the already-existing `plan-enforcer-report` CLI.
 
 ## Rejected / Forbidden Narrowings
 
-- FN1: skill-prompt-only -- user explicitly chose hook-based; do not silently fall back
-- FN2: overwriting receipts -- user chose preserve-each; do not coalesce
-- FN3: receipts inside per-plan task list as "default tasks" -- the whole point is making this skill-level
-- FN4: emitting receipts on every ledger edit -- only on close-transition, exactly once per close (HC3 idempotence)
-- FN5: receipts that re-render on every status query -- emission is a discrete event, not a derived view (status-cli already exists for the live view)
-- FN6: hard dependency on `git` for "files changed" section -- if `git` is absent or repo state is dirty in surprising ways, the section degrades gracefully (notes the limitation), does not fail the receipt
-- FN7: auto-emission breaking out-of-band ledger edits -- hook must distinguish a true close-transition from a no-op edit on an already-closed ledger
-- FN8: tying receipt schema to README-rebuild template -- that template was plan-specific; the standard schema is ledger-derived
-- FN9: writing receipts outside `.plan-enforcer/proof/` -- preserve the convention
-- FN10: new deps (templating libraries, markdown formatters) -- everything builds with system Node and the existing src/ helpers (ledger-parser, archive, etc.)
+- FN1: skipping the Decision Log row ("just clear the ledger") -- violates the whole custody story; abandonment is itself a decision that must be recorded
+- FN2: allowing `--reason` to be empty or defaulted -- the required reason is the point; defaulting weakens discipline
+- FN3: silent archive -- the command must print the archive path AND the receipt path to stdout so the user can follow up
+- FN4: making this a hard-delete flow -- no content is ever destroyed; archive keeps the full ledger
+- FN5: tying this to a specific tier -- abandon is a ledger transformation, not a hook, works at every tier
+- FN6: changing the archive filename convention for abandonment -- stay aligned with existing files
+- FN7: introducing a new D-row type or T-row status (PI1, PI8 rejected)
+- FN8: shipping a second browse command alongside this (PI6 rejected in favor of existing `plan-enforcer-report`)
+- FN9: requiring the user to hand-edit ledger.md anywhere in the flow -- one command does everything
+- FN10: emitting the receipt after archive removal -- receipt must fire against the final abandoned state of ledger.md, not against a deleted file
 
 ## In Scope
 
-- Add `src/receipt-cli.js` -- pure ledger-derived emission, takes optional `--plan-slug` and `--out` overrides, defaults derive from current `.plan-enforcer/ledger.md` source metadata
-- Add `bin: { plan-enforcer-receipt: "src/receipt-cli.js" }` to package.json
-- Add `skills/plan-enforcer-receipt/SKILL.md` (slash command surface). Skill description: "Emit a closure receipt against the current ledger, or check whether a plan-close auto-emission already exists."
-- Add hook trigger logic for PostToolUse-on-ledger-edit close-transition detection. Either as a new `hooks/plan-close.js` registered in settings, or by extending `hooks/post-tool.js` with a close-detection branch -- pick during draft based on what the existing post-tool already does
-- Update `install.sh` if it lists hook files explicitly so the new hook gets wired
-- Update `hooks/session-end.js` only if the receipt emission interacts with its existing "ledger missing at session end" gate (likely no change, but verify)
-- Add tests for: receipt emission on close-transition, idempotence on no-op ledger edit, explicit CLI invocation against an open ledger, filename slug + ISO derivation
-- Update relevant documentation: top-level README.md surface mentions the new skill if applicable; add `plan-enforcer-receipt` to whatever surfaces enumerate the public skill set (CLAUDE.md, ROADMAP.md, docs/)
+- Add `src/abandon-cli.js` with exported functions (testable): `preflight(projectRoot, opts)`, `markAllNonTerminalSuperseded(ledgerContent, reason)`, `injectAbandonDecisionRow(ledgerContent, taskIds, reason)`, `archiveAndClear(projectRoot, ledgerContent, slug)`, `emitAbandonReceipt(projectRoot, slug)`, `main(argv)`
+- Add `"plan-enforcer-abandon": "src/abandon-cli.js"` to `package.json` bin
+- Add `skills/plan-enforcer-abandon/SKILL.md` -- slash command, prose paragraphs explaining when and how to use
+- Wire the new skill + module into `install.sh` (skills loop line 72, modules loop line 100) and mirror into `uninstall.sh`
+- Tests under `tests/` (node --test): `abandon-cli.test.js` unit tests for the exported functions; `abandon-integration.test.js` end-to-end in a tmp project fixture exercising preflight, full run, idempotence, missing-reason error, receipt chain preservation
+- Update `docs/cli.md` with a `plan-enforcer-abandon` section next to `plan-enforcer-receipt`
+- Update root `README.md` section 06 Lifecycle (or 04/05) to mention the abandon path as the mid-flight pivot option
 
 ## Out of Scope
 
-- Per-plan receipt customization beyond what already exists (Proof Requirements section in discuss.md / plan)
-- Receipt templating language or theme system (one standard template; if users want custom they can keep writing per-plan tasks like the README rebuild did)
-- Migration / regeneration of historical closed plans -- the feature applies to plans that close after the install
-- HTML / PDF / non-markdown receipt formats
-- Notifications, webhooks, slack integration
-- Auto-merging / auto-PR creation on close
-- README rebuild plan (separate workstream; T30 still blocked awaiting browser visual verification on github.com)
-- Statusline / playground workstream (still in user's hands; D2 override applies)
+- Companion browse / list command (`plan-enforcer-report` already handles it)
+- "Unabandon" / resume-abandoned -- a follow-up plan can reference the archive path and re-import relevant tasks; there is no undo semantic
+- Recycling the plan-slug across abandon and re-start -- each new plan gets its own slug, same-slug collisions are user's call
+- Purge / hard-delete of archived plans -- the whole point is retention
+- Multi-plan or phase-level abandon beyond the active ledger
+- UI / dashboard for browsing archives -- CLI + markdown is enough for launch
+- Statusline stage change on abandon (stage reset is a nice-to-have, handled by the next discuss call automatically)
 
 ## Constraints
 
-- Pure Node, no new dependencies (matches package.json shape: only system Node + repo's own helpers)
-- ASCII only in receipt body and CLI output; no Unicode box-drawing
-- File path conventions: `.plan-enforcer/proof/closure-<plan-slug>-<utc-iso>.md`
-- Plan slug derivation: from the source plan's path basename minus extension and date-prefix where present (e.g. `docs/plans/2026-04-21-readme-visuals-rebuild.md` -> `readme-visuals-rebuild`)
-- UTC ISO timestamp normalized to filename-safe form (e.g. `2026-04-22T03-45-00Z` -- colons replaced with hyphens)
-- Hook must not regress hot-path performance of normal ledger edits (close-transition detection is O(rows) at most)
-- Hook errors must not block ledger edits; they degrade gracefully (warn, do not error-fail the user's edit)
-- All new files match existing project style (module.exports patterns, error formatting, CLI usage strings, etc.)
+- Pure Node, no new runtime dependencies
+- CLI must exit 0 on success, non-zero on preflight failure with the specific reason printed to stderr
+- ASCII only in every new committed file
+- Filename: `.plan-enforcer/archive/<utc-iso>-<slug>.md`; ISO minus colons (matches existing); slug derived from source plan path or `<!-- source: -->` metadata (same helper `deriveSlug` the receipt-cli uses -- expose/reuse, do not duplicate)
+- Archived file's frontmatter must include `<!-- archived: <iso> -->` AND `<!-- archive-reason: <reason> -->` AND the source plan path; build on `src/archive.js#buildFrontmatter` (already exists)
+- Works at all three tiers (advisory / structural / enforced)
+- Existing tests green after install (modulo the pre-existing statusline-hook failures under D2 override)
 
 ## Success Signals
 
-- Closing any plan emits exactly one new receipt file under `.plan-enforcer/proof/closure-<plan-slug>-<utc-iso>.md` without any plan-author action
-- Editing an already-closed ledger (no transition) emits zero new receipts
-- `plan-enforcer-receipt` CLI run mid-flight produces a receipt with a clear "plan still open: N pending" header and a partial summary, without erroring
-- Existing `plan-enforcer` (executor) flow runs unchanged for plans that don't close in this session
-- All existing tests stay green (modulo D2-noted pre-existing statusline failures)
-- New tests covering close-transition, idempotence, and explicit CLI all pass on first install
-- A reader who only opens the receipt file (no other context) can answer: what plan, what shipped, what files changed, what was decided, what (if anything) is still open
-- A reader who wants the full history opens the latest receipt and walks backward via the "Prior closure" link, reconstructing every prior close of the same plan without touching git
-- `grep -rE 'reverse|byte.for.byte|libgpc|Swizzy|Larry|Jimmy CrakCrn'` clean against any new committed file
+- Running `plan-enforcer-abandon --reason "scope changed"` against an in-flight plan returns in one command: writes archive file, emits closure receipt, removes active ledger, prints both paths to stdout
+- Running it on a closed or empty ledger errors cleanly (exit non-zero, stderr "no active plan to abandon")
+- Running it without `--reason` errors cleanly (exit non-zero, stderr "--reason required")
+- The emitted receipt's Prior-closure link correctly references the previous closure for the same plan-slug if one exists (walkable chain preserved)
+- Archive file opens standalone and a cold reader can answer: what was the plan, what got verified before abandon, what was left, what reason the user gave
+- `plan-enforcer-report` with no args lists the new abandoned archive entry alongside any normal-close archives
+- All new tests pass under `node --test`
+- Forbidden-language grep clean on every new committed file
+- ASCII grep clean on every new committed file
 
 ## Drift Risks
 
-- DR1: drafter packages auto-emission AND the `/plan-enforcer-receipt` command into one CLI invocation only, missing the hook side -- both surfaces are required
-- DR2: drafter writes the auto-emission as a `plan-enforcer` executor-skill prompt step ("when all tasks done, emit receipt") instead of a hook -- contradicts NN5 and the user's a/b/a choice
-- DR3: drafter coalesces receipts (overwrite same filename on each emission), violating NN3 and the user's audit-purpose intent
-- DR4: drafter conflates this work with a per-plan template -- this is a runtime feature, not a plan task
-- DR5: receipt content drifts toward the README-rebuild template specifically, losing portability across other plans
-- DR6: drafter forgets idempotence (HC3) and emits a new receipt on every ledger edit
-- DR7: drafter forgets the `plan-enforcer-receipt` CLI / skill surface and only ships the hook
-- DR8: drafter introduces external deps (markdown libs, templating) violating NN9
-- DR9: drafter modifies `hooks/session-end.js` semantics in passing, breaking the existing "ledger missing at session end" gate
-- DR10: drafter writes new tests using a different test runner than the existing suite (it uses `node --test` per the test failures we already saw)
-- DR11: drafter writes the receipt skill prose in caveman fragments instead of paragraphs (skill SKILL.md files are public documentation, not chat)
-- DR12: drafter ships the per-emission filename but forgets the "Prior closure" link inside the receipt body, breaking HC8 -- the feature then produces an audit directory instead of an audit chain
+- DR1: drafter introduces a new D-row type "abandon" anyway (violates PI2 choice)
+- DR2: drafter introduces a new T-row status "abandoned" (violates PI9 choice)
+- DR3: drafter puts `-abandoned` suffix on archive or receipt filenames (breaks conventions)
+- DR4: drafter ships a separate browse command (violates PI7 choice)
+- DR5: drafter emits the receipt AFTER removing the ledger, breaking the receipt-cli input path
+- DR6: drafter allows abandonment without reason via a default or fallback (NN2 violation)
+- DR7: drafter forgets `docs/cli.md` update so the CLI reference does not list the command
+- DR8: drafter does not reuse `deriveSlug` from receipt-cli, duplicates logic
+- DR9: drafter skips the idempotence test (HC1) -- second-invocation double-archive is a silent regression
+- DR10: drafter breaks `plan-enforcer-report` archive browsing because the new archive file lacks required frontmatter fields
+- DR11: drafter writes the skill SKILL.md in caveman fragments instead of paragraph prose (the skill file is public documentation)
 
 ## Proof Requirements
 
-- PR1: on this repo, after the receipt feature is installed, the next plan that closes (or a synthetic test plan that closes) produces a receipt file without any plan-author task
-- PR2: the receipt's "files changed" section accurately reflects what shipped (verified by spot-checking against `git diff --stat`)
-- PR3: idempotence test: edit ledger.md without flipping a task to terminal, confirm zero new receipts
-- PR4: explicit `plan-enforcer-receipt` CLI run against an open ledger writes a receipt and prints its path to stdout; exit code 0
-- PR5: hook degradation test: `git` absent or unparseable diff -> receipt emits with a "files changed: unavailable" note, no failure
-- PR6: documentation diff -- updates to README.md (or wherever the public skill surface is enumerated) reference the new skill / CLI
-- PR7: install.sh + uninstall.sh handle the new hook (install adds the wiring, uninstall removes it)
-- PR8: tests pass: `node --test tests/<new-receipt-tests>.js` green
-- PR9: `grep -P '[^\x00-\x7F]'` returns zero matches across new files (ASCII discipline)
-- PR10: forbidden-language grep clean against new committed files (CLAUDE.md global rule)
-- PR11: chain-walkability test -- after emitting two receipts for the same plan-slug (first close, reopen, second close), confirm the second receipt's "Prior closure" section links to the first receipt's filename and the first receipt's "Prior closure" section reads "none (first close of this plan)"
+- PR1: real end-to-end run in this repo (or a synthetic test plan) produces a valid archive file + closure receipt in one invocation
+- PR2: idempotence test: second invocation against the (now cleared) ledger errors cleanly instead of emitting a duplicate archive
+- PR3: missing-reason test: exit non-zero, stderr names the flag
+- PR4: chain-walkability test: when a plan has been closed-then-abandoned (two closures for the same slug), the abandonment receipt's Prior closure links to the first closure receipt -- proving the chain crosses close AND abandon
+- PR5: `plan-enforcer-report` with no args lists the abandoned archive entry and `plan-enforcer-report <archive-file>` renders its content correctly
+- PR6: every new committed file passes forbidden-language grep (CLAUDE.md) and ASCII grep
+- PR7: `install.sh` end-to-end on a fresh tmp directory wires the new skill, module, and bin wrapper correctly
+- PR8: tests pass: `node --test tests/abandon-cli.test.js tests/abandon-integration.test.js` green
+- PR9: the skill SKILL.md names the command's three-phase behavior (archive, receipt, clear) and points the reader at `plan-enforcer-report` for browse
 
 ## Draft Handoff
 
 Phase shape hint (drafter is free to refine):
 
-1. **Receipt CLI** -- write `src/receipt-cli.js` first. Pure ledger-in, markdown-receipt-out. Accepts `--plan-slug`, `--out`, derives both from current ledger if absent. This is the testable nucleus.
-2. **Standardized template** -- inside the CLI, define the receipt sections derived from ledger state: header (plan path + close timestamp + scoreboard snapshot), **Prior closure** (link to immediately-prior receipt for this plan-slug, or "none (first close of this plan)"), task table, decision log summary, reconciliation history, blocked-row coordination, files-changed (`git diff --stat` against the ledger's first task SHA or the prior closure's SHA), known limitations, proof artifacts list. Opportunistic extras when source plan exposes Must-Haves or Proof Requirements.
-3. **bin + skill** -- wire `plan-enforcer-receipt` into package.json bin and create `skills/plan-enforcer-receipt/SKILL.md` that prefers the installed CLI (matches the pattern in `plan-enforcer-status`).
-4. **Auto-emission hook** -- close-transition detection in `hooks/post-tool.js` (preferred -- one less hook to install) OR new `hooks/plan-close.js`. Decision in draft based on what post-tool already shoulders.
-5. **install.sh / uninstall.sh wiring** -- if hooks are listed explicitly, add the new entry. Update `plan-enforcer doctor` if it enumerates expected hook surfaces.
-6. **Tests** -- close-transition, idempotence, explicit CLI, hook degradation, slug+timestamp filename derivation.
-7. **Documentation** -- update README.md to mention the new skill in the public surface section (we just rewrote it; the addition is a single line). Update CLAUDE.md / ROADMAP.md if they enumerate the skill set. Update `docs/proof/` if any proof file references receipts as a per-plan thing.
-8. **Verify on this repo** -- after install, confirm a real or synthetic close-transition produces a receipt, run forbidden-language + ASCII grep on new files, and stash the new receipt path in the closure receipt for THIS feature work (recursive; the new feature should generate the receipt for its own closure).
+1. **Preflight helpers + CLI skeleton** -- `src/abandon-cli.js` with arg parsing (`--reason <text>`, `--help`), preflight (active ledger present, at least one non-terminal row, reason non-empty); printable error messages; no-op main() returning 2 without args
+2. **Core transformation** -- implement the three ledger edits: inject Decision Log pivot row citing all non-terminal T-IDs + user reason; flip every non-terminal row to `superseded` with evidence `abandoned: <reason>`; sanity-check resulting content parses back into the same T-IDs with all-terminal states
+3. **Archive + clear** -- call existing `archiveLedger` from `src/archive.js` with the transformed content (passes frontmatter through), then remove active `.plan-enforcer/ledger.md`
+4. **Receipt emission** -- directly call `writeReceipt` from `src/receipt-cli.js` against the transformed content (not the removed file); print both paths
+5. **bin + skill + install wiring** -- package.json bin entry; skills/plan-enforcer-abandon/SKILL.md with paragraph prose + usage + "see also: plan-enforcer-report" section; install.sh + uninstall.sh list updates
+6. **Tests** -- unit + integration covering every success signal and drift risk; tmp-project pattern matching tests/plan-close-hook.test.js and tests/receipt-cli.test.js
+7. **Documentation** -- docs/cli.md entry; README section update naming the pivot path; forbidden-language + ASCII discipline grep clean
+8. **Self-verify** -- run the command against a dummy active plan in this repo or a tmp project, confirm the archive + receipt both land, confirm `plan-enforcer-report` lists the archive entry
 
 Planning red lines (drafter must NOT silently change):
 
-- both deliverables (auto-emission AND `plan-enforcer-receipt` CLI/skill) must ship together
-- auto-emission MUST be hook-based, not skill-prompt-based
-- filename MUST be `closure-<plan-slug>-<utc-iso>.md` -- never overwrite
-- "plan closed" MUST include blocked rows in the terminal set
+- reuse existing D-row type `pivot` and existing T-row status `superseded` -- no schema changes
+- filename conventions for archive and closure receipt match current formats -- no `-abandoned` suffix
+- companion browse command is NOT shipped in this feature -- `plan-enforcer-report` already exists
+- `--reason` is REQUIRED -- no default, no fallback
+- receipt must emit BEFORE ledger removal
+- reuse `deriveSlug` / `filenameSafeIso` / `findPriorClosure` from receipt-cli rather than duplicating
+- Must preserve the walkable chain: the abandonment receipt's Prior-closure link is computed from existing receipts for the same plan-slug, not fabricated
 - no new dependencies
-- ASCII only inside receipts and CLI stdout
-- existing `hooks/session-end.js` semantics preserved
-- receipt content derived from ledger; per-plan extras opportunistic, not required
-- every receipt MUST include a "Prior closure" section linking to the immediately-prior receipt for the same plan-slug, or stating "none (first close of this plan)" -- the chain is non-negotiable
+- ASCII only inside CLI stdout, skill prose, tests, archive file content
+- skill SKILL.md written as paragraphs, not caveman fragments (it is public documentation)

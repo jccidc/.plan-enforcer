@@ -69,7 +69,7 @@ fi
 
 mkdir -p "$SKILLS_DIR"
 
-for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-receipt plan-enforcer-report; do
+for skill in plan-enforcer plan-enforcer-abandon plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-receipt plan-enforcer-report; do
   src="$SCRIPT_DIR/skills/$skill"
   dest="$SKILLS_DIR/$skill"
   if [[ ! -d "$src" ]]; then
@@ -97,7 +97,7 @@ done
 
 SRC_DEST="$SKILLS_DIR/plan-enforcer/src"
 mkdir -p "$SRC_DEST"
-for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js receipt-cli.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-stage-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
+for module in abandon-cli.js archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js receipt-cli.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-stage-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
   src="$SCRIPT_DIR/src/$module"
   if [[ ! -f "$src" ]]; then
     echo "Warning: $src not found, skipping"

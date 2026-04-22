@@ -75,6 +75,8 @@ pre-hook material: treat them as `source: pre-capture` for verification.
 | I49 | this readme needs help.. these svgs are tough to read and the look is odd, it has no flow, what do yousuggest | manual | 2026-04-22 |
 | I50 | 100% make it skill level. and a command / plan-enforcer-recipt to call whenever | manual | 2026-04-22 |
 | I51 | Wait, what made you generate the closure recipt? thats awesome | manual | 2026-04-22 |
+| I52 | sometimes I'll be in the middle of a plan or whatever and I changed my mind right... there really is no slash command to cleanly archive that plan | manual | 2026-04-22 |
+| I53 | six months down the road I changed my mind and I'm like oh I wonder what that plan was The fact that I can have an archive and you know look up what that plan was is probably pretty important too | manual | 2026-04-22 |
 
 ## Restate rows
 

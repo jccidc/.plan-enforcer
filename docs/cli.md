@@ -39,6 +39,38 @@ per-subcommand help is `plan-enforcer <sub> --help`.
 
 ---
 
+## plan-enforcer-abandon
+
+```
+plan-enforcer-abandon --reason "<text>"
+```
+
+Retire the active plan in one shot. Marks every non-terminal task row
+as `superseded` with evidence `abandoned: <reason>`, appends a
+`pivot`-typed Decision Log row citing those T-IDs, emits a closure
+receipt that joins the walkable chain for the plan-slug, archives the
+transformed ledger to `.plan-enforcer/archive/<utc-iso>-<slug>.md`,
+and removes the active `.plan-enforcer/ledger.md` so the next
+`discuss` or `import` starts clean.
+
+`--reason` is required and is sole authorization -- there is no
+interactive confirm prompt and no `--force` flag. If you cannot name
+why, do not abandon. On success both paths are printed to stdout
+(`archive: <path>` then `receipt: <path>`).
+
+Exit codes:
+
+- `0` success; archive + receipt written, active ledger removed
+- `2` preflight failure (missing ledger, empty ledger, every row
+  already terminal, or `--reason` missing); no files mutated
+- `1` unexpected failure during transform / archive / receipt
+
+To browse archived plans later, use `plan-enforcer-report` with no
+arguments for a summary or `plan-enforcer-report <archive-path>` to
+render a specific archive.
+
+---
+
 ## plan-enforcer-doctor
 
 ```
