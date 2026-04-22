@@ -103,7 +103,7 @@ plan-enforcer import docs/plans/my-plan.md
 
 > FIG. 07 — Whatever plan format you bring, the ledger entry has one shape. That shape is what gets audited.
 
-Same ledger. Same enforcement layer. Same audit surface. Same closure truth.
+![Same ledger. Same enforcement layer. Same audit surface. Same closure truth.](docs/assets/benchmark-summary.svg)
 
 Proof pack:
 - [Public proof map](docs/proof/public-proof.md)
