@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fit scored across five dimensions: strong fit vs less suited">
-  <rect width="960" height="520" fill="#141211"/>
+  <rect width="960" height="520" fill="#111214"/>
   <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
-    <text x="20" y="24" fill="#c9342a">FIG. 07 · FIT SCORING</text>
-    <text x="940" y="24" text-anchor="end" fill="#c9bfa8">5 DIMENSIONS · HIGHER = MORE NEEDED</text>
+    <text x="20" y="24" fill="#1aadd9">FIG. 07 · FIT SCORING</text>
+    <text x="940" y="24" text-anchor="end" fill="#a5aacc">5 DIMENSIONS · HIGHER = MORE NEEDED</text>
   </g>
-  <line x1="20" y1="34" x2="940" y2="34" stroke="#c9342a" stroke-width="2"/>
+  <line x1="20" y1="34" x2="940" y2="34" stroke="#1aadd9" stroke-width="2"/>
 
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#c9bfa8">
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#a5aacc">
     <text x="400" y="58">D1 DURATION</text>
     <text x="516" y="58">D2 RISK</text>
     <text x="600" y="58">D3 AUDIT</text>
@@ -16,104 +16,104 @@
   </g>
 
   <g transform="translate(20,74)">
-    <rect width="920" height="22" fill="#0b0a09" stroke="#7de38a" stroke-width="1"/>
-    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#7de38a" font-weight="700">STRONG FIT · 5 USE-CASES</text>
+    <rect width="920" height="22" fill="#090a0b" stroke="#3af85a" stroke-width="1"/>
+    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#3af85a" font-weight="700">STRONG FIT · 5 USE-CASES</text>
   </g>
 
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#ede4d3">
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#d0d6f0">
     <g transform="translate(20,106)">
       <text x="0" y="18">long-running agent work</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="72" height="20" fill="#7de38a"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="56" height="20" fill="#7de38a"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/><rect x="172" width="48" height="20" fill="#7de38a"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/><rect x="258" width="72" height="20" fill="#7de38a"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/><rect x="344" width="64" height="20" fill="#7de38a"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="72" height="20" fill="#3af85a"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="56" height="20" fill="#3af85a"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="48" height="20" fill="#3af85a"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="72" height="20" fill="#3af85a"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="64" height="20" fill="#3af85a"/>
       </g>
     </g>
     <g transform="translate(20,146)">
       <text x="0" y="18">regulated / auditable eng</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="48" height="20" fill="#7de38a"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="64" height="20" fill="#7de38a"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/><rect x="172" width="80" height="20" fill="#7de38a"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/><rect x="258" width="40" height="20" fill="#7de38a"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/><rect x="344" width="80" height="20" fill="#7de38a"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="48" height="20" fill="#3af85a"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="64" height="20" fill="#3af85a"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="80" height="20" fill="#3af85a"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="40" height="20" fill="#3af85a"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="80" height="20" fill="#3af85a"/>
       </g>
     </g>
     <g transform="translate(20,186)">
       <text x="0" y="18">auth / payments / infra</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="40" height="20" fill="#7de38a"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="80" height="20" fill="#7de38a"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/><rect x="172" width="72" height="20" fill="#7de38a"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/><rect x="258" width="48" height="20" fill="#7de38a"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/><rect x="344" width="72" height="20" fill="#7de38a"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="40" height="20" fill="#3af85a"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="80" height="20" fill="#3af85a"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="72" height="20" fill="#3af85a"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="48" height="20" fill="#3af85a"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="72" height="20" fill="#3af85a"/>
       </g>
     </g>
     <g transform="translate(20,226)">
       <text x="0" y="18">handoffs / resumes</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="64" height="20" fill="#7de38a"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="48" height="20" fill="#7de38a"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/><rect x="172" width="40" height="20" fill="#7de38a"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/><rect x="258" width="80" height="20" fill="#7de38a"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/><rect x="344" width="56" height="20" fill="#7de38a"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="64" height="20" fill="#3af85a"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="48" height="20" fill="#3af85a"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="40" height="20" fill="#3af85a"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="80" height="20" fill="#3af85a"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="56" height="20" fill="#3af85a"/>
       </g>
     </g>
     <g transform="translate(20,266)">
       <text x="0" y="18">teams needing evidence</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="56" height="20" fill="#7de38a"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="48" height="20" fill="#7de38a"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/><rect x="172" width="72" height="20" fill="#7de38a"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/><rect x="258" width="48" height="20" fill="#7de38a"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/><rect x="344" width="80" height="20" fill="#7de38a"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="56" height="20" fill="#3af85a"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="48" height="20" fill="#3af85a"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="72" height="20" fill="#3af85a"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="48" height="20" fill="#3af85a"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="80" height="20" fill="#3af85a"/>
       </g>
     </g>
   </g>
 
   <g transform="translate(20,318)">
-    <rect width="920" height="22" fill="#0b0a09" stroke="#c9342a" stroke-width="1"/>
-    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#c9342a" font-weight="700">LESS SUITED · 3 USE-CASES</text>
+    <rect width="920" height="22" fill="#090a0b" stroke="#1aadd9" stroke-width="1"/>
+    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#1aadd9" font-weight="700">LESS SUITED · 3 USE-CASES</text>
   </g>
 
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#c9bfa8">
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#a5aacc">
     <g transform="translate(20,350)">
       <text x="0" y="18">one-shot throwaway script</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="8" height="20" fill="#7a1e18"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="8" height="20" fill="#7a1e18"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="8" height="20" fill="#0e6984"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="8" height="20" fill="#0e6984"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/>
       </g>
     </g>
     <g transform="translate(20,390)">
       <text x="0" y="18">optimize for raw speed</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="16" height="20" fill="#7a1e18"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="8" height="20" fill="#7a1e18"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/><rect x="258" width="8" height="20" fill="#7a1e18"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="16" height="20" fill="#0e6984"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="8" height="20" fill="#0e6984"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="8" height="20" fill="#0e6984"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/>
       </g>
     </g>
     <g transform="translate(20,430)">
       <text x="0" y="18">commits-only as explanation</text>
       <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#1d1a18"/><rect width="24" height="20" fill="#7a1e18"/>
-        <rect x="86" width="80" height="20" fill="#1d1a18"/><rect x="86" width="16" height="20" fill="#7a1e18"/>
-        <rect x="172" width="80" height="20" fill="#1d1a18"/><rect x="172" width="8" height="20" fill="#7a1e18"/>
-        <rect x="258" width="80" height="20" fill="#1d1a18"/><rect x="258" width="8" height="20" fill="#7a1e18"/>
-        <rect x="344" width="80" height="20" fill="#1d1a18"/>
+        <rect width="80" height="20" fill="#171a1d"/><rect width="24" height="20" fill="#0e6984"/>
+        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="16" height="20" fill="#0e6984"/>
+        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="8" height="20" fill="#0e6984"/>
+        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="8" height="20" fill="#0e6984"/>
+        <rect x="344" width="80" height="20" fill="#171a1d"/>
       </g>
     </g>
   </g>
 
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#c9bfa8">
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#a5aacc">
     <text x="400" y="488">empty = not needed</text>
     <text x="700" y="488">full = load-bearing</text>
-    <line x1="400" y1="494" x2="820" y2="494" stroke="#c9bfa8" stroke-dasharray="2 3"/>
+    <line x1="400" y1="494" x2="820" y2="494" stroke="#a5aacc" stroke-dasharray="2 3"/>
   </g>
 </svg>
