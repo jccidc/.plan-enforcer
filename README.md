@@ -89,11 +89,8 @@ Not planner lock-in.
 Front door:
 `discuss -> draft -> review -> execute -> verify`
 
-Bring plans from:
-- GSD
-- Superpowers
-- markdown checklists
-- your own workflow
+![Bring plans](docs/assets/stack.svg)
+
 
 ```bash
 plan-enforcer import docs/plans/my-plan.md
