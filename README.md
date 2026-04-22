@@ -84,11 +84,6 @@ These are the failure modes the ledger is built to surface and preserve. Each on
 
 ## 05 / Bring Your Own Plan
 
-Not planner lock-in.
-
-Front door:
-`discuss -> draft -> review -> execute -> verify`
-
 ![Bring plans](docs/assets/stack.svg)
 
 
