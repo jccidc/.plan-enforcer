@@ -32,11 +32,9 @@ Sixty seconds. One ledger. Requires [Claude Code](https://claude.ai/code) and [N
 git clone https://github.com/jccidc/.plan-enforcer.git
 cd .plan-enforcer
 ./install.sh
-plan-enforcer doctor
-plan-enforcer discuss "..."
 ```
 
-`install.sh` wires four surfaces into the repo and writes nothing outside of it: the Claude Code hooks, the Plan Enforcer skill set, the `plan-enforcer` CLI, and a state directory at `.plan-enforcer/`. If `doctor` reports missing project config, that is onboarding state -- not a broken install. The first `discuss` or `import` bootstraps the rest.
+`install.sh` wires four surfaces into the repo and writes nothing outside of it: the Claude Code hooks, the Plan Enforcer skill set, the `plan-enforcer` CLI, and a state directory at `.plan-enforcer/`. After install, run `plan-enforcer doctor` to confirm the wire-up, then open your first plan with `plan-enforcer discuss "..."` or seed an existing one with `plan-enforcer import docs/plans/<file>.md`. If `doctor` reports missing project config, that is onboarding state -- not a broken install.
 
 ![Terminal session: clone, install.sh confirming hooks, skills, bin, and state dir; doctor reporting ready; a first discuss call writing discuss.md.](docs/assets/install.svg)
 
