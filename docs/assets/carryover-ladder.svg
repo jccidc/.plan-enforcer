@@ -4,24 +4,24 @@
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="880" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#201f1e"/>
-      <stop offset="1" stop-color="#f7f7f7"/>
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#617e94" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.4"/>
     </filter>
     <style>
       .sans { font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; }
       .mono { font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace; }
-      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #ecf6f9; }
-      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #617e94; }
-      .subtitle { font-size: 14px; font-weight: 500; fill: #ecf6f9; }
-      .step-num { font-size: 11px; font-weight: 700; fill: #395984; letter-spacing: 0.1em; text-transform: uppercase; }
-      .label { font-size: 13px; font-weight: 700; fill: #617e94; }
-      .small { font-size: 11px; font-weight: 500; fill: #ecf6f9; }
-      .value { font-size: 11px; font-weight: 700; fill: #617e94; }
-      .card-active { fill: #f7f7f7; stroke: #395984; stroke-width: 1.5; }
-      .footer { font-size: 11px; font-weight: 500; fill: #ecf6f9; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; fill: #8b949e; }
+      .title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; fill: #e6edf3; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #8b949e; }
+      .step-num { font-size: 11px; font-weight: 700; fill: #8957e5; letter-spacing: 0.1em; text-transform: uppercase; }
+      .label { font-size: 13px; font-weight: 700; fill: #e6edf3; }
+      .small { font-size: 11px; font-weight: 500; fill: #8b949e; }
+      .value { font-size: 11px; font-weight: 700; fill: #e6edf3; }
+      .card-active { fill: #1c2128; stroke: #8957e5; stroke-width: 1.5; }
+      .footer { font-size: 11px; font-weight: 500; fill: #6e7681; }
     </style>
   </defs>
 
@@ -35,11 +35,11 @@
     <rect width="1120" height="660" rx="10" class="card-active" filter="url(#shadow)"/>
     <text x="24" y="34" class="sans step-num">Carryover ladder</text>
 
-    <rect x="24" y="54" width="14" height="10" rx="5" fill="#617e94"/>
+    <rect x="24" y="54" width="14" height="10" rx="5" fill="#3fb950"/>
     <text x="46" y="63" class="sans small">Plan Enforcer</text>
-    <rect x="150" y="54" width="14" height="10" rx="5" fill="#395984"/>
+    <rect x="150" y="54" width="14" height="10" rx="5" fill="#58a6ff"/>
     <text x="172" y="63" class="sans small">GSD</text>
-    <rect x="220" y="54" width="14" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="220" y="54" width="14" height="10" rx="5" fill="#d29922"/>
     <text x="242" y="63" class="sans small">Superpowers</text>
 
     <text x="340" y="63" class="sans small">0</text>
@@ -47,80 +47,80 @@
 
     <text x="24" y="116" class="sans label">H</text>
     <text x="54" y="116" class="sans small">first separator</text>
-    <rect x="240" y="100" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="100" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="118" width="471" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="134" width="435" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="100" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="100" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="118" width="471" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="134" width="435" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="110" class="sans value" text-anchor="end">16 / 16</text>
     <text x="900" y="126" class="sans value" text-anchor="end">13 / 16</text>
     <text x="900" y="142" class="sans value" text-anchor="end">12 / 16</text>
 
     <text x="24" y="186" class="sans label">I</text>
     <text x="54" y="186" class="sans small">medium repeat</text>
-    <rect x="240" y="170" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="170" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="188" width="363" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="204" width="363" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="170" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="170" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="188" width="363" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="204" width="363" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="180" class="sans value" text-anchor="end">24 / 24</text>
     <text x="900" y="196" class="sans value" text-anchor="end">15 / 24</text>
     <text x="900" y="212" class="sans value" text-anchor="end">15 / 24</text>
 
     <text x="24" y="256" class="sans label">J</text>
     <text x="54" y="256" class="sans small">late mutation</text>
-    <rect x="240" y="240" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="240" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="258" width="311" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="274" width="331" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="240" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="240" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="258" width="311" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="274" width="331" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="250" class="sans value" text-anchor="end">28 / 28</text>
     <text x="900" y="266" class="sans value" text-anchor="end">15 / 28</text>
     <text x="900" y="282" class="sans value" text-anchor="end">16 / 28</text>
 
     <text x="24" y="326" class="sans label">K</text>
     <text x="54" y="326" class="sans small">double mutation</text>
-    <rect x="240" y="310" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="310" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="328" width="417" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="344" width="417" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="310" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="310" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="328" width="417" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="344" width="417" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="320" class="sans value" text-anchor="end">32 / 32</text>
     <text x="900" y="336" class="sans value" text-anchor="end">23 / 32</text>
     <text x="900" y="352" class="sans value" text-anchor="end">23 / 32</text>
 
     <text x="24" y="396" class="sans label">K+</text>
     <text x="54" y="396" class="sans small">resume pressure</text>
-    <rect x="240" y="380" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="380" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="398" width="435" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="414" width="453" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="380" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="380" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="398" width="435" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="414" width="453" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="390" class="sans value" text-anchor="end">32 / 32</text>
     <text x="900" y="406" class="sans value" text-anchor="end">24 / 32</text>
     <text x="900" y="422" class="sans value" text-anchor="end">25 / 32</text>
 
     <text x="24" y="466" class="sans label">L</text>
     <text x="54" y="466" class="sans small">triple mutation</text>
-    <rect x="240" y="450" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="450" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="468" width="464" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="484" width="493" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="450" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="450" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="468" width="464" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="484" width="493" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="460" class="sans value" text-anchor="end">40 / 40</text>
     <text x="900" y="476" class="sans value" text-anchor="end">32 / 40</text>
     <text x="900" y="492" class="sans value" text-anchor="end">34 / 40</text>
 
     <text x="24" y="536" class="sans label">M</text>
     <text x="54" y="536" class="sans small">fourth mutation</text>
-    <rect x="240" y="520" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="520" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="538" width="483" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="554" width="447" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="520" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="520" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="538" width="483" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="554" width="447" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="530" class="sans value" text-anchor="end">48 / 48</text>
     <text x="900" y="546" class="sans value" text-anchor="end">40 / 48</text>
     <text x="900" y="562" class="sans value" text-anchor="end">37 / 48</text>
 
     <text x="24" y="606" class="sans label">N</text>
     <text x="54" y="606" class="sans small">fifth mutation</text>
-    <rect x="240" y="590" width="580" height="12" rx="6" fill="#201f1e" stroke="#ecf6f9" stroke-width="1"/>
-    <rect x="240" y="590" width="580" height="12" rx="6" fill="#617e94"/>
-    <rect x="240" y="608" width="445" height="10" rx="5" fill="#395984"/>
-    <rect x="240" y="624" width="487" height="10" rx="5" fill="#ecf6f9"/>
+    <rect x="240" y="590" width="580" height="12" rx="6" fill="#11161c" stroke="#30363d" stroke-width="1"/>
+    <rect x="240" y="590" width="580" height="12" rx="6" fill="#3fb950"/>
+    <rect x="240" y="608" width="445" height="10" rx="5" fill="#58a6ff"/>
+    <rect x="240" y="624" width="487" height="10" rx="5" fill="#d29922"/>
     <text x="900" y="600" class="sans value" text-anchor="end">56 / 56</text>
     <text x="900" y="616" class="sans value" text-anchor="end">43 / 56</text>
     <text x="900" y="632" class="sans value" text-anchor="end">47 / 56</text>
