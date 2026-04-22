@@ -4,9 +4,19 @@
 [![Works with Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code-orange.svg)](https://claude.ai/code)
 [![Node.js >=18](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
 
-`CHAIN-OF-CUSTODY LAYER` `V0.1` `MIT`
+**Chain-of-custody control for AI coding.**
 
-Plan Enforcer is the ledger, decision trail, and chain of custody underneath AI-assisted coding -- from the original ask to the repo state that shipped. It runs as Claude Code hooks and skills, writes everything to a few named files in your repo, and intervenes when the agent tries to skip a step, drop a decision, or claim work is done before the repo agrees.
+Plan Enforcer is the control and accountability layer beneath AI-assisted implementation. It gives drifting agent work a real ledger, a real decision trail, and a real chain of custody from original ask to landed repo state.
+
+Keep your planner. Keep your IDE. Keep your workflow.
+
+Plan Enforcer exists to make agent work **fidelity-preserving, accountable, and cold-reviewable**.
+
+![Before and after: on the left, a wavy drift line shows an ask that slides into a vague landed state; on the right, five crisp stage pills -- ask, plan, exec, verify, land -- connect in a clean chain.](docs/assets/intro-drift-vs-fidelity.svg)
+
+---
+
+It runs as Claude Code hooks and skills, writes everything to a few named files in your repo, and intervenes when the agent tries to skip a step, drop a decision, or claim work is done before the repo agrees.
 
 ![Same week of work in the same repo: a messy wip-fix-revert git log on the left, a clean stage-tagged ledger of commits on the right.](docs/assets/hero-git-log.svg)
 
