@@ -9,7 +9,7 @@
 Plan Enforcer is the control and accountability layer beneath AI-assisted implementation. It gives drifting agent work a real ledger, a real decision trail, and a real chain of custody from original ask to landed repo state.
 
 Keep your planner. Keep your IDE. Keep your workflow.
-                
+
 Plan Enforcer exists to make agent work **fidelity-preserving, accountable, and cold-reviewable**.
 
 ![Before and after: on the left, a wavy drift line shows an ask that slides into a vague landed state; on the right, five crisp stage pills -- ask, plan, exec, verify, land -- connect in a clean chain.](docs/assets/intro-drift-vs-fidelity.svg)
@@ -86,19 +86,6 @@ Plan Enforcer earns its keep when the cost of losing a step is real. It is overh
 
 > Read your project against the five bars. Empty bars mean you would be installing a custody layer you do not need. Filled bars mean you are already paying that cost somewhere -- usually scattered across commit messages, Slack threads, and reconstructed memory.
 
-**Strong fit**
-
-- long-running agent work where drift compounds over time
-- regulated or auditable engineering
-- migrations, auth, payments, infrastructure changes
-- workflows with handoffs, resumes, and late requirement mutation
-- teams that need evidence, not just output
-
-**Less suited**
-
-- one-shot throwaway scripting where audit does not matter
-- workflows optimized purely for raw speed
-- teams fine with commit messages as their only explanation layer
 
 ---
 
@@ -112,9 +99,11 @@ Across 26 retained scorecards in the framework-comparison lab, Plan Enforcer car
 
 ---
 
-## 07 / Claim, Stated Narrowly
+## 07 / Lifecycle 
 
-Not better prompting. Not a generative agent. Not a plan-writer. Plan Enforcer is the chain of custody underneath whatever generative process you already use -- the layer that keeps an AI implementation honest when it has to survive scrutiny, mutation, interruption, and final review.
+This lifecycle shows how Plan Enforcer turns a fuzzy request into a durable ship path: Discuss captures scope, Draft + review turn that into a concrete plan, execution runs against a live ledger with hooks tracking status, evidence, and decisions, crash recovery resumes from the correct row instead of starting over, and the final Receipt step closes the loop by generating a complete audit trail of what changed, why it changed, what was verified, and what ultimately shipped. That is why the lifecycle matters so much for continuity: the truth lives on disk, not in chat memory, so crashes, handoffs, interruptions, and late requirement changes do not erase progress or reasoning.
+
+![The continuity and audit lifecycle: five workflow steps (describe, discuss, draft and review, work the plan, ship with receipt) plus a crash-proof branch and a tier dial showing the advisory, structural, and enforced intensity levels.](docs/assets/lifecycle.svg)
 
 > When AI-assisted implementation has to hold up to those four pressures, Plan Enforcer is what holds it.
 
