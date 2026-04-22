@@ -71,6 +71,8 @@ pre-hook material: treat them as `source: pre-capture` for verification.
 | I45 | close product-visible truth surfaces only when report output docs retained proof and archived package all make the final-truth bundle easier to inspect | manual | 2026-04-20 |
 | I46 | archive summary must pick the newest completed clean run instead of the lexicographically first archive filename | manual | 2026-04-20 |
 | I47 | close truth-surface work only when default report highlights the newest clean closure without requiring the operator to specify a file path | manual | 2026-04-20 |
+| I48 | rebuild, dark theme, get creative with the svgs | manual | 2026-04-22 |
+| I49 | this readme needs help.. these svgs are tough to read and the look is odd, it has no flow, what do yousuggest | manual | 2026-04-22 |
 
 ## Restate rows
 

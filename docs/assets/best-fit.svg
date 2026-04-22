@@ -1,119 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fit scored across five dimensions: strong fit vs less suited">
-  <rect width="960" height="520" fill="#111214"/>
+<svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five fit dimensions scored as horizontal bars: a strong-fit profile fills every bar, a less-suited profile leaves them empty.">
+  <rect width="720" height="360" fill="#0b0d10"/>
+
   <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
-    <text x="20" y="24" fill="#1aadd9">FIG. 07 · FIT SCORING</text>
-    <text x="940" y="24" text-anchor="end" fill="#a5aacc">5 DIMENSIONS · HIGHER = MORE NEEDED</text>
-  </g>
-  <line x1="20" y1="34" x2="940" y2="34" stroke="#1aadd9" stroke-width="2"/>
-
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#a5aacc">
-    <text x="400" y="58">D1 DURATION</text>
-    <text x="516" y="58">D2 RISK</text>
-    <text x="600" y="58">D3 AUDIT</text>
-    <text x="690" y="58">D4 HANDOFF</text>
-    <text x="796" y="58">D5 EVIDENCE</text>
+    <text x="20" y="20" fill="#1aadd9">BEST FIT . FIVE DIMENSIONS</text>
+    <text x="700" y="20" text-anchor="end" fill="#6f7a8c">EMPTY = NOT FOR YOU</text>
   </g>
 
-  <g transform="translate(20,74)">
-    <rect width="920" height="22" fill="#090a0b" stroke="#3af85a" stroke-width="1"/>
-    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#3af85a" font-weight="700">STRONG FIT · 5 USE-CASES</text>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3">
+    <text x="200" y="50" fill="#1aadd9">STRONG FIT</text>
+    <text x="460" y="50" fill="#6f7a8c">LESS SUITED</text>
   </g>
+  <line x1="20" y1="58" x2="700" y2="58" stroke="#2a2f38" stroke-width="1"/>
 
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#d0d6f0">
-    <g transform="translate(20,106)">
-      <text x="0" y="18">long-running agent work</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="72" height="20" fill="#3af85a"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="56" height="20" fill="#3af85a"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="48" height="20" fill="#3af85a"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="72" height="20" fill="#3af85a"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="64" height="20" fill="#3af85a"/>
-      </g>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace">
+    <g transform="translate(0,72)">
+      <text x="20" y="14" font-size="11" letter-spacing="2" fill="#d8e1ec">DURATION</text>
+      <text x="20" y="30" font-size="9" fill="#6f7a8c">long-running vs one-shot</text>
+      <rect x="180" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="180" y="6" width="200" height="14" fill="#1aadd9"/>
+      <rect x="440" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="440" y="6" width="22" height="14" fill="#6f7a8c"/>
     </g>
-    <g transform="translate(20,146)">
-      <text x="0" y="18">regulated / auditable eng</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="48" height="20" fill="#3af85a"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="64" height="20" fill="#3af85a"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="80" height="20" fill="#3af85a"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="40" height="20" fill="#3af85a"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="80" height="20" fill="#3af85a"/>
-      </g>
+    <g transform="translate(0,122)">
+      <text x="20" y="14" font-size="11" letter-spacing="2" fill="#d8e1ec">RISK</text>
+      <text x="20" y="30" font-size="9" fill="#6f7a8c">migrations, auth, infra</text>
+      <rect x="180" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="180" y="6" width="210" height="14" fill="#1aadd9"/>
+      <rect x="440" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="440" y="6" width="14" height="14" fill="#6f7a8c"/>
     </g>
-    <g transform="translate(20,186)">
-      <text x="0" y="18">auth / payments / infra</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="40" height="20" fill="#3af85a"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="80" height="20" fill="#3af85a"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="72" height="20" fill="#3af85a"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="48" height="20" fill="#3af85a"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="72" height="20" fill="#3af85a"/>
-      </g>
+    <g transform="translate(0,172)">
+      <text x="20" y="14" font-size="11" letter-spacing="2" fill="#d8e1ec">AUDITABILITY</text>
+      <text x="20" y="30" font-size="9" fill="#6f7a8c">regulated, scrutiny-bound</text>
+      <rect x="180" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="180" y="6" width="218" height="14" fill="#3ec07a"/>
+      <rect x="440" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="440" y="6" width="6" height="14" fill="#6f7a8c"/>
     </g>
-    <g transform="translate(20,226)">
-      <text x="0" y="18">handoffs / resumes</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="64" height="20" fill="#3af85a"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="48" height="20" fill="#3af85a"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="40" height="20" fill="#3af85a"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="80" height="20" fill="#3af85a"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="56" height="20" fill="#3af85a"/>
-      </g>
+    <g transform="translate(0,222)">
+      <text x="20" y="14" font-size="11" letter-spacing="2" fill="#d8e1ec">HANDOFF</text>
+      <text x="20" y="30" font-size="9" fill="#6f7a8c">resumes, context loss, rotations</text>
+      <rect x="180" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="180" y="6" width="190" height="14" fill="#1aadd9"/>
+      <rect x="440" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="440" y="6" width="30" height="14" fill="#6f7a8c"/>
     </g>
-    <g transform="translate(20,266)">
-      <text x="0" y="18">teams needing evidence</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="56" height="20" fill="#3af85a"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="48" height="20" fill="#3af85a"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="72" height="20" fill="#3af85a"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="48" height="20" fill="#3af85a"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/><rect x="344" width="80" height="20" fill="#3af85a"/>
-      </g>
+    <g transform="translate(0,272)">
+      <text x="20" y="14" font-size="11" letter-spacing="2" fill="#d8e1ec">EVIDENCE NEED</text>
+      <text x="20" y="30" font-size="9" fill="#6f7a8c">teams that need proof, not output</text>
+      <rect x="180" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="180" y="6" width="216" height="14" fill="#3ec07a"/>
+      <rect x="440" y="6" width="220" height="14" fill="#14171c" stroke="#2a2f38"/>
+      <rect x="440" y="6" width="10" height="14" fill="#6f7a8c"/>
     </g>
   </g>
 
-  <g transform="translate(20,318)">
-    <rect width="920" height="22" fill="#090a0b" stroke="#1aadd9" stroke-width="1"/>
-    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#1aadd9" font-weight="700">LESS SUITED · 3 USE-CASES</text>
-  </g>
-
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#a5aacc">
-    <g transform="translate(20,350)">
-      <text x="0" y="18">one-shot throwaway script</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="8" height="20" fill="#0e6984"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="8" height="20" fill="#0e6984"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/>
-      </g>
-    </g>
-    <g transform="translate(20,390)">
-      <text x="0" y="18">optimize for raw speed</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="16" height="20" fill="#0e6984"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="8" height="20" fill="#0e6984"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="8" height="20" fill="#0e6984"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/>
-      </g>
-    </g>
-    <g transform="translate(20,430)">
-      <text x="0" y="18">commits-only as explanation</text>
-      <g transform="translate(380,4)">
-        <rect width="80" height="20" fill="#171a1d"/><rect width="24" height="20" fill="#0e6984"/>
-        <rect x="86" width="80" height="20" fill="#171a1d"/><rect x="86" width="16" height="20" fill="#0e6984"/>
-        <rect x="172" width="80" height="20" fill="#171a1d"/><rect x="172" width="8" height="20" fill="#0e6984"/>
-        <rect x="258" width="80" height="20" fill="#171a1d"/><rect x="258" width="8" height="20" fill="#0e6984"/>
-        <rect x="344" width="80" height="20" fill="#171a1d"/>
-      </g>
-    </g>
-  </g>
-
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#a5aacc">
-    <text x="400" y="488">empty = not needed</text>
-    <text x="700" y="488">full = load-bearing</text>
-    <line x1="400" y1="494" x2="820" y2="494" stroke="#a5aacc" stroke-dasharray="2 3"/>
+  <line x1="20" y1="318" x2="700" y2="318" stroke="#2a2f38" stroke-width="1"/>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="20" y="338" fill="#6f7a8c">FILL = YOU PAY THE COST OF CUSTODY ANYWAY</text>
   </g>
 </svg>

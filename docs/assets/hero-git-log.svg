@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two git logs from the same week of work: a messy wip-fix-revert sequence on the left, a clean stage-tagged ledger on the right.">
+  <rect width="960" height="540" fill="#0b0d10"/>
+
+  <!-- Header band (the only allowed case-file trace) -->
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="24" y="20" fill="#1aadd9">CASE PE-0427</text>
+    <text x="480" y="20" text-anchor="middle" fill="#d8e1ec">BEFORE / AFTER . SAME WEEK . SAME REPO</text>
+    <text x="936" y="20" text-anchor="end" fill="#6f7a8c">2026-04-22</text>
+  </g>
+  <rect x="0" y="30" width="960" height="2" fill="#1aadd9"/>
+
+  <!-- Panel labels -->
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="24" y="56" fill="#6f7a8c">WITHOUT PLAN ENFORCER</text>
+    <text x="936" y="56" text-anchor="end" fill="#3ec07a">WITH PLAN ENFORCER</text>
+  </g>
+
+  <!-- LEFT panel: terminal-window with messy git log -->
+  <g transform="translate(24,68)">
+    <rect width="432" height="442" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+    <rect width="432" height="22" fill="#0b0d10"/>
+    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="2" fill="#6f7a8c">~/repo $ git log --oneline</text>
+    <circle cx="416" cy="11" r="3" fill="#1aadd9"/>
+
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#6f7a8c">
+      <text x="14" y="48"><tspan fill="#d8e1ec">a3f8c9d</tspan>  wip</text>
+      <text x="14" y="68"><tspan fill="#d8e1ec">2b1e7a4</tspan>  fix typo</text>
+      <text x="14" y="88"><tspan fill="#d8e1ec">8d4f1c2</tspan>  wip again</text>
+      <text x="14" y="108"><tspan fill="#d8e1ec">5c6e3b9</tspan>  revert "wip"</text>
+      <text x="14" y="128"><tspan fill="#d8e1ec">9a0f8d2</tspan>  fix tests maybe</text>
+      <text x="14" y="148"><tspan fill="#d8e1ec">4e7c1a5</tspan>  wip</text>
+      <text x="14" y="168"><tspan fill="#d8e1ec">b3d8f0c</tspan>  fix</text>
+      <text x="14" y="188"><tspan fill="#d8e1ec">6f2a9c4</tspan>  final fix</text>
+      <text x="14" y="208"><tspan fill="#d8e1ec">1e5d7b8</tspan>  actually fix</text>
+      <text x="14" y="228"><tspan fill="#d8e1ec">8c4a2f9</tspan>  done?</text>
+      <text x="14" y="248"><tspan fill="#d8e1ec">7b1c3e0</tspan>  fix the fix</text>
+      <text x="14" y="268"><tspan fill="#d8e1ec">5a9f4d2</tspan>  ok now</text>
+      <text x="14" y="288"><tspan fill="#d8e1ec">3e8b1c7</tspan>  wip</text>
+      <text x="14" y="308"><tspan fill="#d8e1ec">2c7f0a4</tspan>  works on my box</text>
+      <text x="14" y="328"><tspan fill="#d8e1ec">9d4e6b1</tspan>  fix</text>
+    </g>
+
+    <!-- bottom inset commentary -->
+    <line x1="14" y1="360" x2="418" y2="360" stroke="#2a2f38" stroke-width="1" stroke-dasharray="2 4"/>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="2" fill="#6f7a8c">
+      <text x="14" y="382">CHAIN: none</text>
+      <text x="14" y="400">DECISIONS: lost</text>
+      <text x="14" y="418">RESUME: starts from cold cache</text>
+    </g>
+  </g>
+
+  <!-- RIGHT panel: ledger-row stack of stage-tagged commits -->
+  <g transform="translate(504,68)">
+    <rect width="432" height="442" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+    <rect width="432" height="22" fill="#0b0d10"/>
+    <text x="12" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="2" fill="#6f7a8c">~/repo $ git log --oneline --custody</text>
+    <circle cx="416" cy="11" r="3" fill="#3ec07a"/>
+
+    <!-- 6 ledger rows, 8px gap, ~66px each, starting y=30 inside panel -->
+    <g font-family="ui-monospace,Menlo,Consolas,monospace">
+      <!-- Row 1: ASK -->
+      <g transform="translate(0,30)">
+        <rect x="0" y="0" width="4" height="60" fill="#1aadd9"/>
+        <text x="14" y="14" font-size="9" letter-spacing="3" fill="#1aadd9">STAGE 01 . ASK</text>
+        <text x="14" y="33" font-size="13" font-weight="700" fill="#d8e1ec">f1a2c8d  ask: migrate auth to OIDC</text>
+        <text x="14" y="50" font-size="11" fill="#6f7a8c">.plan-enforcer/ask.md  +  sha256(intent)</text>
+      </g>
+      <!-- Row 2: PLAN -->
+      <g transform="translate(0,98)">
+        <rect x="0" y="0" width="4" height="60" fill="#1aadd9"/>
+        <text x="14" y="14" font-size="9" letter-spacing="3" fill="#1aadd9">STAGE 02 . PLAN</text>
+        <text x="14" y="33" font-size="13" font-weight="700" fill="#d8e1ec">9c7e3b1  plan: 6 tasks, 4 must-haves</text>
+        <text x="14" y="50" font-size="11" fill="#6f7a8c">.plan-enforcer/plan.md  +  frozen hash</text>
+      </g>
+      <!-- Row 3: EXEC -->
+      <g transform="translate(0,166)">
+        <rect x="0" y="0" width="4" height="60" fill="#1aadd9"/>
+        <text x="14" y="14" font-size="9" letter-spacing="3" fill="#1aadd9">STAGE 03 . EXEC</text>
+        <text x="14" y="33" font-size="13" font-weight="700" fill="#d8e1ec">4b8d2a0  exec: T1 verified, T2 verified</text>
+        <text x="14" y="50" font-size="11" fill="#6f7a8c">.plan-enforcer/ledger.md  +  step trace</text>
+      </g>
+      <!-- Row 4: DECIDE -->
+      <g transform="translate(0,234)">
+        <rect x="0" y="0" width="4" height="60" fill="#b480d8"/>
+        <text x="14" y="14" font-size="9" letter-spacing="3" fill="#b480d8">STAGE 04 . DECIDE</text>
+        <text x="14" y="33" font-size="13" font-weight="700" fill="#d8e1ec">7d5e9f3  decide: scope delta logged D1</text>
+        <text x="14" y="50" font-size="11" fill="#6f7a8c">.plan-enforcer/decisions.md  +  reason</text>
+      </g>
+      <!-- Row 5: VERIFY -->
+      <g transform="translate(0,302)">
+        <rect x="0" y="0" width="4" height="60" fill="#1aadd9"/>
+        <text x="14" y="14" font-size="9" letter-spacing="3" fill="#1aadd9">STAGE 05 . VERIFY</text>
+        <text x="14" y="33" font-size="13" font-weight="700" fill="#d8e1ec">2a4c8b6  verify: repo == plan, gates pass</text>
+        <text x="14" y="50" font-size="11" fill="#6f7a8c">.plan-enforcer/verify.md  +  diff result</text>
+      </g>
+      <!-- Row 6: LAND -->
+      <g transform="translate(0,370)">
+        <rect x="0" y="0" width="4" height="60" fill="#3ec07a"/>
+        <text x="14" y="14" font-size="9" letter-spacing="3" fill="#3ec07a">STAGE 06 . LAND</text>
+        <text x="14" y="33" font-size="13" font-weight="700" fill="#d8e1ec">8e1f0a9  land: closed, repo == plan</text>
+        <text x="14" y="50" font-size="11" fill="#6f7a8c">.plan-enforcer/closure.md  +  repo sha</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer note -->
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="24" y="528" fill="#6f7a8c">CUSTODY THREAD</text>
+    <text x="936" y="528" text-anchor="end" fill="#3ec07a">CONTINUOUS . AUDITABLE . REPLAYABLE</text>
+  </g>
+</svg>

@@ -11,10 +11,6 @@ Use the proof pack in this order:
 5. final truth and closeout: [final-truth.md](final-truth.md)
 6. roadmap regression context: [roadmap-regression.md](roadmap-regression.md)
 
-Supporting visual:
-
-- [Public proof lanes SVG](../assets/proof-lanes.svg)
-
 If someone wants the fuller launch-safe map, send them to
 [README.md](README.md).
 

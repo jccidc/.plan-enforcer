@@ -6,23 +6,17 @@
 
 `CHAIN-OF-CUSTODY LAYER` `V0.1` `MIT`
 
-Plan Enforcer is ledger, decision trail, and chain of custody underneath AI-assisted coding, from original ask to repo state that shipped.
+Plan Enforcer is the ledger, decision trail, and chain of custody underneath AI-assisted coding -- from the original ask to the repo state that shipped. It runs as Claude Code hooks and skills, writes everything to a few named files in your repo, and intervenes when the agent tries to skip a step, drop a decision, or claim work is done before the repo agrees.
 
-`CASE No. PE-0427`  
-`FILED 2026-04-21`  
-`CUSTODIAN jccidc/.plan-enforcer`
+![Same week of work in the same repo: a messy wip-fix-revert git log on the left, a clean stage-tagged ledger of commits on the right.](docs/assets/hero-git-log.svg)
 
-[![Drift compounds without receipts; Plan Enforcer anchors every stage to a file on disk](docs/assets/problem-solution.svg)](docs/proof/public-proof.md)
-
-> FIG. 01 — Without: four failure moments, none with receipts. With: six stages, each one a file on disk.
+> Two git logs from the same week of work, same repo. On the left, wip-fix-revert is the entire story; nothing points back to an original ask, nothing names a decision. On the right, every commit carries the stage it belongs to and every stage points at a file you can open. Same effort, different chain of custody.
 
 ---
 
 ## 01 / Install
 
-Sixty seconds. One ledger.
-
-Requires [Claude Code](https://claude.ai/code) and [Node.js >= 18](https://nodejs.org). Installs hooks and skills. Default tier: `structural`.
+Sixty seconds. One ledger. Requires [Claude Code](https://claude.ai/code) and [Node.js >= 18](https://nodejs.org).
 
 ```bash
 git clone https://github.com/jccidc/.plan-enforcer.git
@@ -32,72 +26,84 @@ plan-enforcer doctor
 plan-enforcer discuss "..."
 ```
 
-If `doctor` reports missing project config, that is onboarding state, not broken install. First `discuss` or `import` bootstraps repo-local `.plan-enforcer/` state.
+`install.sh` wires four surfaces into the repo and writes nothing outside of it: the Claude Code hooks, the Plan Enforcer skill set, the `plan-enforcer` CLI, and a state directory at `.plan-enforcer/`. If `doctor` reports missing project config, that is onboarding state -- not a broken install. The first `discuss` or `import` bootstraps the rest.
 
-![install.sh wires exactly four surfaces: hooks, skills, bin, state directory](docs/assets/install-manifest.svg)
+![Terminal session: clone, install.sh confirming hooks, skills, bin, and state dir; doctor reporting ready; a first discuss call writing discuss.md.](docs/assets/install.svg)
 
-> FIG. 02 — `install.sh` wires exactly four surfaces. Nothing hidden, nothing outside the repo.
-
-| Without | With Plan Enforcer |
-| --- | --- |
-| scope silently narrows | `ask -> plan -> exec -> verify -> land` |
-| decisions go unrecorded | ledger kept on disk |
-| resumes start from stale context | resume continuity is first-class |
+> The four `ok` lines are the entire installation footprint. Nothing runs in the background, nothing reaches outside the repo, and every byte that lands lives inside paths you can read.
 
 ---
 
-## 02 / What This Makes Provable
+## 02 / The Custody Chain
 
-Plan Enforcer is built for moments where AI coding gets slippery: ask narrowing, mid-flight plan mutation, stale-context resumes, and "done" declared before repo truth catches up.
+Plan Enforcer's job is to keep one continuous trail from the original ask to the repo state that shipped. That trail has six stages, and every stage produces a file. When the chain breaks -- when scope narrows silently, when a decision happens but is never written down, when a session resumes from cold context, when work is called done before the repo agrees -- you can point at exactly which file is missing or wrong.
 
-Those failure modes stop being invisible. Each one has a file you can open.
+![Six ledger rows for the stages ask, plan, exec, decide, verify, and land, each row showing the file path it produces and a short description of what it captures.](docs/assets/custody-chain.svg)
 
-![Five surfaces, five evidence receipts in a case folder](docs/assets/provable-surfaces.svg)
-
-> FIG. 03 — Five surfaces, five files. Every one readable, replayable, reviewable.
+> Read this top to bottom and the product story falls out. `ask.md` and `plan.md` defend meaning before code is touched. `ledger.md` tracks every step against that plan. `decisions.md` catches deviations under a typed schema. `verify.md` and `closure.md` are how you can tell the work actually closed.
 
 ---
 
-## 03 / Three Layers. One Custody Chain.
+## 03 / Three Layers
 
-`ASK -> PLAN -> EXEC -> DECIDE -> VERIFY -> LAND`
+The six-stage chain comes from three layers stacked beneath it. Authorship owns the move from raw ask to frozen plan. Execution owns the moment-to-moment fidelity of work against that plan. Truth owns the closing handshake -- decisions logged, repo state reconciled, closure receipt written. No layer can silently absorb another, which is what makes the chain survive an agent's drift.
 
-![Three layers, each owning a phase of custody, with commands and produced files](docs/assets/three-layers.svg)
+![Three horizontal layer bands -- authorship, execution, truth -- each highlighting which of the six chain stages it owns and listing the files it produces.](docs/assets/three-layers.svg)
 
-> FIG. 04 — Each layer owns a guarantee. Each guarantee lives in named files. One chain links them.
-
----
-
-## 04 / What It Catches
-
-These are the failure modes the ledger is built to surface and preserve. Each one has a before-state and a caught-state. Each caught-state is a real file path.
-
-![Four failure modes with without/with states and receipt file paths](docs/assets/what-it-catches.svg)
-
-> FIG. 05 — Four failure modes, four tiles, four receipts.
-
-![Same week of work, two git logs: messy wip/fix/revert without; named ledger rows with](docs/assets/git-log-diptych.svg)
-
-> FIG. 06 — Same work, same week, same repo. The difference is a ledger on disk.
+> Authorship cannot claim execution's job; execution cannot skip the truth handshake. That separation is what an autonomous agent under context pressure cannot quietly collapse.
 
 ---
 
-## 05 / Bring Your Own Plan
+## 04 / Bring Your Own Plan
 
-![Bring plans](docs/assets/stack.svg)
-
+You don't need to write plans in any particular format. GSD phases, Superpowers plans, freeform `.md` checklists -- all of them feed `plan-enforcer import` and produce one normalized ledger entry. The format you pick is yours; the audited surface is ours.
 
 ```bash
 plan-enforcer import docs/plans/my-plan.md
 ```
 
-![Heterogeneous plans normalized into one ledger entry](docs/assets/workflow.svg)
+![Three input plan formats on the left flow through a Plan Enforcer normalizer band into one ledger row on the right.](docs/assets/byo-plan.svg)
 
-> FIG. 07 — Whatever plan format you bring, the ledger entry has one shape. That shape is what gets audited.
+> The shape of the row at the right is what gets enforced. Whatever shape your team writes in lands in that shape, every time.
 
-![Same ledger. Same enforcement layer. Same audit surface. Same closure truth.](docs/assets/benchmark-summary.svg)
+---
 
-Proof pack:
+## 05 / Best Fit
+
+Plan Enforcer earns its keep when the cost of losing a step is real. It is overhead for one-shot scripting and throwaway prototyping. It is load-bearing when work runs long, when the repo is regulated, when handoffs are routine, and when "done" needs to be defensible to someone who wasn't in the room.
+
+![Five fit dimensions scored as horizontal bars -- duration, risk, auditability, handoff, evidence need -- with a strong-fit profile filling every bar and a less-suited profile leaving them nearly empty.](docs/assets/best-fit.svg)
+
+> Read your project against the five bars. Empty bars mean you would be installing a custody layer you do not need. Filled bars mean you are already paying that cost somewhere -- usually scattered across commit messages, Slack threads, and reconstructed memory.
+
+**Strong fit**
+
+- long-running agent work where drift compounds over time
+- regulated or auditable engineering
+- migrations, auth, payments, infrastructure changes
+- workflows with handoffs, resumes, and late requirement mutation
+- teams that need evidence, not just output
+
+**Less suited**
+
+- one-shot throwaway scripting where audit does not matter
+- workflows optimized purely for raw speed
+- teams fine with commit messages as their only explanation layer
+
+---
+
+## 06 / Claim, Stated Narrowly
+
+Not better prompting. Not a generative agent. Not a plan-writer. Plan Enforcer is the chain of custody underneath whatever generative process you already use -- the layer that keeps an AI implementation honest when it has to survive scrutiny, mutation, interruption, and final review.
+
+> When AI-assisted implementation has to hold up to those four pressures, Plan Enforcer is what holds it.
+
+---
+
+## Proof and Provenance
+
+The proof pack documents how Plan Enforcer behaves on real work in this repo:
+
 - [Public proof map](docs/proof/public-proof.md)
 - [Proof pack index](docs/proof/README.md)
 - [Benchmark summary](docs/proof/benchmark-summary.md)
@@ -106,45 +112,6 @@ Proof pack:
 - [Dogfood proof](docs/proof/dogfood-proof.md)
 - [Roadmap regression](docs/proof/roadmap-regression.md)
 
-Visual proof surfaces:
-- [Benchmark summary chart](docs/assets/benchmark-summary.svg)
-- [Carryover ladder](docs/assets/carryover-ladder.svg)
-- [Proof lanes](docs/assets/proof-lanes.svg)
-
----
-
-## 06 / Best Fit
-
-Scored on five dimensions: duration, risk, auditability, handoff, evidence need. If most bars stay empty, Plan Enforcer is overhead you don't need. If they fill, you are already paying the cost of custody elsewhere.
-
-![Fit scored across five dimensions: strong fit vs less suited](docs/assets/best-fit.svg)
-
-> FIG. 08 — Empty bars: you don't need a custody layer. Full bars: you already need one.
-
-Strong fit:
-- long-running agent work where drift compounds over time
-- regulated or auditable engineering
-- migrations, auth, payments, infra, and other high-risk changes
-- work with handoffs, resumes, and late requirement mutation
-- teams that need evidence, not just output
-
-Less suited:
-- one-shot throwaway scripting where audit does not matter
-- workflows optimized purely for raw speed
-- teams fine with commit messages as the only explanation layer
-
----
-
-## 07 / Claim, Stated Narrowly
-
-![Claim stated narrowly: filed, signed, sealed](docs/assets/claim.svg)
-
-> FIG. 09 — Claim. Three pillars. Filed, signed, sealed.
-
-> When AI implementation has to survive scrutiny, mutation, interruption, and final review, Plan Enforcer provides the chain of custody.
-
-Not better prompting. Fidelity under mutation. Continuity under interruption. Truth under review.
-
-Open issues and PRs are welcome. If your workflow has a real failure mode not represented in proof pack yet, open issue with receipts.
+Open issues and pull requests are welcome. If your workflow has a real failure mode the proof pack does not surface yet, open an issue with receipts.
 
 MIT. See [LICENSE](LICENSE).
