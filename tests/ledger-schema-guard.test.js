@@ -30,6 +30,79 @@ describe('ledger-row-removal — taskIdsIn', () => {
   });
 });
 
+// ---------- bash-false-positive regression (v0.1.3) ----------
+
+function mkTinyProject() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-schema-guard-'));
+  const enforcer = path.join(dir, '.plan-enforcer');
+  fs.mkdirSync(enforcer, { recursive: true });
+  const ledger = [
+    '# Plan Enforcer Ledger',
+    '<!-- schema: v2 -->',
+    '<!-- source: docs/plans/demo.md -->',
+    '',
+    '## Task Ledger',
+    '',
+    '| ID | Task | Status | Evidence | Chain | Notes |',
+    '|----|------|--------|----------|-------|-------|',
+    '| T1 | work | pending |  |  |  |',
+    '',
+    '## Decision Log',
+    '',
+    '| ID | Type | Scope | Reason | Evidence |',
+    '|----|------|-------|--------|----------|',
+    '',
+    '## Reconciliation History',
+    '',
+    '| Round | Tasks Checked | Gaps Found | Action Taken |',
+    '|-------|---------------|------------|--------------|',
+    ''
+  ].join('\n');
+  fs.writeFileSync(path.join(enforcer, 'ledger.md'), ledger, 'utf8');
+  fs.writeFileSync(path.join(enforcer, 'config.md'), '---\ntier: structural\n---\n', 'utf8');
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't' }, null, 2));
+  return dir;
+}
+
+function runGuard(dir, payload) {
+  const stdin = JSON.stringify(payload || {});
+  try {
+    execFileSync(process.execPath, [HOOK], {
+      cwd: dir,
+      input: stdin,
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    return { code: 0, stderr: '' };
+  } catch (e) {
+    return { code: e.status, stderr: (e.stderr || Buffer.from('')).toString() };
+  }
+}
+
+describe('ledger-schema-guard bash heuristic (v0.1.3)', () => {
+  it('does not block git commands that merely mention the ledger path and use stderr-to-stdout redirect', () => {
+    const dir = mkTinyProject();
+    // Previously "2>&1" + path-mention would false-trigger the mutation
+    // heuristic even though the command is a git push, not a mutation.
+    const command = 'git push origin main --follow-tags 2>&1 # touching .plan-enforcer/ledger.md in message only';
+    const result = runGuard(dir, { tool_name: 'Bash', tool_input: { command } });
+    assert.equal(result.code, 0, `unexpected block: ${result.stderr}`);
+  });
+
+  it('still blocks a real redirect writing to the ledger file', () => {
+    const dir = mkTinyProject();
+    const command = 'echo garbage > .plan-enforcer/ledger.md';
+    const result = runGuard(dir, { tool_name: 'Bash', tool_input: { command } });
+    assert.notEqual(result.code, 0, 'real redirect to ledger should still be blocked');
+  });
+
+  it('does not block commit commands where the commit message contains stderr-to-stdout tokens', () => {
+    const dir = mkTinyProject();
+    const command = 'git commit -m "note: pipes 2>&1 and mentions .plan-enforcer/ledger.md in prose"';
+    const result = runGuard(dir, { tool_name: 'Bash', tool_input: { command } });
+    assert.equal(result.code, 0, `unexpected block: ${result.stderr}`);
+  });
+});
+
 describe('ledger-row-removal — coverage', () => {
   it('picks up delete/unplanned/deviation rows', () => {
     const text = `| D1 | delete | T6, T7 | scope removed | evidence |\n| D2 | reconcile | T1 | noise | x |\n| D3 | unplanned | T9 | added | y |\n`;

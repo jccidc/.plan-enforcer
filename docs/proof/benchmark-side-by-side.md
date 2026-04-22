@@ -124,19 +124,6 @@ They come from retained native `objectives.json` and describe what the product h
 
 ## Source map
 
-- lab results tree:
-  - `C:/Users/ls13/My Drive/projects/plan-enforcer-lab/benchmarks/framework-comparison/results/`
-- lab final report:
-  - `C:/Users/ls13/My Drive/projects/plan-enforcer-lab/benchmarks/framework-comparison/FINAL-REPORT-2026-04-17.md`
-- product carryover proof:
-  - `C:/Users/ls13/My Drive/projects/.plan-enforcer/docs/proof/carryover-proof.md`
-- current README benchmark card inputs:
-  - `C:/Users/ls13/My Drive/projects/.plan-enforcer/src/readme-playground.js`
-
-## Gap still open
-
-This markdown file exists now, but the product repo still does **not** have:
-
-- a generated proof surface wired from lab scorecards
-- a JSON aggregate feeding README charts
-- a canonical one-page integrity scoreboard under `docs/proof/` that is automatically refreshed
+- **Lab results tree** (private framework-comparison lab, not distributed): retained `scorecard.json` artifacts per scenario and `objectives.json` for internal native signals.
+- **Lab final report** (private): the 2026-04-17 framework-comparison run report, which is the source of the numbers on this page.
+- **Public product proof**: [carryover-proof.md](carryover-proof.md) for the per-scenario ask-fidelity breakdown.

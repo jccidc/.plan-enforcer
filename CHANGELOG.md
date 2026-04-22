@@ -2,6 +2,16 @@
 
 All notable changes to Plan Enforcer are captured here.
 
+## [0.1.3] -- 2026-04-22
+
+### Fixed
+
+- **Schema-guard no longer false-positives on stderr-to-stdout redirects.** The `bashLooksLikeLedgerMutation` heuristic used to match any `>` character in a bash command whose text mentioned the ledger path, which meant a plain `git push ... 2>&1` (or any commit whose message string contained the ledger path plus a `2>&1` elsewhere in the command) got blocked as if it were a mutation. The heuristic now requires the redirect target to be a real path (the character after the `>` must not be `&`, so stream combinators like `2>&1` / `1>&2` are ignored). Real redirects to the ledger file are still blocked. Regression test added as three new cases in `tests/ledger-schema-guard.test.js`.
+
+### Docs
+
+- **Scrubbed `docs/proof/benchmark-side-by-side.md`.** The Source map section previously exposed absolute Windows paths under `C:/Users/ls13/...` for both the private lab repo and the product repo, plus a reference to `src/readme-playground.js` which was removed in the v0.1.0 launch-cut. Rewrote the section with safe descriptive references and a markdown link to the public carryover proof. Deleted the "Gap still open" section (internal dev note about automation that hadn't landed yet -- not relevant to a client reader of a proof surface).
+
 ## [0.1.2] -- 2026-04-22
 
 ### Fixed

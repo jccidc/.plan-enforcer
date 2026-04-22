@@ -99,7 +99,13 @@ function bashLooksLikeLedgerMutation(command) {
     /\bremove-item\b/
   ];
   if (mutators.some((re) => re.test(cmd))) return true;
-  if (/[>]{1,2}/.test(cmd)) return true;
+  // Match shell output redirection (`>`, `>>`) that looks like it is writing
+  // to a real target -- NOT stderr/stdout combinators like `2>&1` or `1>&2`
+  // where the character after the redirect is `&` (another stream reference).
+  // Previously `/[>]{1,2}/` matched any caret-less `>` anywhere in the
+  // command string, so `git push ... 2>&1` falsely triggered whenever the
+  // command text mentioned the ledger path (e.g. in a quoted commit message).
+  if (/(?:^|\s)\d*>{1,2}\s*[^&\s]/.test(cmd)) return true;
   return false;
 }
 
