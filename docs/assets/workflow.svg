@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Heterogeneous plans normalized into one ledger entry">
-  <rect width="960" height="460" fill="#141211"/>
+  <rect width="960" height="460" fill="#111214"/>
   <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
-    <text x="20" y="24" fill="#c9342a">FIG. 06 · NORMALIZE</text>
-    <text x="940" y="24" text-anchor="end" fill="#c9bfa8">3 SHAPES IN · 1 LEDGER OUT</text>
+    <text x="20" y="24" fill="#1aadd9">FIG. 06 · NORMALIZE</text>
+    <text x="940" y="24" text-anchor="end" fill="#a5aacc">3 SHAPES IN · 1 LEDGER OUT</text>
   </g>
-  <line x1="20" y1="34" x2="940" y2="34" stroke="#c9342a" stroke-width="2"/>
+  <line x1="20" y1="34" x2="940" y2="34" stroke="#1aadd9" stroke-width="2"/>
 
-  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#c9bfa8">
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#a5aacc">
     <text x="20" y="60">INPUT PLANS</text>
     <text x="440" y="60" text-anchor="middle">PARSER</text>
     <text x="940" y="60" text-anchor="end">NORMALIZED LEDGER ENTRY</text>
   </g>
 
   <g transform="translate(20,80)">
-    <rect width="320" height="100" fill="#ede4d3"/>
-    <rect width="320" height="18" fill="#d9cfb7"/>
-    <text x="10" y="13" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#0b0a09">GSD · plan.yaml</text>
-    <text x="310" y="13" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#2b5c9a">yaml</text>
-    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#0b0a09">
+    <rect width="320" height="100" fill="#d0d6f0"/>
+    <rect width="320" height="18" fill="#b4b9dc"/>
+    <text x="10" y="13" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#090a0b">GSD · plan.yaml</text>
+    <text x="310" y="13" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#a58120">yaml</text>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#090a0b">
       <text x="10" y="36">phase: auth_migration</text>
       <text x="10" y="52">  steps:</text>
       <text x="10" y="68">    - add_oidc_provider</text>
@@ -27,11 +27,11 @@
   </g>
 
   <g transform="translate(20,196)">
-    <rect width="320" height="100" fill="#ede4d3"/>
-    <rect width="320" height="18" fill="#d9cfb7"/>
-    <text x="10" y="13" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#0b0a09">SUPERPOWERS · PLAN.md</text>
-    <text x="310" y="13" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#9a6a00">markdown</text>
-    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#0b0a09">
+    <rect width="320" height="100" fill="#d0d6f0"/>
+    <rect width="320" height="18" fill="#b4b9dc"/>
+    <text x="10" y="13" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#090a0b">SUPERPOWERS · PLAN.md</text>
+    <text x="310" y="13" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#00169a">markdown</text>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#090a0b">
       <text x="10" y="36">## Goal</text>
       <text x="10" y="52">Move to OIDC.</text>
       <text x="10" y="68">## Tasks</text>
@@ -40,11 +40,11 @@
   </g>
 
   <g transform="translate(20,312)">
-    <rect width="320" height="100" fill="#ede4d3"/>
-    <rect width="320" height="18" fill="#d9cfb7"/>
-    <text x="10" y="13" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#0b0a09">CHECKLIST · todo.md</text>
-    <text x="310" y="13" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#2d5c33">markdown</text>
-    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#0b0a09">
+    <rect width="320" height="100" fill="#d0d6f0"/>
+    <rect width="320" height="18" fill="#b4b9dc"/>
+    <text x="10" y="13" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#090a0b">CHECKLIST · todo.md</text>
+    <text x="310" y="13" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" fill="#612850">markdown</text>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#090a0b">
       <text x="10" y="36">- [ ] add oidc</text>
       <text x="10" y="52">- [ ] rotate secrets</text>
       <text x="10" y="68">- [ ] verify callback</text>
@@ -53,43 +53,43 @@
   </g>
 
   <g transform="translate(380,200)">
-    <rect x="0" y="0" width="140" height="80" fill="#0b0a09" stroke="#c9342a" stroke-width="2"/>
-    <text x="70" y="22" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#c9342a">plan-enforcer</text>
-    <text x="70" y="44" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#ede4d3">IMPORT</text>
-    <text x="70" y="64" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#c9bfa8">detect · parse · adopt</text>
-    <g stroke="#c9bfa8" stroke-width="1.2" fill="none">
+    <rect x="0" y="0" width="140" height="80" fill="#090a0b" stroke="#1aadd9" stroke-width="2"/>
+    <text x="70" y="22" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#1aadd9">plan-enforcer</text>
+    <text x="70" y="44" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" font-weight="700" fill="#d0d6f0">IMPORT</text>
+    <text x="70" y="64" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#a5aacc">detect · parse · adopt</text>
+    <g stroke="#a5aacc" stroke-width="1.2" fill="none">
       <line x1="-40" y1="-70" x2="-4" y2="30"/>
-      <polygon points="-4,30 -12,24 -6,26" fill="#c9bfa8"/>
+      <polygon points="-4,30 -12,24 -6,26" fill="#a5aacc"/>
       <line x1="-40" y1="46" x2="-4" y2="46"/>
-      <polygon points="-4,46 -12,42 -12,50" fill="#c9bfa8"/>
+      <polygon points="-4,46 -12,42 -12,50" fill="#a5aacc"/>
       <line x1="-40" y1="158" x2="-4" y2="54"/>
-      <polygon points="-4,54 -12,52 -10,60" fill="#c9bfa8"/>
+      <polygon points="-4,54 -12,52 -10,60" fill="#a5aacc"/>
     </g>
-    <g stroke="#7de38a" stroke-width="1.5" fill="none">
+    <g stroke="#b3bb3a" stroke-width="1.5" fill="none">
       <line x1="144" y1="40" x2="230" y2="40"/>
-      <polygon points="230,40 222,35 222,45" fill="#7de38a"/>
+      <polygon points="230,40 222,35 222,45" fill="#b3bb3a"/>
     </g>
   </g>
 
   <g transform="translate(620,100)">
-    <rect width="320" height="288" fill="#ede4d3" stroke="#7de38a" stroke-width="2"/>
-    <rect width="320" height="22" fill="#7de38a"/>
-    <text x="10" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#0b0a09" font-weight="700">.plan-enforcer/plan.md  (NORMALIZED)</text>
-    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#0b0a09">
-      <text x="12" y="44" fill="#3d3224"># ---- frontmatter ----</text>
+    <rect width="320" height="288" fill="#d0d6f0" stroke="#b3bb3a" stroke-width="2"/>
+    <rect width="320" height="22" fill="#b3bb3a"/>
+    <text x="10" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#090a0b" font-weight="700">.plan-enforcer/plan.md  (NORMALIZED)</text>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#090a0b">
+      <text x="12" y="44" fill="#212a3f"># ---- frontmatter ----</text>
       <text x="12" y="60">id:        auth-migration</text>
       <text x="12" y="76">source:    superpowers/PLAN.md</text>
       <text x="12" y="92">imported:  2026-04-21T09:14Z</text>
       <text x="12" y="108">sha256:    4a91c7f2</text>
-      <text x="12" y="132" fill="#3d3224"># ---- steps ----</text>
+      <text x="12" y="132" fill="#212a3f"># ---- steps ----</text>
       <text x="12" y="148">01 · add_oidc_provider</text>
       <text x="12" y="164">02 · rotate_secrets</text>
       <text x="12" y="180">03 · verify_callback</text>
       <text x="12" y="196">04 · ship</text>
-      <text x="12" y="220" fill="#3d3224"># ---- gates ----</text>
+      <text x="12" y="220" fill="#212a3f"># ---- gates ----</text>
       <text x="12" y="236">tests_pass · repo_sha_match</text>
       <text x="12" y="252">decisions_logged · seal_valid</text>
-      <text x="12" y="276" fill="#c9342a" font-weight="700">SAME LEDGER · SAME SEAL · SAME AUDIT</text>
+      <text x="12" y="276" fill="#1aadd9" font-weight="700">SAME LEDGER · SAME SEAL · SAME AUDIT</text>
     </g>
   </g>
 </svg>
