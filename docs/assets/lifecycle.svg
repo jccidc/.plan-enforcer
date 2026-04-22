@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plan Enforcer developer workflow: describe, discuss, draft and review, work the plan with ledger and hooks, ship with a receipt emitted on close; a crash-proof branch resumes from the ledger when a session dies; a tier dial on the right (advisory, structural, enforced) sets intensity.">
+  <rect x="0" y="0" width="1200" height="560" fill="#0b0d10"/>
+
+  <text x="60" y="42" font-family="monospace" font-size="10" letter-spacing="3" fill="#1aadd9">DEVELOPER WORKFLOW</text>
+  <text x="60" y="82" font-family="sans-serif" font-size="26" font-weight="700" fill="#d8e1ec">One day with Plan Enforcer.</text>
+  <text x="60" y="106" font-family="sans-serif" font-size="14" fill="#6f7a8c">Fuzzy request in, traceable ship out -- intensity is yours to set.</text>
+
+  <g transform="translate(60,150)">
+    <rect x="0" y="0" width="200" height="150" rx="10" fill="#14171c" stroke="#2a2f38" stroke-width="1.5"/>
+    <text x="20" y="30" font-family="monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#1aadd9">STEP 01</text>
+    <text x="20" y="54" font-family="sans-serif" font-size="14" font-weight="700" fill="#d8e1ec">Describe the work</text>
+    <text x="20" y="76" font-family="sans-serif" font-size="11" fill="#6f7a8c">Say what you want in</text>
+    <text x="20" y="92" font-family="sans-serif" font-size="11" fill="#6f7a8c">your own words. Fuzzy</text>
+    <text x="20" y="108" font-family="sans-serif" font-size="11" fill="#6f7a8c">requests welcome.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#2a2f38" stroke-width="1"/>
+    <text x="20" y="138" font-family="monospace" font-size="11" fill="#1aadd9">"clean up auth flow"</text>
+  </g>
+
+  <g transform="translate(290,150)">
+    <rect x="0" y="0" width="200" height="150" rx="10" fill="#14171c" stroke="#1aadd9" stroke-width="1.5"/>
+    <text x="20" y="30" font-family="monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#1aadd9">STEP 02</text>
+    <text x="20" y="54" font-family="sans-serif" font-size="14" font-weight="700" fill="#d8e1ec">Discuss</text>
+    <text x="20" y="76" font-family="sans-serif" font-size="11" fill="#6f7a8c">Turns your words into</text>
+    <text x="20" y="92" font-family="sans-serif" font-size="11" fill="#6f7a8c">a brief: problem, in</text>
+    <text x="20" y="108" font-family="sans-serif" font-size="11" fill="#6f7a8c">scope, out of scope.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#2a2f38" stroke-width="1"/>
+    <text x="20" y="138" font-family="monospace" font-size="11" fill="#1aadd9">:discuss</text>
+  </g>
+
+  <g transform="translate(520,150)">
+    <rect x="0" y="0" width="200" height="150" rx="10" fill="#14171c" stroke="#2a2f38" stroke-width="1.5"/>
+    <text x="20" y="30" font-family="monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#1aadd9">STEP 03</text>
+    <text x="20" y="54" font-family="sans-serif" font-size="14" font-weight="700" fill="#d8e1ec">Draft + review</text>
+    <text x="20" y="76" font-family="sans-serif" font-size="11" fill="#6f7a8c">Concrete plan under</text>
+    <text x="20" y="92" font-family="sans-serif" font-size="11" fill="#6f7a8c">docs/plans/; placeholder</text>
+    <text x="20" y="108" font-family="sans-serif" font-size="11" fill="#6f7a8c">scanner rejects vague.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#2a2f38" stroke-width="1"/>
+    <text x="20" y="138" font-family="monospace" font-size="11" fill="#1aadd9">-draft, -review</text>
+  </g>
+
+  <g transform="translate(750,150)">
+    <rect x="0" y="0" width="200" height="150" rx="10" fill="#14171c" stroke="#2a2f38" stroke-width="1.5"/>
+    <text x="20" y="30" font-family="monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#1aadd9">STEP 04</text>
+    <text x="20" y="54" font-family="sans-serif" font-size="14" font-weight="700" fill="#d8e1ec">Work the plan</text>
+    <text x="20" y="76" font-family="sans-serif" font-size="11" fill="#6f7a8c">Ledger tracks status +</text>
+    <text x="20" y="92" font-family="sans-serif" font-size="11" fill="#6f7a8c">evidence; hooks fire on</text>
+    <text x="20" y="108" font-family="sans-serif" font-size="11" fill="#6f7a8c">every edit per tier.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#2a2f38" stroke-width="1"/>
+    <text x="20" y="138" font-family="monospace" font-size="11" fill="#1aadd9">ledger.md + hooks</text>
+  </g>
+
+  <g transform="translate(750,340)">
+    <rect x="0" y="0" width="200" height="150" rx="10" fill="#14171c" stroke="#3ec07a" stroke-width="1.5"/>
+    <text x="20" y="30" font-family="monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#3ec07a">STEP 05</text>
+    <text x="20" y="54" font-family="sans-serif" font-size="14" font-weight="700" fill="#d8e1ec">Ship + receipt</text>
+    <text x="20" y="76" font-family="sans-serif" font-size="11" fill="#6f7a8c">Every change traces to</text>
+    <text x="20" y="92" font-family="sans-serif" font-size="11" fill="#6f7a8c">a plan step or decision;</text>
+    <text x="20" y="108" font-family="sans-serif" font-size="11" fill="#6f7a8c">close auto-emits receipt.</text>
+    <line x1="20" y1="118" x2="180" y2="118" stroke="#2a2f38" stroke-width="1"/>
+    <text x="20" y="138" font-family="monospace" font-size="11" fill="#3ec07a">chain / audit / receipt</text>
+  </g>
+
+  <g transform="translate(290,340)">
+    <rect x="0" y="0" width="430" height="150" rx="10" fill="#14171c" stroke="#2a2f38" stroke-width="1.5"/>
+    <text x="20" y="30" font-family="monospace" font-size="11" font-weight="700" letter-spacing="3" fill="#e0b04a">CRASH-PROOF . AUTOMATIC</text>
+    <text x="20" y="54" font-family="sans-serif" font-size="14" font-weight="700" fill="#d8e1ec">Session dies? Ledger survives.</text>
+    <text x="20" y="80" font-family="sans-serif" font-size="11" fill="#6f7a8c">The next session reads the ledger, sees which tasks are verified</text>
+    <text x="20" y="96" font-family="sans-serif" font-size="11" fill="#6f7a8c">and which are pending, and resumes at the right row. No</text>
+    <text x="20" y="112" font-family="sans-serif" font-size="11" fill="#6f7a8c">re-planning, no re-doing finished work, no "starting fresh."</text>
+    <line x1="20" y1="125" x2="410" y2="125" stroke="#2a2f38" stroke-width="1"/>
+    <text x="20" y="142" font-family="monospace" font-size="11" fill="#1aadd9">SessionStart hook . .plan-enforcer/ledger.md</text>
+  </g>
+
+  <g stroke="#2a2f38" stroke-width="2" fill="none">
+    <line x1="262" y1="225" x2="285" y2="225"/>
+    <polygon points="285,221 291,225 285,229" fill="#2a2f38" stroke="none"/>
+    <line x1="492" y1="225" x2="515" y2="225"/>
+    <polygon points="515,221 521,225 515,229" fill="#2a2f38" stroke="none"/>
+    <line x1="722" y1="225" x2="745" y2="225"/>
+    <polygon points="745,221 751,225 745,229" fill="#2a2f38" stroke="none"/>
+    <line x1="850" y1="302" x2="850" y2="335"/>
+    <polygon points="846,335 850,341 854,335" fill="#2a2f38" stroke="none"/>
+  </g>
+
+  <g stroke="#2a2f38" stroke-width="1.5" fill="none">
+    <line x1="750" y1="270" x2="720" y2="340"/>
+    <polygon points="717,335 720,342 724,337" fill="#2a2f38" stroke="none"/>
+  </g>
+
+  <g stroke="#e0b04a" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+    <polyline points="850,490 850,520 160,520 160,302"/>
+    <polygon points="156,302 160,296 164,302" fill="#e0b04a" stroke="none"/>
+  </g>
+  <text x="400" y="515" font-family="monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#e0b04a">ITERATE . NEXT FEATURE</text>
+
+  <g transform="translate(980,150)">
+    <rect x="0" y="0" width="170" height="340" rx="10" fill="#14171c" stroke="#2a2f38" stroke-width="1.5"/>
+    <text x="20" y="32" font-family="monospace" font-size="12" font-weight="700" letter-spacing="2" fill="#d8e1ec">TIER DIAL</text>
+    <text x="20" y="52" font-family="sans-serif" font-size="11" fill="#6f7a8c">Intensity is your call.</text>
+
+    <g transform="translate(20,78)">
+      <circle cx="6" cy="6" r="5" fill="#3ec07a"/>
+      <text x="22" y="10" font-family="sans-serif" font-size="13" font-weight="700" fill="#3ec07a">advisory</text>
+      <text x="22" y="28" font-family="sans-serif" font-size="11" fill="#6f7a8c">Audit-only. Logs</text>
+      <text x="22" y="43" font-family="sans-serif" font-size="11" fill="#6f7a8c">everything, blocks</text>
+      <text x="22" y="58" font-family="sans-serif" font-size="11" fill="#6f7a8c">nothing. Learning.</text>
+    </g>
+
+    <g transform="translate(20,158)">
+      <circle cx="6" cy="6" r="5" fill="#e0b04a"/>
+      <text x="22" y="10" font-family="sans-serif" font-size="13" font-weight="700" fill="#e0b04a">structural</text>
+      <text x="22" y="28" font-family="sans-serif" font-size="11" fill="#6f7a8c">Warns on drift,</text>
+      <text x="22" y="43" font-family="sans-serif" font-size="11" fill="#6f7a8c">blocks hard breaks.</text>
+      <text x="22" y="58" font-family="sans-serif" font-size="11" fill="#6f7a8c">Default.</text>
+    </g>
+
+    <g transform="translate(20,238)">
+      <circle cx="6" cy="6" r="5" fill="#b480d8"/>
+      <text x="22" y="10" font-family="sans-serif" font-size="13" font-weight="700" fill="#b480d8">enforced</text>
+      <text x="22" y="28" font-family="sans-serif" font-size="11" fill="#6f7a8c">Blocks every</text>
+      <text x="22" y="43" font-family="sans-serif" font-size="11" fill="#6f7a8c">unplanned edit</text>
+      <text x="22" y="58" font-family="sans-serif" font-size="11" fill="#6f7a8c">until logged. CI.</text>
+    </g>
+
+    <text x="20" y="320" font-family="monospace" font-size="11" fill="#1aadd9">plan-enforcer-config</text>
+  </g>
+
+  <text x="60" y="545" font-family="sans-serif" font-size="11" fill="#6f7a8c">Same surface, three volume levels. Start advisory, graduate to structural, flip to enforced when it matters.</text>
+</svg>
