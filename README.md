@@ -36,19 +36,19 @@ plan-enforcer discuss "..."
 
 ## 02 / The Custody Chain
 
-Plan Enforcer's job is to keep one continuous trail from the original ask to the repo state that shipped. That trail has six stages, and every stage produces a file. When the chain breaks -- when scope narrows silently, when a decision happens but is never written down, when a session resumes from cold context, when work is called done before the repo agrees -- you can point at exactly which file is missing or wrong.
+Plan Enforcer's job is to keep one continuous trail from the original ask to the repo state that shipped. That trail has seven stages, and every stage produces a file. When the chain breaks -- when scope narrows silently, when a decision happens but is never written down, when a session resumes from cold context, when work is called done before the repo agrees, when the close leaves no receipt -- you can point at exactly which file is missing or wrong.
 
-![Six ledger rows for the stages ask, plan, exec, decide, verify, and land, each row showing the file path it produces and a short description of what it captures.](docs/assets/custody-chain.svg)
+![Seven ledger rows for the stages ask, plan, exec, decide, verify, land, and receipt, each row showing the file path it produces and a short description of what it captures.](docs/assets/custody-chain.svg)
 
-> Read this top to bottom and the product story falls out. `ask.md` and `plan.md` defend meaning before code is touched. `ledger.md` tracks every step against that plan. `decisions.md` catches deviations under a typed schema. `verify.md` and `closure.md` are how you can tell the work actually closed. Closures are emitted automatically by the `plan-close` hook and can be requested explicitly via `plan-enforcer-receipt`; each receipt lands in `.plan-enforcer/proof/` and links to the one before it, so the closure history walks as a chain.
+> Read this top to bottom and the product story falls out. `ask.md` and `plan.md` defend meaning before code is touched. `ledger.md` tracks every step against that plan. `decisions.md` catches deviations under a typed schema. `verify.md` and `closure.md` are how you can tell the work actually closed. The final stage, `receipt`, auto-emits a `closure-<plan-slug>-<utc-iso>.md` into `.plan-enforcer/proof/`; each receipt links to the one before it for the same plan, so the closure history walks as a chain instead of a directory of loose files.
 
 ---
 
 ## 03 / Three Layers
 
-The six-stage chain comes from three layers stacked beneath it. Authorship owns the move from raw ask to frozen plan. Execution owns the moment-to-moment fidelity of work against that plan. Truth owns the closing handshake -- decisions logged, repo state reconciled, closure receipt written. No layer can silently absorb another, which is what makes the chain survive an agent's drift.
+The seven-stage chain comes from three layers stacked beneath it. Authorship owns the move from raw ask to frozen plan. Execution owns the moment-to-moment fidelity of work against that plan. Truth owns the closing handshake and the post-close audit trail -- decisions logged, repo state reconciled, closure written, receipt emitted into the walkable chain. No layer can silently absorb another, which is what makes the chain survive an agent's drift.
 
-![Three horizontal layer bands -- authorship, execution, truth -- each highlighting which of the six chain stages it owns and listing the files it produces.](docs/assets/three-layers.svg)
+![Three horizontal layer bands -- authorship, execution, truth -- each highlighting which of the seven chain stages it owns and listing the files it produces.](docs/assets/three-layers.svg)
 
 > Authorship cannot claim execution's job; execution cannot skip the truth handshake. That separation is what an autonomous agent under context pressure cannot quietly collapse.
 
