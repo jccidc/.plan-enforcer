@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The six stages of Plan Enforcer custody as ledger rows -- ask, plan, exec, decide, verify, land -- each producing a named file on disk.">
-  <rect width="720" height="420" fill="#0b0d10"/>
+<svg viewBox="0 0 720 485" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The seven stages of Plan Enforcer custody as ledger rows -- ask, plan, exec, decide, verify, land, receipt -- each producing a named file on disk.">
+  <rect width="720" height="485" fill="#0b0d10"/>
 
   <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
-    <text x="20" y="20" fill="#1aadd9">THE CUSTODY CHAIN . SIX STAGES</text>
-    <text x="700" y="20" text-anchor="end" fill="#6f7a8c">SIX FILES</text>
+    <text x="20" y="20" fill="#1aadd9">THE CUSTODY CHAIN . SEVEN STAGES</text>
+    <text x="700" y="20" text-anchor="end" fill="#6f7a8c">SEVEN FILES</text>
   </g>
 
   <g transform="translate(20,40)" font-family="ui-monospace,Menlo,Consolas,monospace">
@@ -55,6 +55,14 @@
       <text x="14" y="34" font-size="13" font-weight="700" fill="#d8e1ec">.plan-enforcer/closure.md</text>
       <text x="14" y="50" font-size="11" fill="#6f7a8c">repo sha matches plan contract</text>
       <text x="666" y="34" text-anchor="end" font-size="11" fill="#3ec07a">closed</text>
+    </g>
+    <g transform="translate(0,378)">
+      <rect width="680" height="55" fill="#14171c" stroke="#e0b04a" stroke-width="2"/>
+      <rect x="0" y="0" width="4" height="55" fill="#e0b04a"/>
+      <text x="14" y="16" font-size="9" letter-spacing="3" fill="#e0b04a">STAGE 07 . RECEIPT</text>
+      <text x="14" y="34" font-size="13" font-weight="700" fill="#d8e1ec">.plan-enforcer/proof/closure-&lt;slug&gt;-&lt;utc-iso&gt;.md</text>
+      <text x="14" y="50" font-size="11" fill="#6f7a8c">auto-emitted on close; links to prior receipt in the chain</text>
+      <text x="666" y="34" text-anchor="end" font-size="11" fill="#e0b04a">emitted</text>
     </g>
   </g>
 </svg>
