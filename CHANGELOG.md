@@ -2,6 +2,12 @@
 
 All notable changes to Plan Enforcer are captured here.
 
+## [0.1.2] -- 2026-04-22
+
+### Fixed
+
+- **Closed plans now graduate out of the active slot.** Previously the `plan-close.js` PostToolUse hook emitted a closure receipt on natural close but left `.plan-enforcer/ledger.md` in place, which meant the statusline kept showing the final `N/N verified` count across sessions and the active slot never cleared for the next plan. The hook now mirrors the abandon flow's close behavior: after emitting the receipt, it archives the transformed ledger to `.plan-enforcer/archive/<iso>-<slug>.md` and removes the active ledger via `cleanupWorkingFiles`. The statusline's witness-requirement (v0.1.1) then clears the tag automatically. Added `tests/plan-close-hook.test.js` "archives the ledger and removes active copy on close-transition" asserting the full lifecycle.
+
 ## [0.1.1] -- 2026-04-22
 
 ### Fixed

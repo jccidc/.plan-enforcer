@@ -164,4 +164,27 @@ describe('plan-close hook', () => {
     await waitForProof(dir, 4000);
     assert.equal(proofFiles(dir).length, 1);
   });
+
+  it('archives the ledger and removes active copy on close-transition', async () => {
+    const dir = mkProject();
+    writeLedger(dir, [
+      { id: 'T1', name: 'work', status: 'verified', evidence: 'ok' }
+    ]);
+    const ledgerPath = path.join(dir, '.plan-enforcer', 'ledger.md');
+    const archiveDir = path.join(dir, '.plan-enforcer', 'archive');
+    assert.equal(fs.existsSync(ledgerPath), true, 'precondition: ledger exists');
+
+    runHook(dir, { tool_name: 'Edit', tool_input: { file_path: ledgerPath } });
+    await waitForProof(dir, 4000);
+
+    // Receipt was emitted into proof dir.
+    assert.equal(proofFiles(dir).length, 1);
+    // Active ledger is gone -- graduated out of the active slot.
+    assert.equal(fs.existsSync(ledgerPath), false, 'active ledger should be removed after close');
+    // Archive entry was written.
+    const archives = fs.existsSync(archiveDir)
+      ? fs.readdirSync(archiveDir).filter((n) => n.endsWith('.md'))
+      : [];
+    assert.ok(archives.length >= 1, 'at least one archive entry should exist');
+  });
 });

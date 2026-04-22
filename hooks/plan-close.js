@@ -2,10 +2,16 @@
 // Plan Enforcer -- PostToolUse close-transition detector.
 //
 // Fires after ledger edits. When the last non-terminal row flips to a
-// terminal status (verified / skipped / blocked / superseded), the hook
-// spawns src/receipt-cli.js to emit a closure receipt. Idempotent on no-op
-// edits via a .last-close-hash sidecar. Hook errors never block the user's
-// ledger edit -- catastrophic failures log to stderr and exit 0.
+// terminal status (verified / skipped / blocked / superseded), the hook:
+//   1. emits a closure receipt via src/receipt-cli.js (walkable chain);
+//   2. archives the ledger to .plan-enforcer/archive/<iso>-<slug>.md and
+//      removes the active .plan-enforcer/ledger.md so the statusline
+//      clears and the next discuss / import starts from a clean slot;
+//   3. records the closure hash in .last-close-hash so a repeat edit on
+//      the same final state (should one occur before step 2 runs) does
+//      not re-emit.
+// Hook errors never block the user's ledger edit -- catastrophic failures
+// log to stderr and exit 0.
 
 const fs = require('fs');
 const path = require('path');
@@ -181,7 +187,50 @@ function main() {
 
   emitReceipt(projectRoot);
   writeHashFile(hashPath, currentHash);
+  archiveClosedLedger(projectRoot, content);
   return 0;
+}
+
+function archiveClosedLedger(projectRoot, ledgerContent) {
+  try {
+    const repoArchive = path.join(projectRoot, 'src', 'archive.js');
+    const repoParser = path.join(projectRoot, 'src', 'ledger-parser.js');
+    const homeArchive = path.join(
+      process.env.HOME || process.env.USERPROFILE || '',
+      '.claude', 'skills', 'plan-enforcer', 'src', 'archive.js'
+    );
+    const homeParser = path.join(
+      process.env.HOME || process.env.USERPROFILE || '',
+      '.claude', 'skills', 'plan-enforcer', 'src', 'ledger-parser.js'
+    );
+    const archivePath = fs.existsSync(homeArchive) ? homeArchive : repoArchive;
+    const parserPath = fs.existsSync(homeParser) ? homeParser : repoParser;
+    if (!fs.existsSync(archivePath) || !fs.existsSync(parserPath)) {
+      process.stderr.write(`plan-close: archive helpers not found; skipping archive step\n`);
+      return false;
+    }
+    const { archiveLedger, cleanupWorkingFiles } = require(archivePath);
+    const { parseLedger } = require(parserPath);
+    const enforcerDir = path.join(projectRoot, '.plan-enforcer');
+
+    let tier = 'structural';
+    try {
+      const configPath = path.join(enforcerDir, 'config.md');
+      if (fs.existsSync(configPath)) {
+        const raw = fs.readFileSync(configPath, 'utf8');
+        const m = raw.match(/^tier:\s*([a-z]+)\s*$/mi);
+        if (m && m[1]) tier = m[1].toLowerCase();
+      }
+    } catch (_e) { /* default */ }
+
+    const stats = parseLedger(ledgerContent);
+    archiveLedger(enforcerDir, ledgerContent, stats, tier, new Date());
+    cleanupWorkingFiles(enforcerDir);
+    return true;
+  } catch (err) {
+    process.stderr.write(`plan-close: archive failed: ${err.message || err}\n`);
+    return false;
+  }
 }
 
 module.exports = {
@@ -195,6 +244,7 @@ module.exports = {
   readHashFile,
   writeHashFile,
   emitReceipt,
+  archiveClosedLedger,
   main
 };
 
