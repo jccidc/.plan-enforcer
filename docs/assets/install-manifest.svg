@@ -1,76 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="What install.sh wires up: hooks, skills, bin, state directory">
-  <rect width="960" height="360" fill="#141211"/>
-  <rect x="0" y="0" width="960" height="26" fill="#141211"/>
-  <rect x="0" y="26" width="960" height="2" fill="#c9342a"/>
+  <rect width="960" height="360" fill="#111214"/>
+  <rect x="0" y="0" width="960" height="26" fill="#111214"/>
+  <rect x="0" y="26" width="960" height="2" fill="#1aadd9"/>
   <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
-    <text x="20" y="18" fill="#c9342a">FIG. 02</text>
-    <text x="480" y="18" text-anchor="middle" fill="#ede4d3">INSTALL WIRES FOUR SURFACES INTO THE REPO</text>
-    <text x="940" y="18" text-anchor="end" fill="#c9bfa8">T+60s</text>
+    <text x="20" y="18" fill="#1aadd9">FIG. 02</text>
+    <text x="480" y="18" text-anchor="middle" fill="#d0d6f0">INSTALL WIRES FOUR SURFACES INTO THE REPO</text>
+    <text x="940" y="18" text-anchor="end" fill="#a5aacc">T+60s</text>
   </g>
 
   <g transform="translate(24,56)">
-    <rect width="280" height="280" fill="#0b0a09" stroke="#c9342a" stroke-width="1"/>
-    <rect width="280" height="22" fill="#141211"/>
-    <text x="10" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="2" fill="#c9bfa8">~/my-repo $</text>
-    <circle cx="262" cy="11" r="3" fill="#c9342a"/>
-    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#ede4d3">
-      <text x="14" y="48"><tspan fill="#c9bfa8">$</tspan> git clone jccidc/.plan-enforcer</text>
-      <text x="14" y="66" fill="#7de38a">  cloned.</text>
-      <text x="14" y="90"><tspan fill="#c9bfa8">$</tspan> cd .plan-enforcer</text>
-      <text x="14" y="114"><tspan fill="#c9bfa8">$</tspan> ./install.sh</text>
-      <text x="14" y="132" fill="#7de38a">  hooks       ok</text>
-      <text x="14" y="148" fill="#7de38a">  skills      ok</text>
-      <text x="14" y="164" fill="#7de38a">  bin         ok</text>
-      <text x="14" y="180" fill="#7de38a">  state dir   ok</text>
-      <text x="14" y="204"><tspan fill="#c9bfa8">$</tspan> plan-enforcer doctor</text>
-      <text x="14" y="222" fill="#7de38a">  structural · ready</text>
-      <text x="14" y="246"><tspan fill="#c9bfa8">$</tspan> plan-enforcer discuss \</text>
-      <text x="30" y="262" fill="#ede4d3">"migrate auth to OIDC"</text>
+    <rect width="280" height="280" fill="#090a0b" stroke="#1aadd9" stroke-width="1"/>
+    <rect width="280" height="22" fill="#111214"/>
+    <text x="10" y="15" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="2" fill="#a5aacc">~/my-repo $</text>
+    <circle cx="262" cy="11" r="3" fill="#1aadd9"/>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#d0d6f0">
+      <text x="14" y="48"><tspan fill="#a5aacc">$</tspan> git clone jccidc/.plan-enforcer</text>
+      <text x="14" y="66" fill="#3caf5e">  cloned.</text>
+      <text x="14" y="90"><tspan fill="#a5aacc">$</tspan> cd .plan-enforcer</text>
+      <text x="14" y="114"><tspan fill="#a5aacc">$</tspan> ./install.sh</text>
+      <text x="14" y="132" fill="#3caf5e">  hooks       ok</text>
+      <text x="14" y="148" fill="#3caf5e">  skills      ok</text>
+      <text x="14" y="164" fill="#3caf5e">  bin         ok</text>
+      <text x="14" y="180" fill="#3caf5e">  state dir   ok</text>
+      <text x="14" y="204"><tspan fill="#a5aacc">$</tspan> plan-enforcer doctor</text>
+      <text x="14" y="222" fill="#3caf5e">  structural · ready</text>
+      <text x="14" y="246"><tspan fill="#a5aacc">$</tspan> plan-enforcer discuss \</text>
+      <text x="30" y="262" fill="#d0d6f0">"migrate auth to OIDC"</text>
     </g>
   </g>
 
-  <g transform="translate(314,180)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#c9342a">
-    <line x1="0" y1="0" x2="100" y2="0" stroke="#c9342a" stroke-width="1.5"/>
-    <polygon points="100,-5 112,0 100,5" fill="#c9342a"/>
+  <g transform="translate(314,180)" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#1aadd9">
+    <line x1="0" y1="0" x2="100" y2="0" stroke="#1aadd9" stroke-width="1.5"/>
+    <polygon points="100,-5 112,0 100,5" fill="#1aadd9"/>
     <text x="56" y="-10" text-anchor="middle">INSTALL</text>
-    <text x="56" y="22" text-anchor="middle" fill="#c9bfa8">writes to</text>
+    <text x="56" y="22" text-anchor="middle" fill="#a5aacc">writes to</text>
   </g>
 
   <g transform="translate(440,56)">
-    <rect width="496" height="280" fill="#ede4d3"/>
-    <rect width="496" height="26" fill="#d9cfb7"/>
-    <text x="14" y="17" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#0b0a09">ARTIFACT MANIFEST · install.sh</text>
-    <text x="482" y="17" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#0b0a09">4 surfaces</text>
+    <rect width="496" height="280" fill="#d0d6f0"/>
+    <rect width="496" height="26" fill="#b4b9dc"/>
+    <text x="14" y="17" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3" fill="#090a0b">ARTIFACT MANIFEST · install.sh</text>
+    <text x="482" y="17" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="2" fill="#090a0b">4 surfaces</text>
 
-    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#0b0a09">
+    <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11" fill="#090a0b">
       <g transform="translate(0,40)">
-        <rect x="0" y="0" width="4" height="56" fill="#6ab0ff"/>
-        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#6ab0ff">HOOKS</text>
+        <rect x="0" y="0" width="4" height="56" fill="#ffd26a"/>
+        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#ffd26a">HOOKS</text>
         <text x="16" y="36" font-weight="700">.claude/hooks/*</text>
-        <text x="16" y="50" font-size="9" fill="#3d3224">SessionStart · PreToolUse · Stop</text>
-        <text x="482" y="36" text-anchor="end" font-size="9" fill="#3d3224">6 scripts</text>
+        <text x="16" y="50" font-size="9" fill="#212a3f">SessionStart · PreToolUse · Stop</text>
+        <text x="482" y="36" text-anchor="end" font-size="9" fill="#212a3f">6 scripts</text>
       </g>
       <g transform="translate(0,100)">
-        <rect x="0" y="0" width="4" height="56" fill="#f0a500"/>
-        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#9a6a00">SKILLS</text>
+        <rect x="0" y="0" width="4" height="56" fill="#0023f0"/>
+        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#00169a">SKILLS</text>
         <text x="16" y="36" font-weight="700">.claude/skills/plan-enforcer-*</text>
-        <text x="16" y="50" font-size="9" fill="#3d3224">discuss · draft · review · execute · verify</text>
-        <text x="482" y="36" text-anchor="end" font-size="9" fill="#3d3224">5 skills</text>
+        <text x="16" y="50" font-size="9" fill="#212a3f">discuss · draft · review · execute · verify</text>
+        <text x="482" y="36" text-anchor="end" font-size="9" fill="#212a3f">5 skills</text>
       </g>
       <g transform="translate(0,160)">
-        <rect x="0" y="0" width="4" height="56" fill="#7de38a"/>
-        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#2d5c33">BIN</text>
+        <rect x="0" y="0" width="4" height="56" fill="#3caf5e"/>
+        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#612850">BIN</text>
         <text x="16" y="36" font-weight="700">bin/plan-enforcer</text>
-        <text x="16" y="50" font-size="9" fill="#3d3224">doctor · import · ledger · seal</text>
-        <text x="482" y="36" text-anchor="end" font-size="9" fill="#3d3224">1 CLI</text>
+        <text x="16" y="50" font-size="9" fill="#212a3f">doctor · import · ledger · seal</text>
+        <text x="482" y="36" text-anchor="end" font-size="9" fill="#212a3f">1 CLI</text>
       </g>
       <g transform="translate(0,220)">
-        <rect x="0" y="0" width="4" height="56" fill="#c9342a"/>
-        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#c9342a">STATE</text>
+        <rect x="0" y="0" width="4" height="56" fill="#1aadd9"/>
+        <text x="16" y="18" font-size="9" letter-spacing="2" fill="#1aadd9">STATE</text>
         <text x="16" y="36" font-weight="700">.plan-enforcer/</text>
-        <text x="16" y="50" font-size="9" fill="#3d3224">ask · plan · exec · decisions · verify · closure</text>
-        <text x="482" y="36" text-anchor="end" font-size="9" fill="#3d3224">ledger root</text>
+        <text x="16" y="50" font-size="9" fill="#212a3f">ask · plan · exec · decisions · verify · closure</text>
+        <text x="482" y="36" text-anchor="end" font-size="9" fill="#212a3f">ledger root</text>
       </g>
     </g>
   </g>
