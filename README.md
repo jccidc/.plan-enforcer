@@ -109,6 +109,51 @@ This lifecycle shows how Plan Enforcer turns a fuzzy request into a durable ship
 
 ---
 
+## 08 / Commands
+
+Every command is available as both a bin (`plan-enforcer-<name>`) and through the `plan-enforcer` dispatcher (`plan-enforcer <name>`). The Claude Code slash equivalents are listed where they exist. Full reference: [docs/cli.md](docs/cli.md).
+
+**Authorship -- before code is touched**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-discuss` | Capture intent into a structured packet (`.plan-enforcer/discuss.md`). Locks scope before drafting so plans are built against what the user actually meant. Slash: `/plan-enforcer-discuss`. |
+| `plan-enforcer-draft` | Consume the discuss packet and write a concrete markdown plan under `docs/plans/`. Must-haves + ordered tasks + per-task verification. Slash: `/plan-enforcer-draft`. |
+| `plan-enforcer-review` | Check plan quality (anti-rationalization rules, coverage vs must-haves) before execution. Slash: `/plan-enforcer-review`. |
+
+**Execution -- tracking work against the plan**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer` | Dispatcher and executor. Activates a plan file into a ledger at `.plan-enforcer/ledger.md` and enforces status / evidence / decision discipline as work proceeds. Slash: `/plan-enforcer`. |
+| `plan-enforcer-import` | Seed the ledger from an already-written plan file (GSD phase, Superpowers plan, freeform `.md`). One normalized row shape regardless of source. |
+| `plan-enforcer-status` | Print the current scoreboard -- done / verified / skipped / blocked / drift -- plus the active task. Slash: `/plan-enforcer-status`. |
+
+**Mid-flight -- when things shift**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-abandon --reason "<why>"` | Retire the active plan in one shot. Marks remaining rows superseded, logs the pivot to the Decision Log, emits a closure receipt into the walkable chain, archives the full ledger to `.plan-enforcer/archive/`, and clears the active slot. `--reason` is required. Slash: `/plan-enforcer-abandon`. |
+| `plan-enforcer-logs` | Show the full audit trail: skipped tasks, drift events, decision log, reconciliation history, unverified items. Slash: `/plan-enforcer-logs`. |
+
+**Close -- proof and audit**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-receipt` | Emit a closure receipt against the current ledger on demand. Auto-emission on plan close is handled by the `plan-close` hook; this command is for mid-flight snapshots or explicit audit points. Slash: `/plan-enforcer-receipt`. |
+| `plan-enforcer-report` | Summarize a closed run or list archived plans. No args lists every archive entry; pass an archive path to render a specific one. Slash: `/plan-enforcer-report`. |
+
+**Utilities**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-config` | Switch tier (`advisory` / `structural` / `enforced`), adjust reconciliation interval, or inspect current config. Slash: `/plan-enforcer-config`. |
+| `plan-enforcer-doctor` | Install / onboarding self-check. Verifies hooks, skills, bin wrappers, state directory. |
+
+Advanced: `plan-enforcer-audit`, `plan-enforcer-chain`, `plan-enforcer-verify`, `plan-enforcer-why`, `plan-enforcer-lint`, `plan-enforcer-export`, `plan-enforcer-awareness`, `plan-enforcer-phase-verify` are available for power users -- see [docs/cli.md](docs/cli.md).
+
+---
+
 ## Proof and Provenance
 
 The proof pack documents how Plan Enforcer behaves on real work in this repo:

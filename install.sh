@@ -425,7 +425,7 @@ if command -v node &>/dev/null; then
   elif [[ "$TIER" == "structural" ]]; then
     # Structural: auto-activation + hard-integrity guards only
     merge_with_node_structural "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
-    HOOKS_INSTALLED="statusLine + SessionStart + UserPromptSubmit + PreToolUse(delete/ledger) + PostToolUse(evidence) -> $SETTINGS_PATH"
+    HOOKS_INSTALLED="statusLine + SessionStart + UserPromptSubmit + PreToolUse(delete/ledger) + PostToolUse(evidence/plan-close) -> $SETTINGS_PATH"
   else
     # Enforced: full hook bundle
     merge_with_node "$SETTINGS_PATH" "$HOOKS_DIR_ESCAPED" "$STATUSLINE_FALLBACK"
