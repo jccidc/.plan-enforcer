@@ -6,6 +6,7 @@
 // Reason); v2 are 5-cell (ID, Type, Scope, Reason, Evidence).
 
 const VALID_D_TYPES = new Set(['deviation', 'unplanned', 'delete', 'pivot', 'override']);
+const TERMINAL_STATUSES = new Set(['verified', 'skipped', 'blocked', 'superseded']);
 const TASK_ID_PATTERN = 'T\\d+[A-Za-z0-9]*';
 
 function derivePlanScope(source) {
@@ -314,6 +315,7 @@ function formatLogsReport(ledger) {
 
 module.exports = {
   derivePlanScope,
+  TERMINAL_STATUSES,
   VALID_D_TYPES,
   formatLogsReport,
   formatStatusReport,

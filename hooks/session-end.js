@@ -7,13 +7,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseMetadata, parseTaskRows } = require('../src/ledger-parser');
+const { parseMetadata, parseTaskRows, TERMINAL_STATUSES } = require('../src/ledger-parser');
 const { loadAwarenessState, orphanIntents } = require('../src/awareness');
 const { readConfig } = require('../src/config');
 const { assessExecutedVerification } = require('../src/executed-verification');
 const { decide, shouldBlock } = require('../src/tier');
-
-const TERMINAL_STATUSES = new Set(['verified', 'skipped', 'blocked', 'superseded']);
 
 function unfinishedRows(rows) {
   return rows.filter((r) => !TERMINAL_STATUSES.has(r.status));

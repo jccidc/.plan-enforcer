@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { parseMetadata, parseTaskRows } = require('./ledger-parser');
+const { parseMetadata, parseTaskRows, TERMINAL_STATUSES } = require('./ledger-parser');
 
 const STATUSLINE_STATE_FILE = 'statusline-state.json';
 const DISCUSS_PACKET = 'discuss.md';
@@ -293,13 +293,29 @@ function stateMatchesSession(state, opts = {}) {
   return true;
 }
 
+function ledgerIsClosed(ledgerContent) {
+  const rows = parseTaskRows(ledgerContent);
+  const active = rows.filter((row) => row.status !== 'superseded');
+  // active-empty = nothing to report (all-superseded OR truly empty table).
+  // Treat both as "not a live plan" so the statusline falls through instead
+  // of rendering a stale "0/0" or "N/N superseded" tag.
+  if (active.length === 0) return true;
+  return active.every((row) => TERMINAL_STATUSES.has(row.status));
+}
+
 function inferStatuslineState(opts = {}) {
   const paths = resolveStatuslinePaths(opts);
 
-  // 1. Ledger on disk is authoritative -- derive stage from it.
+  // 1. Ledger on disk is authoritative -- derive stage from it, UNLESS the
+  //    ledger is closed (every active row terminal). A closed ledger is not
+  //    a witness for the progress tag; fall through to the authorship-stage
+  //    checks below (PI2 fallthrough, v0.1.4).
   if (fs.existsSync(paths.ledgerPath)) {
     try {
-      return buildTaskStatuslineState(fs.readFileSync(paths.ledgerPath, 'utf8'));
+      const content = fs.readFileSync(paths.ledgerPath, 'utf8');
+      if (!ledgerIsClosed(content)) {
+        return buildTaskStatuslineState(content);
+      }
     } catch (_error) {}
   }
 
@@ -316,12 +332,17 @@ function inferStatuslineState(opts = {}) {
     if (localDiscussState) return localDiscussState;
   }
 
-  // 3. Same witness requirement applies to bridged-session paths.
+  // 3. Same witness requirement applies to bridged-session paths. A closed
+  //    bridged ledger falls through to the bridged-discuss check identically
+  //    to the local-ledger branch above.
   const bridgedPaths = resolveBridgedStatuslinePaths(opts);
   if (bridgedPaths && normalizePathForCompare(bridgedPaths.projectRoot) !== normalizePathForCompare(paths.projectRoot)) {
     if (fs.existsSync(bridgedPaths.ledgerPath)) {
       try {
-        return buildTaskStatuslineState(fs.readFileSync(bridgedPaths.ledgerPath, 'utf8'));
+        const bridgedContent = fs.readFileSync(bridgedPaths.ledgerPath, 'utf8');
+        if (!ledgerIsClosed(bridgedContent)) {
+          return buildTaskStatuslineState(bridgedContent);
+        }
       } catch (_error) {}
     }
     const bridgedHasDiscuss = fs.existsSync(bridgedPaths.discussPath) || fs.existsSync(bridgedPaths.legacyDiscussPath);
@@ -345,6 +366,7 @@ module.exports = {
   captureStatuslineSessionBridge,
   clearStatuslineState,
   hasDiscussPacket,
+  ledgerIsClosed,
   readDiscussPacketState,
   inferStatuslineState,
   readStatuslineState,

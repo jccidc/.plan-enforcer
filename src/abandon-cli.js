@@ -15,7 +15,8 @@ const {
   parseMetadata,
   parseTaskRows,
   parseDecisionLog,
-  parseLedger
+  parseLedger,
+  TERMINAL_STATUSES
 } = require('./ledger-parser');
 const {
   archiveLedger,
@@ -23,7 +24,6 @@ const {
 } = require('./archive');
 const receipt = require('./receipt-cli');
 
-const TERMINAL_STATUSES = new Set(['verified', 'skipped', 'blocked', 'superseded']);
 const EVIDENCE_REASON_MAX = 40;
 
 // ---------------------------------------------------------------------------

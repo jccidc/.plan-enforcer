@@ -15,10 +15,10 @@ const {
   parseLedger,
   parseMetadata,
   parseReconciliationHistory,
-  parseTaskRows
+  parseTaskRows,
+  TERMINAL_STATUSES
 } = require('./ledger-parser');
 
-const TERMINAL_STATUSES = new Set(['verified', 'skipped', 'blocked', 'superseded']);
 const PENDING_STATUSES = (status) => !TERMINAL_STATUSES.has(status);
 
 // Section order rendered by renderReceipt. Each entry names the heading and

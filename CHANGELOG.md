@@ -2,6 +2,24 @@
 
 All notable changes to Plan Enforcer are captured here.
 
+## [0.1.4] -- 2026-04-22
+
+### Fixed
+
+- **Closed ledger no longer renders as in-progress.** `inferStatuslineState` now treats a ledger whose every active (non-superseded) row is terminal as a non-witness for the progress tag. When a closed ledger is the only backing artifact on disk, the function returns `null` and the statusline stops rendering `[ENFORCER: N/N verified]` on every new prompt. When a closed ledger AND a discuss packet coexist (new authorship session entered against a prior-session closure), the function falls through to the authorship-stage witness path and renders `[ENFORCER: 1-DISCUSS]` as expected (PI2 fallthrough). All-superseded and empty-active ledgers fall through identically. Render-layer only; no ledger is moved, renamed, or deleted by this change, and v0.1.2's close-transition auto-archive path is preserved. Added six new cases to `tests/statusline-stage-clears.test.js` covering closed-no-discuss, closed-with-discuss, all-terminal-with-blocked, all-superseded, mixed-with-pending, and closed-with-stored-3-EXECUTE permutations.
+
+### Refactored
+
+- **`TERMINAL_STATUSES` is now exported from one canonical location.** `src/ledger-parser.js` is the single source of truth; `hooks/plan-close.js`, `hooks/session-end.js`, `src/abandon-cli.js`, `src/receipt-cli.js`, and `src/statusline-state.js` all import the shared set. Eliminates drift risk of any one site diverging the definition of what "terminal" means for a ledger row.
+
+### Docs
+
+- **`docs/known-issues.md` demoted the closed-ledger entry.** This is the first "issue resolved, demoted from backlog" turn in the repo and establishes the convention: resolved entries leave the tracker and the resolution is captured here instead. A short angle 2 note (the `/plan-enforcer-discuss --retire-prior` opt-in flag) remains in `docs/known-issues.md` as a future candidate; it was evaluated and deliberately not built for this release -- v0.1.4's render-path fix covers the bug at every entry point without action-at-a-distance semantics on discuss.
+
+### Verified
+
+- Commit SHA and re-install stamp recorded at close of T8 below.
+
 ## [0.1.3] -- 2026-04-22
 
 ### Fixed

@@ -16,8 +16,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-
-const TERMINAL_STATUSES = new Set(['verified', 'skipped', 'blocked', 'superseded']);
+const { TERMINAL_STATUSES } = require('../src/ledger-parser');
 
 function safeExit(code) {
   try {
