@@ -1,0 +1,29 @@
+{
+  "scenario_id": "plan-only",
+  "system": "native",
+  "judge": "",
+  "scores": {
+    "clarity": 0,
+    "verification_rigor": 0,
+    "dependency_ordering": 0,
+    "scope_control": 0,
+    "execution_faithfulness": 0,
+    "evidence_quality": 0,
+    "crash_continuity": 0,
+    "efficiency": 0
+  },
+  "penalties": {
+    "silent_plan_mutation": 0,
+    "false_completion": 0,
+    "silent_skip": 0,
+    "missing_evidence": 0
+  },
+  "totals": {
+    "raw": 0,
+    "penalty_points": 0,
+    "final": 0
+  },
+  "findings": [
+    ""
+  ]
+}

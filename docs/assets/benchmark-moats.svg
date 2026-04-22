@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two-panel benchmark summary: on the left, integrity penalty points where lower is better (Plan Enforcer 0, GSD 3, Superpowers 10); on the right, carryover ladder total where higher is better (Plan Enforcer 276, GSD 205, Superpowers 209).">
+  <rect x="0" y="0" width="960" height="420" fill="#0b0d10"/>
+
+  <g font-family="monospace">
+    <text x="20" y="22" font-size="10" letter-spacing="3" fill="#1aadd9">BENCHMARK MOATS</text>
+    <text x="940" y="22" text-anchor="end" font-size="10" letter-spacing="2" fill="#6f7a8c">26 retained scorecards . lab run 2026-04-17</text>
+  </g>
+  <line x1="0" y1="32" x2="960" y2="32" stroke="#1aadd9" stroke-width="1"/>
+
+  <line x1="480" y1="64" x2="480" y2="376" stroke="#2a2f38" stroke-width="1" stroke-dasharray="2 6"/>
+
+  <g font-family="monospace">
+    <text x="20" y="70" font-size="10" letter-spacing="3" fill="#3ec07a">INTEGRITY PENALTIES</text>
+    <text x="460" y="70" text-anchor="end" font-size="9" letter-spacing="2" fill="#6f7a8c">LOWER IS BETTER</text>
+    <text x="20" y="100" font-family="sans-serif" font-size="22" font-weight="700" fill="#d8e1ec">Zero judge hits.</text>
+
+    <g transform="translate(20,130)">
+      <text x="0" y="14" font-size="10" letter-spacing="2" fill="#3ec07a">PLAN ENFORCER</text>
+      <rect x="140" y="2" width="280" height="16" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <text x="430" y="14" font-family="sans-serif" font-size="13" font-weight="700" fill="#3ec07a">0</text>
+    </g>
+
+    <g transform="translate(20,168)">
+      <text x="0" y="14" font-size="10" letter-spacing="2" fill="#d8e1ec">GSD</text>
+      <rect x="140" y="2" width="280" height="16" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="140" y="2" width="84" height="16" fill="#e0b04a"/>
+      <text x="430" y="14" font-family="sans-serif" font-size="13" font-weight="700" fill="#e0b04a">3</text>
+    </g>
+
+    <g transform="translate(20,206)">
+      <text x="0" y="14" font-size="10" letter-spacing="2" fill="#d8e1ec">SUPERPOWERS</text>
+      <rect x="140" y="2" width="280" height="16" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="140" y="2" width="280" height="16" fill="#e0b04a"/>
+      <text x="430" y="14" font-family="sans-serif" font-size="13" font-weight="700" fill="#e0b04a">10</text>
+    </g>
+
+    <g transform="translate(20,250)" font-size="10" fill="#6f7a8c">
+      <text x="0" y="14" letter-spacing="2" fill="#d8e1ec">PENALTY BREAKDOWN</text>
+      <text x="0" y="34">silent_plan_mutation   <tspan fill="#3ec07a">0</tspan> / <tspan fill="#6f7a8c">0</tspan> / <tspan fill="#6f7a8c">0</tspan></text>
+      <text x="0" y="50">false_completion       <tspan fill="#3ec07a">0</tspan> / <tspan fill="#6f7a8c">0</tspan> / <tspan fill="#e0b04a">1</tspan></text>
+      <text x="0" y="66">silent_skip            <tspan fill="#3ec07a">0</tspan> / <tspan fill="#e0b04a">1</tspan> / <tspan fill="#e0b04a">6</tspan></text>
+      <text x="0" y="82">missing_evidence       <tspan fill="#3ec07a">0</tspan> / <tspan fill="#e0b04a">2</tspan> / <tspan fill="#e0b04a">3</tspan></text>
+      <text x="0" y="102" fill="#6f7a8c">columns: plan-enforcer / gsd / superpowers</text>
+    </g>
+  </g>
+
+  <g font-family="monospace">
+    <text x="500" y="70" font-size="10" letter-spacing="3" fill="#3ec07a">CARRYOVER LADDER</text>
+    <text x="940" y="70" text-anchor="end" font-size="9" letter-spacing="2" fill="#6f7a8c">HIGHER IS BETTER</text>
+    <text x="500" y="100" font-family="sans-serif" font-size="22" font-weight="700" fill="#d8e1ec">Contract holds.</text>
+
+    <g transform="translate(500,130)">
+      <text x="0" y="14" font-size="10" letter-spacing="2" fill="#3ec07a">PLAN ENFORCER</text>
+      <rect x="140" y="2" width="280" height="16" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="140" y="2" width="276" height="16" fill="#3ec07a"/>
+      <text x="430" y="14" font-family="sans-serif" font-size="13" font-weight="700" fill="#3ec07a">276</text>
+    </g>
+
+    <g transform="translate(500,168)">
+      <text x="0" y="14" font-size="10" letter-spacing="2" fill="#d8e1ec">GSD</text>
+      <rect x="140" y="2" width="280" height="16" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="140" y="2" width="205" height="16" fill="#6f7a8c"/>
+      <text x="430" y="14" font-family="sans-serif" font-size="13" font-weight="700" fill="#d8e1ec">205</text>
+    </g>
+
+    <g transform="translate(500,206)">
+      <text x="0" y="14" font-size="10" letter-spacing="2" fill="#d8e1ec">SUPERPOWERS</text>
+      <rect x="140" y="2" width="280" height="16" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="140" y="2" width="209" height="16" fill="#6f7a8c"/>
+      <text x="430" y="14" font-family="sans-serif" font-size="13" font-weight="700" fill="#d8e1ec">209</text>
+    </g>
+
+    <g transform="translate(500,250)" font-size="10" fill="#6f7a8c">
+      <text x="0" y="14" letter-spacing="2" fill="#d8e1ec">LADDER BY SCENARIO</text>
+      <text x="0" y="34">H  <tspan fill="#3ec07a">16/16</tspan>   I  <tspan fill="#3ec07a">24/24</tspan>   J  <tspan fill="#3ec07a">28/28</tspan>   K  <tspan fill="#3ec07a">32/32</tspan></text>
+      <text x="0" y="50">K-resume  <tspan fill="#3ec07a">32/32</tspan>   L  <tspan fill="#3ec07a">40/40</tspan>   M  <tspan fill="#3ec07a">48/48</tspan>   N  <tspan fill="#3ec07a">56/56</tspan></text>
+      <text x="0" y="70" fill="#6f7a8c">plan-enforcer all-pass across H through N</text>
+      <text x="0" y="86" fill="#6f7a8c">gsd + superpowers partial on every rung</text>
+      <text x="0" y="102" fill="#6f7a8c">total: 276 / 205 / 209  (+35% / +32% over field)</text>
+    </g>
+  </g>
+
+  <line x1="0" y1="388" x2="960" y2="388" stroke="#2a2f38" stroke-width="1"/>
+  <g font-family="monospace" font-size="9" letter-spacing="2" fill="#6f7a8c">
+    <text x="20" y="406">SOURCE . docs/proof/benchmark-side-by-side.md</text>
+    <text x="940" y="406" text-anchor="end" fill="#3ec07a">ZERO PENALTY . FULL CARRYOVER</text>
+  </g>
+</svg>

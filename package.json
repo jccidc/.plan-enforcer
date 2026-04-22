@@ -1,0 +1,51 @@
+{
+  "name": "plan-enforcer",
+  "version": "0.1.0",
+  "description": "Prevent AI coding agents from drifting, skipping, or silently dropping steps from implementation plans",
+  "keywords": [
+    "claude-code",
+    "ai-agent",
+    "plan-enforcement",
+    "task-tracking",
+    "skill"
+  ],
+  "author": "jccidc",
+  "license": "MIT",
+  "bin": {
+    "plan-enforcer-discuss": "src/discuss-cli.js",
+    "plan-enforcer": "src/plan-enforcer-cli.js",
+    "plan-enforcer-abandon": "src/abandon-cli.js",
+    "plan-enforcer-awareness": "src/awareness-cli.js",
+    "plan-enforcer-audit": "src/audit-cli.js",
+    "plan-enforcer-chain": "src/chain-cli.js",
+    "plan-enforcer-config": "src/config-cli.js",
+    "plan-enforcer-doctor": "src/doctor-cli.js",
+    "plan-enforcer-export": "src/export-cli.js",
+    "plan-enforcer-import": "src/import-cli.js",
+    "plan-enforcer-lint": "src/lint-cli.js",
+    "plan-enforcer-logs": "src/logs-cli.js",
+    "plan-enforcer-report": "src/report-cli.js",
+    "plan-enforcer-review": "src/review-cli.js",
+    "plan-enforcer-phase-verify": "src/phase-verify-cli.js",
+    "plan-enforcer-receipt": "src/receipt-cli.js",
+    "plan-enforcer-status": "src/status-cli.js",
+    "plan-enforcer-verify": "src/verify-cli.js",
+    "plan-enforcer-why": "src/why-cli.js"
+  },
+  "scripts": {
+    "test": "node scripts/run-tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jccidc/.plan-enforcer"
+  },
+  "files": [
+    "skills/",
+    "hooks/",
+    "src/",
+    "docs/",
+    "install.sh",
+    "setup.sh",
+    "uninstall.sh"
+  ]
+}

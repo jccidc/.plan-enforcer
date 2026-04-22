@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three layers -- authorship, execution, truth -- each owning a phase of the seven-stage custody chain, with the files each layer produces.">
+  <rect width="720" height="420" fill="#0b0d10"/>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="20" y="20" fill="#1aadd9">THREE LAYERS . ONE CUSTODY CHAIN</text>
+  </g>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9" letter-spacing="3" fill="#6f7a8c">
+    <text x="68" y="54" text-anchor="middle">ASK</text>
+    <text x="165" y="54" text-anchor="middle">PLAN</text>
+    <text x="262" y="54" text-anchor="middle">EXEC</text>
+    <text x="359" y="54" text-anchor="middle">DECIDE</text>
+    <text x="456" y="54" text-anchor="middle">VERIFY</text>
+    <text x="553" y="54" text-anchor="middle">LAND</text>
+    <text x="650" y="54" text-anchor="middle">RECEIPT</text>
+  </g>
+  <line x1="20" y1="62" x2="700" y2="62" stroke="#2a2f38" stroke-width="1"/>
+
+  <g transform="translate(20,76)">
+    <rect width="680" height="100" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+    <rect x="0" y="0" width="4" height="100" fill="#1aadd9"/>
+    <rect x="6" y="0" width="188" height="100" fill="#1aadd9" opacity="0.10"/>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace">
+      <text x="14" y="22" font-size="10" letter-spacing="3" fill="#1aadd9">LAYER 01 . AUTHORSHIP</text>
+      <text x="14" y="46" font-size="13" font-weight="700" fill="#d8e1ec">defends meaning before code is touched</text>
+      <text x="14" y="66" font-size="11" fill="#6f7a8c">discuss -> draft -> review</text>
+      <text x="14" y="84" font-size="11" fill="#6f7a8c">produces: discuss.md, plan.md</text>
+    </g>
+  </g>
+
+  <g transform="translate(20,184)">
+    <rect width="680" height="100" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+    <rect x="0" y="0" width="4" height="100" fill="#e0b04a"/>
+    <rect x="194" y="0" width="97" height="100" fill="#e0b04a" opacity="0.10"/>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace">
+      <text x="14" y="22" font-size="10" letter-spacing="3" fill="#e0b04a">LAYER 02 . EXECUTION</text>
+      <text x="14" y="46" font-size="13" font-weight="700" fill="#d8e1ec">tracks every step against the plan</text>
+      <text x="14" y="66" font-size="11" fill="#6f7a8c">ledger rows, status lifecycle, evidence column</text>
+      <text x="14" y="84" font-size="11" fill="#6f7a8c">produces: ledger.md</text>
+    </g>
+  </g>
+
+  <g transform="translate(20,292)">
+    <rect width="680" height="100" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+    <rect x="0" y="0" width="4" height="100" fill="#3ec07a"/>
+    <rect x="291" y="0" width="389" height="100" fill="#3ec07a" opacity="0.10"/>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace">
+      <text x="14" y="22" font-size="10" letter-spacing="3" fill="#3ec07a">LAYER 03 . TRUTH</text>
+      <text x="14" y="46" font-size="13" font-weight="700" fill="#d8e1ec">closes only when repo matches plan</text>
+      <text x="14" y="66" font-size="11" fill="#6f7a8c">decision log, verification, closure, receipt chain</text>
+      <text x="14" y="84" font-size="11" fill="#6f7a8c">produces: decisions.md, verify.md, closure.md, proof/closure-*.md</text>
+    </g>
+  </g>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="20" y="408" fill="#6f7a8c">EACH LAYER . ONE GUARANTEE . NAMED FILES</text>
+  </g>
+</svg>

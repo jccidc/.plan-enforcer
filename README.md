@@ -1,0 +1,169 @@
+# Plan Enforcer
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Works with Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code-orange.svg)](https://claude.ai/code)
+[![Node.js >=18](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
+
+**Chain-of-custody control for AI coding.**
+
+Plan Enforcer is the control and accountability layer beneath AI-assisted implementation. It gives drifting agent work a real ledger, a real decision trail, and a real chain of custody from original ask to landed repo state.
+
+Keep your planner. Keep your IDE. Keep your workflow.
+
+Plan Enforcer exists to make agent work **fidelity-preserving, accountable, and cold-reviewable**.
+
+![Before and after: on the left, a wavy drift line shows an ask that slides into a vague landed state; on the right, five crisp stage pills -- ask, plan, exec, verify, land -- connect in a clean chain.](docs/assets/intro-drift-vs-fidelity.svg)
+
+---
+
+It runs as Claude Code hooks and skills, writes everything to a few named files in your repo, and intervenes when the agent tries to skip a step, drop a decision, or claim work is done before the repo agrees.
+
+![Same week of work in the same repo: a messy wip-fix-revert git log on the left, a clean stage-tagged ledger of commits on the right.](docs/assets/hero-git-log.svg)
+
+> Two git logs from the same week of work, same repo. On the left, wip-fix-revert is the entire story; nothing points back to an original ask, nothing names a decision. On the right, every commit carries the stage it belongs to and every stage points at a file you can open. Same effort, different chain of custody.
+
+---
+
+## 01 / Install
+
+Sixty seconds. One ledger. Requires [Claude Code](https://claude.ai/code) and [Node.js >= 18](https://nodejs.org).
+
+```bash
+git clone https://github.com/jccidc/.plan-enforcer.git
+cd .plan-enforcer
+./install.sh
+```
+
+`install.sh` wires four surfaces into the repo and writes nothing outside of it: the Claude Code hooks, the Plan Enforcer skill set, the `plan-enforcer` CLI, and a state directory at `.plan-enforcer/`. After install, run `plan-enforcer doctor` to confirm the wire-up, then open your first plan with `plan-enforcer discuss "..."` or seed an existing one with `plan-enforcer import docs/plans/<file>.md`. If `doctor` reports missing project config, that is onboarding state -- not a broken install.
+
+![Terminal session: clone, install.sh confirming hooks, skills, bin, and state dir; doctor reporting ready; a first discuss call writing discuss.md.](docs/assets/install.svg)
+
+> The four `ok` lines are the entire installation footprint. Nothing runs in the background, nothing reaches outside the repo, and every byte that lands lives inside paths you can read.
+
+---
+
+## 02 / The Custody Chain
+
+Plan Enforcer's job is to keep one continuous trail from the original ask to the repo state that shipped. That trail has seven stages, and every stage produces a file. When the chain breaks -- when scope narrows silently, when a decision happens but is never written down, when a session resumes from cold context, when work is called done before the repo agrees, when the close leaves no receipt -- you can point at exactly which file is missing or wrong.
+
+![Seven ledger rows for the stages ask, plan, exec, decide, verify, land, and receipt, each row showing the file path it produces and a short description of what it captures.](docs/assets/custody-chain.svg)
+
+> Read this top to bottom and the product story falls out. `ask.md` and `plan.md` defend meaning before code is touched. `ledger.md` tracks every step against that plan. `decisions.md` catches deviations under a typed schema. `verify.md` and `closure.md` are how you can tell the work actually closed. The final stage, `receipt`, auto-emits a `closure-<plan-slug>-<utc-iso>.md` into `.plan-enforcer/proof/`; each receipt links to the one before it for the same plan, so the closure history walks as a chain instead of a directory of loose files.
+
+---
+
+## 03 / Three Layers
+
+The seven-stage chain comes from three layers stacked beneath it. Authorship owns the move from raw ask to frozen plan. Execution owns the moment-to-moment fidelity of work against that plan. Truth owns the closing handshake and the post-close audit trail -- decisions logged, repo state reconciled, closure written, receipt emitted into the walkable chain. No layer can silently absorb another, which is what makes the chain survive an agent's drift.
+
+![Three horizontal layer bands -- authorship, execution, truth -- each highlighting which of the seven chain stages it owns and listing the files it produces.](docs/assets/three-layers.svg)
+
+> Authorship cannot claim execution's job; execution cannot skip the truth handshake. That separation is what an autonomous agent under context pressure cannot quietly collapse.
+
+---
+
+## 04 / Bring Your Own Plan
+
+You don't need to write plans in any particular format. GSD phases, Superpowers plans, freeform `.md` checklists -- all of them feed `plan-enforcer import` and produce one normalized ledger entry. The format you pick is yours; the audited surface is ours.
+
+```bash
+plan-enforcer import docs/plans/my-plan.md
+```
+
+![Three input plan formats on the left flow through a Plan Enforcer normalizer band into one ledger row on the right.](docs/assets/byo-plan.svg)
+
+> The shape of the row at the right is what gets enforced. Whatever shape your team writes in lands in that shape, every time.
+
+---
+
+## 05 / Best Fit
+
+Plan Enforcer earns its keep when the cost of losing a step is real. It is overhead for one-shot scripting and throwaway prototyping. It is load-bearing when work runs long, when the repo is regulated, when handoffs are routine, and when "done" needs to be defensible to someone who wasn't in the room.
+
+![Five fit dimensions scored as horizontal bars -- duration, risk, auditability, handoff, evidence need -- with a strong-fit profile filling every bar and a less-suited profile leaving them nearly empty.](docs/assets/best-fit.svg)
+
+> Read your project against the five bars. Empty bars mean you would be installing a custody layer you do not need. Filled bars mean you are already paying that cost somewhere -- usually scattered across commit messages, Slack threads, and reconstructed memory.
+
+
+---
+
+## 06 / Benchmarks
+
+Across 26 retained scorecards in the framework-comparison lab, Plan Enforcer carries zero integrity-penalty points -- no silent plan mutation, no false completion, no silent skip, no missing evidence -- while GSD accumulates three and Superpowers ten. On the carryover ladder, where scenarios grow from small asks through large mutating contracts, Plan Enforcer is all-pass from `H` through `N`; GSD and Superpowers are partial on every rung.
+
+![Two-panel benchmark summary: left panel shows integrity penalty points with Plan Enforcer at 0, GSD at 3, Superpowers at 10 (lower is better); right panel shows carryover ladder total with Plan Enforcer at 276, GSD at 205, Superpowers at 209 (higher is better).](docs/assets/benchmark-moats.svg)
+
+> Integrity penalties are judge-scored hits per retained scorecard. Carryover is the ask-fidelity count that survives through mutation, interruption, resume, and re-review. Source: [docs/proof/benchmark-side-by-side.md](docs/proof/benchmark-side-by-side.md).
+
+---
+
+## 07 / Lifecycle 
+
+This lifecycle shows how Plan Enforcer turns a fuzzy request into a durable ship path: Discuss captures scope, Draft + review turn that into a concrete plan, execution runs against a live ledger with hooks tracking status, evidence, and decisions, crash recovery resumes from the correct row instead of starting over, and the final Receipt step closes the loop by generating a complete audit trail of what changed, why it changed, what was verified, and what ultimately shipped. That is why the lifecycle matters so much for continuity: the truth lives on disk, not in chat memory, so crashes, handoffs, interruptions, and late requirement changes do not erase progress or reasoning. If you change your mind mid-plan, `plan-enforcer-abandon --reason "<why>"` is the first-class exit -- it archives the full ledger so you can look it up later and emits a closure receipt so the audit chain still lands.
+
+![The continuity and audit lifecycle: five workflow steps (describe, discuss, draft and review, work the plan, ship with receipt) plus a crash-proof branch and a tier dial showing the advisory, structural, and enforced intensity levels.](docs/assets/lifecycle.svg)
+
+> When AI-assisted implementation has to hold up to those four pressures, Plan Enforcer is what holds it.
+
+---
+
+## 08 / Commands
+
+Every command is available as both a bin (`plan-enforcer-<name>`) and through the `plan-enforcer` dispatcher (`plan-enforcer <name>`). The Claude Code slash equivalents are listed where they exist. Full reference: [docs/cli.md](docs/cli.md).
+
+**Authorship -- before code is touched**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-discuss` | Capture intent into a structured packet (`.plan-enforcer/discuss.md`). Locks scope before drafting so plans are built against what the user actually meant. Slash: `/plan-enforcer-discuss`. |
+| `plan-enforcer-draft` | Consume the discuss packet and write a concrete markdown plan under `docs/plans/`. Must-haves + ordered tasks + per-task verification. Slash: `/plan-enforcer-draft`. |
+| `plan-enforcer-review` | Check plan quality (anti-rationalization rules, coverage vs must-haves) before execution. Slash: `/plan-enforcer-review`. |
+
+**Execution -- tracking work against the plan**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer` | Dispatcher and executor. Activates a plan file into a ledger at `.plan-enforcer/ledger.md` and enforces status / evidence / decision discipline as work proceeds. Slash: `/plan-enforcer`. |
+| `plan-enforcer-import` | Seed the ledger from an already-written plan file (GSD phase, Superpowers plan, freeform `.md`). One normalized row shape regardless of source. |
+| `plan-enforcer-status` | Print the current scoreboard -- done / verified / skipped / blocked / drift -- plus the active task. Slash: `/plan-enforcer-status`. |
+
+**Mid-flight -- when things shift**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-abandon --reason "<why>"` | Retire the active plan in one shot. Marks remaining rows superseded, logs the pivot to the Decision Log, emits a closure receipt into the walkable chain, archives the full ledger to `.plan-enforcer/archive/`, and clears the active slot. `--reason` is required. Slash: `/plan-enforcer-abandon`. |
+| `plan-enforcer-logs` | Show the full audit trail: skipped tasks, drift events, decision log, reconciliation history, unverified items. Slash: `/plan-enforcer-logs`. |
+
+**Close -- proof and audit**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-receipt` | Emit a closure receipt against the current ledger on demand. Auto-emission on plan close is handled by the `plan-close` hook; this command is for mid-flight snapshots or explicit audit points. Slash: `/plan-enforcer-receipt`. |
+| `plan-enforcer-report` | Summarize a closed run or list archived plans. No args lists every archive entry; pass an archive path to render a specific one. Slash: `/plan-enforcer-report`. |
+
+**Utilities**
+
+| Command | What it does |
+| --- | --- |
+| `plan-enforcer-config` | Switch tier (`advisory` / `structural` / `enforced`), adjust reconciliation interval, or inspect current config. Slash: `/plan-enforcer-config`. |
+| `plan-enforcer-doctor` | Install / onboarding self-check. Verifies hooks, skills, bin wrappers, state directory. |
+
+Advanced: `plan-enforcer-audit`, `plan-enforcer-chain`, `plan-enforcer-verify`, `plan-enforcer-why`, `plan-enforcer-lint`, `plan-enforcer-export`, `plan-enforcer-awareness`, `plan-enforcer-phase-verify` are available for power users -- see [docs/cli.md](docs/cli.md).
+
+---
+
+## Proof and Provenance
+
+The proof pack documents how Plan Enforcer behaves on real work in this repo:
+
+- [Public proof map](docs/proof/public-proof.md)
+- [Proof pack index](docs/proof/README.md)
+- [Benchmark summary](docs/proof/benchmark-summary.md)
+- [Carryover proof](docs/proof/carryover-proof.md)
+- [Composability proof](docs/proof/composability-proof.md)
+- [Dogfood proof](docs/proof/dogfood-proof.md)
+- [Roadmap regression](docs/proof/roadmap-regression.md)
+
+Open issues and pull requests are welcome. If your workflow has a real failure mode the proof pack does not surface yet, open an issue with receipts.
+
+MIT. See [LICENSE](LICENSE).

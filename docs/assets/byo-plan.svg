@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three plan formats -- gsd, superpowers, freeform markdown -- flow through Plan Enforcer's normalizer into one ledger row at the right.">
+  <rect width="720" height="360" fill="#0b0d10"/>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="20" y="20" fill="#1aadd9">BRING YOUR OWN PLAN . ONE LEDGER ROW OUT</text>
+  </g>
+
+  <!-- 3 input panels, left -->
+  <g font-family="ui-monospace,Menlo,Consolas,monospace">
+    <g transform="translate(20,50)">
+      <rect width="220" height="74" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="74" fill="#1aadd9"/>
+      <text x="14" y="18" font-size="9" letter-spacing="3" fill="#1aadd9">INPUT 01 . GSD</text>
+      <text x="14" y="38" font-size="13" font-weight="700" fill="#d8e1ec">gsd plan format</text>
+      <text x="14" y="56" font-size="11" fill="#6f7a8c">phases, tasks, must-haves</text>
+      <text x="14" y="70" font-size="11" fill="#6f7a8c">.gsd/PHASE-NN.md</text>
+    </g>
+    <g transform="translate(20,142)">
+      <rect width="220" height="74" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="74" fill="#b480d8"/>
+      <text x="14" y="18" font-size="9" letter-spacing="3" fill="#b480d8">INPUT 02 . SUPERPOWERS</text>
+      <text x="14" y="38" font-size="13" font-weight="700" fill="#d8e1ec">superpowers plan</text>
+      <text x="14" y="56" font-size="11" fill="#6f7a8c">numbered tasks, verification</text>
+      <text x="14" y="70" font-size="11" fill="#6f7a8c">plans/*.md</text>
+    </g>
+    <g transform="translate(20,234)">
+      <rect width="220" height="74" fill="#14171c" stroke="#2a2f38" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="74" fill="#e0b04a"/>
+      <text x="14" y="18" font-size="9" letter-spacing="3" fill="#e0b04a">INPUT 03 . FREEFORM</text>
+      <text x="14" y="38" font-size="13" font-weight="700" fill="#d8e1ec">freeform markdown</text>
+      <text x="14" y="56" font-size="11" fill="#6f7a8c">checklists, headings</text>
+      <text x="14" y="70" font-size="11" fill="#6f7a8c">any *.md you wrote</text>
+    </g>
+  </g>
+
+  <!-- arrows from each input to normalizer -->
+  <g stroke="#2a2f38" stroke-width="1" fill="none">
+    <line x1="240" y1="87" x2="290" y2="180"/>
+    <line x1="240" y1="179" x2="290" y2="180"/>
+    <line x1="240" y1="271" x2="290" y2="180"/>
+  </g>
+
+  <!-- normalizer band (vertical) -->
+  <g transform="translate(290,50)">
+    <rect width="120" height="258" fill="#14171c" stroke="#1aadd9" stroke-width="1"/>
+    <rect x="0" y="0" width="4" height="258" fill="#1aadd9"/>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace">
+      <text x="60" y="40" text-anchor="middle" font-size="9" letter-spacing="3" fill="#1aadd9">NORMALIZER</text>
+      <text x="60" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#d8e1ec">plan-enforcer</text>
+      <text x="60" y="92" text-anchor="middle" font-size="11" font-weight="700" fill="#d8e1ec">import</text>
+      <text x="60" y="138" text-anchor="middle" font-size="9" letter-spacing="2" fill="#6f7a8c">auto-detect</text>
+      <text x="60" y="156" text-anchor="middle" font-size="9" letter-spacing="2" fill="#6f7a8c">format</text>
+      <text x="60" y="190" text-anchor="middle" font-size="9" letter-spacing="2" fill="#6f7a8c">extract</text>
+      <text x="60" y="208" text-anchor="middle" font-size="9" letter-spacing="2" fill="#6f7a8c">tasks</text>
+      <text x="60" y="242" text-anchor="middle" font-size="9" letter-spacing="2" fill="#3ec07a">emit</text>
+    </g>
+  </g>
+
+  <!-- arrow from normalizer to output -->
+  <g stroke="#1aadd9" stroke-width="1.5" fill="none">
+    <line x1="410" y1="180" x2="460" y2="180"/>
+    <polygon points="460,175 472,180 460,185" fill="#1aadd9" stroke="none"/>
+  </g>
+
+  <!-- output: one ledger row -->
+  <g transform="translate(472,140)">
+    <rect width="228" height="80" fill="#14171c" stroke="#3ec07a" stroke-width="2"/>
+    <rect x="0" y="0" width="4" height="80" fill="#3ec07a"/>
+    <g font-family="ui-monospace,Menlo,Consolas,monospace">
+      <text x="14" y="20" font-size="9" letter-spacing="3" fill="#3ec07a">OUTPUT . LEDGER ROW</text>
+      <text x="14" y="40" font-size="13" font-weight="700" fill="#d8e1ec">.plan-enforcer/ledger.md</text>
+      <text x="14" y="58" font-size="11" fill="#6f7a8c">| ID | Task | Status | Evidence |</text>
+      <text x="14" y="72" font-size="11" fill="#6f7a8c">one shape, regardless of source</text>
+    </g>
+  </g>
+
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10" letter-spacing="3">
+    <text x="20" y="345" fill="#6f7a8c">SAME LEDGER . SAME ENFORCEMENT . SAME AUDIT SURFACE</text>
+  </g>
+</svg>

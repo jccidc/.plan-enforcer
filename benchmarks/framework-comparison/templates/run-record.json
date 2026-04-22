@@ -1,0 +1,16 @@
+{
+  "scenario_id": "plan-only",
+  "system": "native",
+  "model": "",
+  "repo": "",
+  "run_started_at": "",
+  "run_finished_at": "",
+  "interrupted": false,
+  "raw_output_file": "",
+  "plan_file": "",
+  "state_file": "",
+  "final_diff_file": "",
+  "notes": [
+    ""
+  ]
+}
