@@ -76,6 +76,10 @@ These are the failure modes the ledger is built to surface and preserve. Each on
 
 > FIG. 05 — Four failure modes, four tiles, four receipts.
 
+![Same week of work, two git logs: messy wip/fix/revert without; named ledger rows with](docs/assets/git-log-diptych.svg)
+
+> FIG. 06 — Same work, same week, same repo. The difference is a ledger on disk.
+
 ---
 
 ## 05 / Bring Your Own Plan
@@ -97,7 +101,7 @@ plan-enforcer import docs/plans/my-plan.md
 
 ![Heterogeneous plans normalized into one ledger entry](docs/assets/workflow.svg)
 
-> FIG. 06 — Whatever plan format you bring, the ledger entry has one shape. That shape is what gets audited.
+> FIG. 07 — Whatever plan format you bring, the ledger entry has one shape. That shape is what gets audited.
 
 Same ledger. Same enforcement layer. Same audit surface. Same closure truth.
 
@@ -123,7 +127,7 @@ Scored on five dimensions: duration, risk, auditability, handoff, evidence need.
 
 ![Fit scored across five dimensions: strong fit vs less suited](docs/assets/best-fit.svg)
 
-> FIG. 07 — Empty bars: you don't need a custody layer. Full bars: you already need one.
+> FIG. 08 — Empty bars: you don't need a custody layer. Full bars: you already need one.
 
 Strong fit:
 - long-running agent work where drift compounds over time
@@ -143,7 +147,7 @@ Less suited:
 
 ![Claim stated narrowly: filed, signed, sealed](docs/assets/claim.svg)
 
-> FIG. 08 — Claim. Three pillars. Filed, signed, sealed.
+> FIG. 09 — Claim. Three pillars. Filed, signed, sealed.
 
 > When AI implementation has to survive scrutiny, mutation, interruption, and final review, Plan Enforcer provides the chain of custody.
 
