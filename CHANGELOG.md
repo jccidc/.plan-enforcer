@@ -18,7 +18,7 @@ All notable changes to Plan Enforcer are captured here.
 
 ### Verified
 
-- Commit SHA and re-install stamp recorded at close of T8 below.
+- Commit `00303c7` -- installed skill at `~/.claude/skills/plan-enforcer` re-synced via `install.sh`; `.installed-from` stamp matches HEAD. Live fixture against the installed module returned `null` for the closed-no-discuss permutation and `1-DISCUSS` for the closed-with-discuss fallthrough.
 
 ## [0.1.3] -- 2026-04-22
 
