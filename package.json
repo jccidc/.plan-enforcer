@@ -26,6 +26,7 @@
     "plan-enforcer-report": "src/report-cli.js",
     "plan-enforcer-review": "src/review-cli.js",
     "plan-enforcer-phase-verify": "src/phase-verify-cli.js",
+    "plan-enforcer-receipt": "src/receipt-cli.js",
     "plan-enforcer-status": "src/status-cli.js",
     "plan-enforcer-verify": "src/verify-cli.js",
     "plan-enforcer-why": "src/why-cli.js"

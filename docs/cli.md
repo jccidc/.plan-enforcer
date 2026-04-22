@@ -94,6 +94,30 @@ quote-provenance issue count. Zero args = active ledger at
 If no active ledger exists, status tells you how to start one:
 `/plan-enforcer <plan-file>` or `plan-enforcer import <plan-file>`.
 
+## plan-enforcer-receipt
+
+```
+plan-enforcer-receipt [options]
+```
+
+Emits a markdown closure receipt against the active ledger. Every
+emission is preserved as its own timestamped file under
+`.plan-enforcer/proof/closure-<plan-slug>-<utc-iso>.md`, and each
+receipt links to its prior closure for the same plan-slug so the
+directory forms a walkable audit chain.
+
+Auto-emission on plan close is handled by the `plan-close.js`
+PostToolUse hook; this CLI is for on-demand emission (mid-flight
+snapshots, backfills, or explicit audit points). Options:
+
+- `--plan-slug <slug>` override slug derived from ledger metadata
+- `--out <path>` write to an explicit path instead of the proof dir
+- `--closed-only` exit non-zero if any task is still pending
+- `--open-ok` tolerate open ledger (default)
+- `--help` print usage
+
+On success the CLI prints the receipt path to stdout and exits 0.
+
 ## plan-enforcer-logs
 
 ```

@@ -83,7 +83,7 @@ for settings_file in "$GLOBAL_SETTINGS" "$PROJECT_SETTINGS"; do
   fi
 done
 
-for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
+for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-receipt plan-enforcer-report; do
   target="$SKILLS_DIR/$skill"
   if [[ -d "$target" ]]; then
     rm -rf "$target"
@@ -91,7 +91,7 @@ for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforc
   fi
 done
 
-for command in plan-enforcer plan-enforcer-discuss plan-enforcer-awareness plan-enforcer-audit plan-enforcer-chain plan-enforcer-config plan-enforcer-doctor plan-enforcer-export plan-enforcer-import plan-enforcer-lint plan-enforcer-logs plan-enforcer-report plan-enforcer-review plan-enforcer-phase-verify plan-enforcer-status plan-enforcer-verify plan-enforcer-why; do
+for command in plan-enforcer plan-enforcer-discuss plan-enforcer-awareness plan-enforcer-audit plan-enforcer-chain plan-enforcer-config plan-enforcer-doctor plan-enforcer-export plan-enforcer-import plan-enforcer-lint plan-enforcer-logs plan-enforcer-receipt plan-enforcer-report plan-enforcer-review plan-enforcer-phase-verify plan-enforcer-status plan-enforcer-verify plan-enforcer-why; do
   for target in "$CLI_BIN_DIR/$command" "$CLI_BIN_DIR/$command.cmd"; do
     if [[ -f "$target" ]]; then
       rm -f "$target"

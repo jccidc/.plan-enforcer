@@ -73,6 +73,8 @@ pre-hook material: treat them as `source: pre-capture` for verification.
 | I47 | close truth-surface work only when default report highlights the newest clean closure without requiring the operator to specify a file path | manual | 2026-04-20 |
 | I48 | rebuild, dark theme, get creative with the svgs | manual | 2026-04-22 |
 | I49 | this readme needs help.. these svgs are tough to read and the look is odd, it has no flow, what do yousuggest | manual | 2026-04-22 |
+| I50 | 100% make it skill level. and a command / plan-enforcer-recipt to call whenever | manual | 2026-04-22 |
+| I51 | Wait, what made you generate the closure recipt? thats awesome | manual | 2026-04-22 |
 
 ## Restate rows
 
