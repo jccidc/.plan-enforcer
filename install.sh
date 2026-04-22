@@ -69,7 +69,7 @@ fi
 
 mkdir -p "$SKILLS_DIR"
 
-for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-report; do
+for skill in plan-enforcer plan-enforcer-discuss plan-enforcer-draft plan-enforcer-review plan-enforcer-status plan-enforcer-logs plan-enforcer-config plan-enforcer-receipt plan-enforcer-report; do
   src="$SCRIPT_DIR/skills/$skill"
   dest="$SKILLS_DIR/$skill"
   if [[ ! -d "$src" ]]; then
@@ -84,7 +84,7 @@ done
 
 HOOKS_DEST="$SKILLS_DIR/plan-enforcer/hooks"
 mkdir -p "$HOOKS_DEST"
-for hook in evidence-gate.js post-tool.js session-start.js session-end.js statusline.js user-message.js chain-guard.js delete-guard.js ledger-schema-guard.js; do
+for hook in evidence-gate.js post-tool.js plan-close.js session-start.js session-end.js statusline.js user-message.js chain-guard.js delete-guard.js ledger-schema-guard.js; do
   src="$SCRIPT_DIR/hooks/$hook"
   if [[ ! -f "$src" ]]; then
     echo "Warning: $src not found, skipping"
@@ -97,7 +97,7 @@ done
 
 SRC_DEST="$SKILLS_DIR/plan-enforcer/src"
 mkdir -p "$SRC_DEST"
-for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-stage-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
+for module in archive.js audit.js audit-cli.js awareness.js awareness-cli.js awareness-parser.js chain.js chain-cli.js config.js config-cli.js doctor-cli.js discuss-cli.js evidence.js executed-verification.js export-cli.js git-worktree.js import-cli.js ledger-parser.js ledger-row-removal.js lint-cli.js logs-cli.js partial-ledger-edit.js phase-verify-cli.js plan-analyzer.js plan-analyzer-cli.js plan-detector.js plan-enforcer-cli.js plan-review.js planned-files.js placeholder-scan.js receipt-cli.js report-cli.js review-cli.js schema-migrate.js status-cli.js statusline-stage-cli.js statusline-state.js tier.js verify-cli.js why.js why-cli.js; do
   src="$SCRIPT_DIR/src/$module"
   if [[ ! -f "$src" ]]; then
     echo "Warning: $src not found, skipping"
@@ -251,6 +251,7 @@ const userPromptCmd = `node "${hooksDir}/user-message.js"`;
 const deleteGuardCmd = `node "${hooksDir}/delete-guard.js"`;
 const ledgerSchemaGuardCmd = `node "${hooksDir}/ledger-schema-guard.js"`;
 const evidenceCmd = `node "${hooksDir}/evidence-gate.js"`;
+const planCloseCmd = `node "${hooksDir}/plan-close.js"`;
 
 settings.hooks.SessionStart = settings.hooks.SessionStart || [];
 const existingSessionCmds = new Set();
@@ -309,12 +310,20 @@ if (!existingPostToolCmds.has(evidenceCmd)) {
     }]
   });
 }
+if (!existingPostToolCmds.has(planCloseCmd)) {
+  settings.hooks.PostToolUse.push({
+    hooks: [{
+      type: 'command',
+      command: planCloseCmd
+    }]
+  });
+}
 
 fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
 console.log(`  statusLine: ${statuslineCmd}`);
 console.log(`  updated hooks in ${settingsPath}`);
-console.log('  enabled: SessionStart, UserPromptSubmit, PreToolUse(delete/ledger), PostToolUse(evidence)');
+console.log('  enabled: SessionStart, UserPromptSubmit, PreToolUse(delete/ledger), PostToolUse(evidence/plan-close)');
 NODEEOF
 }
 
@@ -363,6 +372,7 @@ settings.hooks = settings.hooks || {};
 const sessionCmd = `node "${hooksDir}/session-start.js"`;
 const evidenceCmd = `node "${hooksDir}/evidence-gate.js"`;
 const postCmd = `node "${hooksDir}/post-tool.js"`;
+const planCloseCmd = `node "${hooksDir}/plan-close.js"`;
 const endCmd = `node "${hooksDir}/session-end.js"`;
 const userPromptCmd = `node "${hooksDir}/user-message.js"`;
 const chainGuardCmd = `node "${hooksDir}/chain-guard.js"`;
@@ -385,6 +395,7 @@ addHook('SessionStart', sessionCmd, { statusMessage: 'Plan Enforcer: checking fo
 addHook('UserPromptSubmit', userPromptCmd);
 addHook('PostToolUse', evidenceCmd);
 addHook('PostToolUse', postCmd);
+addHook('PostToolUse', planCloseCmd);
 addHook('SessionEnd', endCmd);
 addHook('PreToolUse', chainGuardCmd);
 addHook('PreToolUse', deleteGuardCmd);
@@ -432,7 +443,7 @@ else
     echo '    "command": "node ~/.claude/skills/plan-enforcer/hooks/statusline.js"'
     echo '  }'
   elif [[ "$TIER" == "structural" ]]; then
-    HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit + PreToolUse(delete/ledger) + PostToolUse(evidence)"
+    HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit + PreToolUse(delete/ledger) + PostToolUse(evidence/plan-close)"
     echo '  "statusLine": {'
     echo '    "type": "command",'
     echo '    "command": "node ~/.claude/skills/plan-enforcer/hooks/statusline.js"'
@@ -441,7 +452,7 @@ else
     echo '    "SessionStart": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/session-start.js", "statusMessage": "Plan Enforcer: checking for active plan..."}]}],'
     echo '    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/user-message.js"}]}],'
     echo '    "PreToolUse":   [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/delete-guard.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/ledger-schema-guard.js"}]}],'
-    echo '    "PostToolUse":  [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/evidence-gate.js"}]}]'
+    echo '    "PostToolUse":  [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/evidence-gate.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/plan-close.js"}]}]'
     echo '  }'
   else
     HOOKS_INSTALLED="MANUAL -- add statusLine + SessionStart + UserPromptSubmit + PreToolUse + PostToolUse + SessionEnd"
@@ -453,7 +464,7 @@ else
     echo '    "SessionStart": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/session-start.js", "statusMessage": "Plan Enforcer: checking for active plan..."}]}],'
     echo '    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/user-message.js"}]}],'
     echo '    "PreToolUse":   [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/chain-guard.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/delete-guard.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/ledger-schema-guard.js"}]}],'
-    echo '    "PostToolUse":  [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/evidence-gate.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/post-tool.js"}]}],'
+    echo '    "PostToolUse":  [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/evidence-gate.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/post-tool.js"}]}, {"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/plan-close.js"}]}],'
     echo '    "SessionEnd":   [{"hooks": [{"type": "command", "command": "node ~/.claude/skills/plan-enforcer/hooks/session-end.js"}]}]'
     echo '  }'
   fi

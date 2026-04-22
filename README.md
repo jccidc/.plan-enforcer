@@ -40,7 +40,7 @@ Plan Enforcer's job is to keep one continuous trail from the original ask to the
 
 ![Six ledger rows for the stages ask, plan, exec, decide, verify, and land, each row showing the file path it produces and a short description of what it captures.](docs/assets/custody-chain.svg)
 
-> Read this top to bottom and the product story falls out. `ask.md` and `plan.md` defend meaning before code is touched. `ledger.md` tracks every step against that plan. `decisions.md` catches deviations under a typed schema. `verify.md` and `closure.md` are how you can tell the work actually closed.
+> Read this top to bottom and the product story falls out. `ask.md` and `plan.md` defend meaning before code is touched. `ledger.md` tracks every step against that plan. `decisions.md` catches deviations under a typed schema. `verify.md` and `closure.md` are how you can tell the work actually closed. Closures are emitted automatically by the `plan-close` hook and can be requested explicitly via `plan-enforcer-receipt`; each receipt lands in `.plan-enforcer/proof/` and links to the one before it, so the closure history walks as a chain.
 
 ---
 
