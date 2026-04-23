@@ -2,6 +2,15 @@
 
 All notable changes to Plan Enforcer are captured here.
 
+## [0.1.5] -- 2026-04-23
+
+### Fixed
+
+- **Statusline no longer leaks state across projects.** When you `cd` from a project with an open plan up to a parent dir (e.g. `~/projects/`), the statusline used to keep rendering the prior project's progress tag (`[ENFORCER: 0/17]` while sitting in an unrelated folder). Two root causes were fixed together:
+  - The project-root resolver treated any directory named `.plan-enforcer` as a state dir, even if it held only repo artifacts (`src/`, `package.json`) and no actual plan-enforcer files. A new `isPlanEnforcerStateDir` helper now requires at least one of `config.md`, `ledger.md`, `discuss.md`, `combobulate.md`, `archive/`, or `statusline-state.json` before treating the directory as state. A repo folder that happens to be named `.plan-enforcer` (e.g. the staging repo of this project) is no longer mistaken for a state dir of its parent.
+  - The session bridge preserved the prior project's root whenever the new cwd had no local `.plan-enforcer`. That leaked the last-active project into unrelated dirs. The bridge now only preserves when the new cwd is a descendant of the prior project (e.g. `cd src/` inside it). Siblings, parents, and unrelated dirs drop the bridge. `resolveBridgedStatuslinePaths` gained a matching `isInside(cwd, bridgedRoot)` guard so a stray bridge file can't re-enable the tag from a directory the user has already left.
+- Added five new cases to `tests/statusline-stage-clears.test.js` covering the ancestor-cwd regression, the state-dir guard, the descendant-cwd preservation, the pure `isInside` helper, and the bare-repo-dir edge case. Full affected suite (97 tests) still green.
+
 ## [0.1.4] -- 2026-04-22
 
 ### Fixed

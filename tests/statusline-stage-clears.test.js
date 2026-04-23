@@ -4,7 +4,13 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const { inferStatuslineState } = require('../src/statusline-state');
+const {
+  inferStatuslineState,
+  captureStatuslineSessionBridge,
+  isPlanEnforcerStateDir,
+  isInside,
+  STATUSLINE_SESSION_BRIDGE
+} = require('../src/statusline-state');
 
 function mkProject() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-statusline-'));
@@ -171,5 +177,81 @@ describe('closed-ledger witness handling (v0.1.4)', () => {
     const state = inferStatuslineState({ cwd: dir, sessionId: 'sess1' });
     // No discuss packet: closed ledger falls through, no witness, should be null.
     assert.equal(state, null, 'closed-ledger fallthrough should not re-enable the stale stored label path');
+  });
+});
+
+describe('cross-project isolation (v0.1.5)', () => {
+  function clearBridge() {
+    try { fs.unlinkSync(STATUSLINE_SESSION_BRIDGE); } catch (_e) {}
+  }
+
+  it('isPlanEnforcerStateDir: rejects a .plan-enforcer directory with no state artifacts (bare repo dir)', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-bare-'));
+    assert.equal(isPlanEnforcerStateDir(dir), false, 'empty dir must not count as a state dir');
+    fs.mkdirSync(path.join(dir, 'src'));
+    fs.writeFileSync(path.join(dir, 'package.json'), '{}');
+    assert.equal(isPlanEnforcerStateDir(dir), false, 'repo-shaped dir without plan-enforcer artifacts must not count');
+    fs.writeFileSync(path.join(dir, 'config.md'), 'tier: structural\n');
+    assert.equal(isPlanEnforcerStateDir(dir), true, 'once config.md exists, counts as a state dir');
+  });
+
+  it('isInside: ancestor of bridged root is NOT considered inside', () => {
+    assert.equal(isInside('/a/b', '/a/b/project'), false, 'parent must not be treated as inside a child project');
+    assert.equal(isInside('/a/b/project', '/a/b/project'), true, 'equal paths are inside');
+    assert.equal(isInside('/a/b/project/src', '/a/b/project'), true, 'descendant is inside');
+    assert.equal(isInside('/a/b/other', '/a/b/project'), false, 'sibling is not inside');
+  });
+
+  it('does NOT render a state when cwd is a parent of the bridged project (bug 1 regression)', () => {
+    clearBridge();
+    // Bridged project A has an open ledger.
+    const { dir: projectA, enforcer: enforcerA } = mkProject();
+    writeLedgerRows(enforcerA, [
+      { id: 'T1', status: 'pending', evidence: '' },
+      { id: 'T2', status: 'pending', evidence: '' }
+    ]);
+    // Capture the bridge pointing at projectA.
+    captureStatuslineSessionBridge({ session_id: 's1', workspace: { current_dir: projectA } });
+
+    // Now user cd's to parent directory (which is a generic projects dir).
+    const parent = path.dirname(projectA);
+    const state = inferStatuslineState({ cwd: parent, sessionId: 's1' });
+    assert.equal(state, null, 'statusline must not render project A state when cwd is above it');
+
+    clearBridge();
+  });
+
+  it('still renders the bridged state when cwd is a descendant of the bridged project', () => {
+    clearBridge();
+    const { dir: projectA, enforcer: enforcerA } = mkProject();
+    writeLedgerRows(enforcerA, [
+      { id: 'T1', status: 'pending', evidence: '' }
+    ]);
+    captureStatuslineSessionBridge({ session_id: 's2', workspace: { current_dir: projectA } });
+
+    // User cd's into a subdir (e.g., src/); that's still "inside" the project.
+    const sub = path.join(projectA, 'src');
+    fs.mkdirSync(sub, { recursive: true });
+    const state = inferStatuslineState({ cwd: sub, sessionId: 's2' });
+    assert.ok(state, 'descendant cwd should still pick up the bridged project stage');
+
+    clearBridge();
+  });
+
+  it('treats a bare .plan-enforcer directory (no artifacts) as if it were absent', () => {
+    clearBridge();
+    // Mimic the staging-repo edge case: a directory literally named
+    // `.plan-enforcer` sitting under a parent, containing only a repo
+    // (e.g., src/, package.json) -- not plan-enforcer state.
+    const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'pe-parent-'));
+    const bare = path.join(parent, '.plan-enforcer');
+    fs.mkdirSync(bare, { recursive: true });
+    fs.writeFileSync(path.join(bare, 'package.json'), '{}');
+    fs.mkdirSync(path.join(bare, 'src'));
+
+    const state = inferStatuslineState({ cwd: parent, sessionId: 'sx' });
+    assert.equal(state, null, 'a non-state .plan-enforcer dir must not trigger any render at parent cwd');
+
+    clearBridge();
   });
 });

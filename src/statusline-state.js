@@ -20,13 +20,32 @@ function resolveProjectHome() {
   }
 }
 
+// A directory named `.plan-enforcer` only counts as a project state dir
+// when it actually holds plan-enforcer state artifacts. Prevents a repo
+// folder named `.plan-enforcer` from being treated as its parent dir's
+// state dir (v0.1.5 fix).
+function isPlanEnforcerStateDir(dir) {
+  if (!dir) return false;
+  const markers = ['config.md', 'ledger.md', 'archive', 'statusline-state.json', 'discuss.md', 'combobulate.md'];
+  for (const name of markers) {
+    try {
+      if (fs.existsSync(path.join(dir, name))) return true;
+    } catch (_error) {}
+  }
+  return false;
+}
+
+function hasPlanEnforcerState(dir) {
+  return isPlanEnforcerStateDir(path.join(dir, '.plan-enforcer'));
+}
+
 function resolveProjectRoot(startDir = process.cwd()) {
   const initial = path.resolve(startDir);
   const homePath = resolveProjectHome();
   let current = initial;
   const rootPath = path.parse(current).root;
 
-  if (fs.existsSync(path.join(current, '.plan-enforcer'))) {
+  if (hasPlanEnforcerState(current)) {
     return current;
   }
 
@@ -36,7 +55,7 @@ function resolveProjectRoot(startDir = process.cwd()) {
     }
     if (
       current !== initial &&
-      fs.existsSync(path.join(current, '.plan-enforcer'))
+      hasPlanEnforcerState(current)
     ) {
       return current;
     }
@@ -52,6 +71,19 @@ function resolveProjectRoot(startDir = process.cwd()) {
   }
 
   return path.resolve(startDir);
+}
+
+// Returns true when `cwd` is the same as or a descendant of `root`.
+// Used to gate session-bridge preservation and bridged-path rendering:
+// once the user cd's to a parent or sibling of the bridged project,
+// stop rendering that project's stage (v0.1.5 fix).
+function isInside(cwd, root) {
+  if (!cwd || !root) return false;
+  const a = normalizePathForCompare(cwd);
+  const b = normalizePathForCompare(root);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  return a.startsWith(b + '/');
 }
 
 function resolveStatuslinePaths(opts = {}) {
@@ -130,6 +162,12 @@ function resolveBridgedStatuslinePaths(opts = {}) {
   if (transcriptPath && bridged.transcriptPath && bridged.transcriptPath !== transcriptPath) return null;
   const bridgedRoot = normalizePathForCompare(bridged.projectRoot);
   if (!bridgedRoot) return null;
+  // v0.1.5: only honor the bridge when cwd is inside the bridged project.
+  // Once the user cd's to a parent or unrelated sibling, stop rendering
+  // the bridged project's stage -- state from one project must not leak
+  // into another.
+  const requestedCwd = opts.cwd || opts.currentDir || '';
+  if (requestedCwd && !isInside(requestedCwd, bridgedRoot)) return null;
   return resolveStatuslinePaths({ cwd: bridgedRoot });
 }
 
@@ -256,10 +294,19 @@ function captureStatuslineSessionBridge(payload = {}, opts = {}) {
     : (opts.cwd || process.cwd());
   let paths = resolveStatuslinePaths({ cwd });
   const existing = readStatuslineSessionBridge();
-  const currentHasEnforcer = fs.existsSync(paths.enforcerDir);
+  // v0.1.5: state-dir guard. Prior check used `.plan-enforcer` directory
+  // existence alone, which mis-treated a repo named `.plan-enforcer` as a
+  // runtime state dir. Now require actual state artifacts.
+  const currentHasEnforcer = isPlanEnforcerStateDir(paths.enforcerDir);
   if (!currentHasEnforcer && existing && String(existing.sessionId || '') === sessionId) {
     const existingPaths = resolveStatuslinePaths({ cwd: existing.projectRoot || '' });
-    if (fs.existsSync(existingPaths.enforcerDir)) {
+    // v0.1.5: only preserve the prior project's bridge when cwd is inside
+    // it (e.g. user cd'd into a subdir like `src/`). If cwd is a parent
+    // or unrelated sibling, the user has left that project -- drop it.
+    if (
+      isPlanEnforcerStateDir(existingPaths.enforcerDir) &&
+      isInside(paths.cwd, existingPaths.projectRoot)
+    ) {
       paths = existingPaths;
     }
   }
@@ -366,6 +413,8 @@ module.exports = {
   captureStatuslineSessionBridge,
   clearStatuslineState,
   hasDiscussPacket,
+  isInside,
+  isPlanEnforcerStateDir,
   ledgerIsClosed,
   readDiscussPacketState,
   inferStatuslineState,
