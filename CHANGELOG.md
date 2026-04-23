@@ -2,6 +2,16 @@
 
 All notable changes to Plan Enforcer are captured here.
 
+## [0.1.6] -- 2026-04-23
+
+### Fixed
+
+- **Chained base statusline no longer double-renders the Enforcer segment.** The Plan Enforcer statusline wrapper auto-discovers and chains to an existing base statusline (typically `~/.claude/hooks/statusline.js`) so that non-Enforcer segments like model, git, and caveman keep rendering. Both sides of that handshake already supported a `PLAN_ENFORCER_STATUSLINE_CHAINED=1` env flag meant to tell the base script "Plan Enforcer owns the Enforcer segment, stand down on your own Enforcer fallback logic" -- but the wrapper never actually set the flag on its base call. That left the base script free to run its own heuristic-based Enforcer rendering in parallel. Those heuristics had independent leakage problems (for example, a find-DOWN walk that picked a child project's `ledger.md` when the cwd was a parent dir, which produced the exact `[ENFORCER: 0/35]` ghost label reported against `~/projects/` after v0.1.5 was already in place). The wrapper now passes `{ chainEnforcer: true }` on its single base-command invocation, the base script's existing suppression path fires, and Plan Enforcer becomes the sole authority for the Enforcer segment in the chained render path. Extended `tests/statusline-hook.test.js` with a regression case that stands up a GSD-like base script emitting `[ENFORCER: 0/35]` when unchained and only `[BASE]` when chained; wrapper output must contain the base marker and no Enforcer segment.
+
+### Note
+
+- Pre-existing Windows-specific spawn-based test failures in `tests/statusline-hook.test.js` (path-escape quirks in `spawnSync` fixtures, not a Plan Enforcer logic issue) continue to fail on this author's machine and are covered under the standing D2 override pattern used across v0.1.1+. The CI matrix on Linux is authoritative for those tests.
+
 ## [0.1.5] -- 2026-04-23
 
 ### Fixed

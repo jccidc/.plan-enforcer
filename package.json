@@ -1,6 +1,6 @@
 {
   "name": "plan-enforcer",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Prevent AI coding agents from drifting, skipping, or silently dropping steps from implementation plans",
   "keywords": [
     "claude-code",

@@ -153,7 +153,9 @@ function main() {
   const baseCommand = process.env.PLAN_ENFORCER_STATUSLINE_CHAINED === '1'
     ? ''
     : (readBaseCommand() || discoverBaseCommand());
-  const baseOutput = runBaseCommand(baseCommand, rawInput);
+  // When chaining, Plan Enforcer owns the Enforcer segment and the base
+  // statusline should suppress any independent Enforcer fallback logic.
+  const baseOutput = runBaseCommand(baseCommand, rawInput, { chainEnforcer: true });
   const replaced = replaceEnforcerSegment(baseOutput, state);
   if (replaced) {
     process.stdout.write(replaced);
