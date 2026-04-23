@@ -68,6 +68,13 @@ function runBaseCommand(command, rawInput, opts = {}) {
     if (opts.chainEnforcer) {
       env.PLAN_ENFORCER_STATUSLINE_CHAINED = '1';
     }
+    const enforcerState = opts.enforcerState || null;
+    if (enforcerState && enforcerState.label) {
+      env.PLAN_ENFORCER_STATUSLINE_LABEL = String(enforcerState.label);
+    }
+    if (enforcerState && enforcerState.progress) {
+      env.PLAN_ENFORCER_STATUSLINE_PROGRESS = String(enforcerState.progress);
+    }
     const result = spawnSync(command, {
       shell: true,
       env,
@@ -121,6 +128,15 @@ function enforcerLabel(state) {
   return `[ENFORCER: ${String(state.label).toUpperCase()}]`;
 }
 
+function enforcerProgress(state) {
+  if (!state) return '';
+  if (Number.isFinite(state.done) && Number.isFinite(state.total)) {
+    return `${state.done}/${state.total}`;
+  }
+  const match = String(state.label || '').match(/(\d+\/\d+)/);
+  return match ? match[1] : '';
+}
+
 function outputHasEnforcerSegment(text) {
   return /\[ENFORCER:\s*[^\]]+\]/i.test(String(text || '').replace(/\x1b\[[0-9;]*m/g, ''));
 }
@@ -155,7 +171,13 @@ function main() {
     : (readBaseCommand() || discoverBaseCommand());
   // When chaining, Plan Enforcer owns the Enforcer segment and the base
   // statusline should suppress any independent Enforcer fallback logic.
-  const baseOutput = runBaseCommand(baseCommand, rawInput, { chainEnforcer: true });
+  const baseOutput = runBaseCommand(baseCommand, rawInput, {
+    chainEnforcer: true,
+    enforcerState: {
+      label: state && state.label ? String(state.label) : '',
+      progress: enforcerProgress(state)
+    }
+  });
   const replaced = replaceEnforcerSegment(baseOutput, state);
   if (replaced) {
     process.stdout.write(replaced);

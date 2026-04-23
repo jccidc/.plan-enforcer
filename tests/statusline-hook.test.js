@@ -207,6 +207,36 @@ describe('statusline hook', () => {
     assert.equal(result.stdout.replace(/\x1B\[[0-9;]*m/g, ''), '[ENFORCER: 1-DISCUSS] [AUTO-CHAIN]');
   });
 
+  it('passes the enforcer label to a slot-aware base hook so layout stays in base order', () => {
+    const fixture = mkHookFixture();
+    const project = path.join(fixture, 'project');
+    const baseScript = path.join(fixture, 'base-slot-aware-statusline.js');
+    fs.mkdirSync(path.join(project, '.plan-enforcer'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'discuss.md'), '# Packet\n');
+    fs.writeFileSync(path.join(project, '.plan-enforcer', 'statusline-state.json'), JSON.stringify({
+      stage: 'discuss',
+      label: '1-DISCUSS',
+      sessionId: 's1'
+    }, null, 2));
+    fs.writeFileSync(baseScript, [
+      'const label = process.env.PLAN_ENFORCER_STATUSLINE_LABEL || "";',
+      'if (process.env.PLAN_ENFORCER_STATUSLINE_CHAINED === "1" && label) {',
+      '  process.stdout.write(`[MODEL] | [ENFORCER: ${label.toUpperCase()}] | [BASE]`);',
+      '} else {',
+      '  process.stdout.write("[MODEL] | [BASE]");',
+      '}'
+    ].join('\n'));
+    fs.writeFileSync(
+      path.join(fixture, 'hooks', '.statusline-base-command'),
+      `${process.execPath} "${baseScript.replace(/\\/g, '/')}"\n`
+    );
+
+    const result = runHook(path.join(fixture, 'hooks', 'statusline.js'), project);
+    const clean = result.stdout.replace(/\x1B\[[0-9;]*m/g, '');
+    assert.equal(result.status, 0);
+    assert.equal(clean, '[MODEL] | [ENFORCER: 1-DISCUSS] | [BASE]');
+  });
+
   it('suppresses a chained base hook that would otherwise emit its own enforcer fallback', () => {
     const fixture = mkHookFixture();
     const parent = path.join(fixture, 'projects');
